@@ -1,0 +1,60 @@
+.stationHeaders {
+    text-align: center;
+  }
+  
+  .cellpad {
+    margin: 0 3px;
+  }
+  
+  .headerColor {
+    background-color: #154734;
+    color: white;
+  }
+  
+  .stationColor {
+    background-color: #c5c5c5;
+    margin: 0 3px;
+  }
+  
+  .nameColor {
+    background-color: #c5c5c5;
+  }
+  
+  .sectionHead {
+    margin-top: 3px;
+  }
+  
+  .attempt {
+    text-align: center;
+  }
+  
+  .no_attempts {
+    background-color: #c17e6a;
+  }
+  
+  .attempted {
+    background-color: #cea47d;
+  }
+  
+  .completed {
+    background-color: #96c16a;
+  }
+  
+  .progress-bar-container {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    background-color: #e0e0e0; /* Background color of the progress bar */
+    padding: 0; /* Reset padding */
+    margin: 0; /* Reset margin */
+  }
+  
+  .progress-bar-pass {
+    height: 100%;
+    background-color: rgb(29, 177, 29); /* Color for the passing percentage */
+  }
+  
+  .progress-bar-fail {
+    height: 100%;
+    background-color: rgb(143, 24, 24); /* Color for the failing percentage */
+  }
