@@ -1,0 +1,27 @@
+.app-title {
+  font-family: RedditSansCondensed, sans-serif;
+  font-size: 1.8rem;
+}
+
+.navbar {
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar a {
+  display: block;
+  padding: 7px 0;
+  margin-left: 10px;
+  text-decoration: none;
+  font-size: 1.4rem;
+  color: inherit;
+}
+
+.mat-divider {
+  color: lightgray;
+}
+
+.main-container {
+  padding: 16px;
+}

@@ -1,0 +1,106 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+
+$primary-palette: (
+  50: #deeeef,
+  100: #add6d6,
+  200: #77bcbb,
+  300: #42a29f,
+  400: #17908c,
+  500: #007d77,
+  600: #00716b,
+  700: #00625c,
+  800: #00534d,
+  900: #003831,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff
+  )
+);
+
+$accent-palette: (
+  50: #fff8e9,
+  100: #feedc8,
+  200: #fde2a6,
+  300: #fad888,
+  400: #f6cf72,
+  500: #f3c860,
+  600: #e2b75a,
+  700: #cba354,
+  800: #b38e4f,
+  900: #8a6c47,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff
+  )
+);
+
+$primary: mat.define-palette($primary-palette, 900);
+
+
+$accent: mat.define-palette($accent-palette, 800);
+
+// The warn palette is optional (defaults to red).
+$warn: mat.define-palette(mat.$red-palette);
+
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$client-theme: mat.define-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn,
+  ),
+  typography: (
+    plain-family: Roboto,
+    brand-family: Reddit Sans Condensed,
+    bold-weight: 900,
+    medium-weight: 500,
+    regular-weight: 300,
+  ),
+  density: 0
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($client-theme);
+
+:root {
+  --primary-color: #{mat.get-color-from-palette($primary, default)};
+  --accent-color: #{mat.get-color-from-palette($accent, default)};
+  --arriving-late-color: darkred;
+  --leaving-early-color: royalblue;
+  --other-conflict-color: purple;
+  --tuesday-conflict-color: goldenrod;
+  --thursday-conflict-color: darkgreen;
+}

@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+@import "custom-theme.scss";
+
+@font-face {
+  font-family: 'RedditSansCondensed';
+  src: url('assets/fonts/Reddit_Sans_Condensed/RedditSansCondensed-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+h1 {
+  font-family: 'RedditSansCondensed';
+}

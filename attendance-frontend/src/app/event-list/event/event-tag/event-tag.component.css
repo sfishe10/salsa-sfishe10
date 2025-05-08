@@ -1,0 +1,14 @@
+mat-card {
+  background-color: var(--accent-color);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 4px 8px 4px 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .4);
+}
+
+mat-card-title {
+  font-size: 1rem;
+  color: white;
+  font-weight: lighter;
+}
