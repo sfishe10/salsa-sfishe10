@@ -1,0 +1,42 @@
+<h2>Create Event</h2>
+
+<form #event="ngForm" (ngSubmit)="submitEvent(event)">
+  <mat-form-field>
+    <mat-label class="form-label">Title</mat-label>
+    <input matInput id="eventTitle" type="text" name="eventTitle" [(ngModel)]="eventTitle">
+  </mat-form-field><br/>
+  <mat-form-field>
+    <mat-label class="form-label">Type</mat-label>
+    <mat-select id="eventType" name="eventType" [(ngModel)]="eventType">
+      <mat-option [value]="null">--</mat-option>
+      <mat-option *ngFor="let option of eventTypeOptions" [value]="option">{{option}}</mat-option>
+    </mat-select>
+  </mat-form-field><br/>
+  <mat-form-field>
+    <mat-label class="form-label">Pep Band</mat-label>
+    <mat-select id="eventPepBand" name="eventPepBand" [(ngModel)]="eventPepBand"
+                [disabled]="eventType != null && (eventType !== EVENT_TYPE_EVENT)">
+      <mat-option [value]="null">--</mat-option>
+      <mat-option *ngFor="let option of pepBandOptions" [value]="option">{{option.displayName}}</mat-option>
+    </mat-select>
+  </mat-form-field><br/>
+  <mat-form-field>
+    <mat-label class="form-label">Term</mat-label>
+    <mat-select id="eventTerm" name="eventTerm" [(ngModel)]="eventTerm">
+      <mat-option [value]="null">--</mat-option>
+      <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
+    </mat-select>
+  </mat-form-field><br/>
+  <mat-form-field>
+    <mat-label class="form-label">Event Date MM/DD/YYYY</mat-label>
+    <input matInput [matDatepicker]="picker" name="eventDate" [(ngModel)]="eventDate">
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field><br/>
+  <mat-form-field>
+    <mat-label>Event time</mat-label>
+    <input matInput type="time" name="eventTime"
+           [(ngModel)]="eventTime">
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit">Submit</button>
+</form>

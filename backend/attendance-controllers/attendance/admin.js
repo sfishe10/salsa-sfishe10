@@ -1,41 +1,85 @@
 const db = require('../../config/db');
 
 module.exports.create = async (req, res) => {
-  let insertVals = '';
-  const params = [];
-  req.body.attendances.forEach((attendance) => {
-    insertVals += '(?, ?, ?), ';
-    params.push(attendance.eventId);
-    params.push(attendance.memberId);
-    params.push(attendance.attendance);
-  });
+  const params = [req.params.eventId];
   // remove last comma and space
-  insertVals = insertVals.slice(0, -2);
-  await db.execute(`INSERT INTO EventAttendance (eventId, memberId, attendance) VALUES ${insertVals}`,
+  await db.execute('INSERT INTO EventAttendance (eventId, memberId, attendance, subId) VALUES (?, ?, NULL, NULL)',
     params,
-    (err, results) => {
-      if (err) console.log(err);
-      res.send(results);
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        // send back the auto-generated ID
+        res.send(result.insertId);
+      }
     });
 };
 
-// module.exports.updateSub = async (req, res) => {
-//   const eventID = req.params.id;
-//   await db.execute('UPDATE Substitutions SET newUserID=? WHERE eventID=? AND oldUserID=?',
-//     [req.body.newUserID, eventID, req.body.oldUserID],
-//     (err, results) => {
-//       if (err) console.log(err);
-//       res.send(results);
-//     });
-// };
-//
-// module.exports.deleteSub = async (req, res) => {
-//   const eventID = req.params.id;
-//   const { oldUserID } = req.params;
-//   await db.execute('DELETE FROM Substitutions WHERE eventID=? AND oldUserID=?',
-//     [eventID, oldUserID],
-//     (err, results) => {
-//       if (err) console.log(err);
-//       res.send(results);
-//     });
-// };
+module.exports.update = async (req, res) => {
+  const attendanceId = req.params.id;
+  await db.execute('UPDATE EventAttendance SET memberId=?, attendance=? WHERE attendanceId=?',
+    [req.body.memberId, req.body.attendance, attendanceId],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        res.send(results);
+      }
+    });
+};
+
+module.exports.submitForm = async (req, res) => {
+  let memberIdClause = 'CASE attendanceId ';
+  let attendanceClause = 'CASE attendanceId ';
+  let subIdClause = 'CASE attendanceId ';
+  let attendanceIds = '';
+  const memberIdParams = [];
+  const attendanceParams = [];
+  const subIdParams = [];
+  console.log(req.body.attendances);
+  req.body.attendances.forEach((attendance) => {
+    const attendanceId = attendance.attendanceId;
+    memberIdClause += 'WHEN ? THEN ? ';
+    memberIdParams.push(attendanceId);
+    memberIdParams.push(attendance.memberId);
+    attendanceClause += 'WHEN ? THEN ? ';
+    attendanceParams.push(attendanceId);
+    attendanceParams.push(attendance.attendance);
+    subIdClause += 'WHEN ? THEN ? ';
+    subIdParams.push(attendanceId);
+    subIdParams.push(attendance.subId);
+    attendanceIds += `${attendanceId}, `;
+  });
+  memberIdClause += 'END ';
+  attendanceClause += 'END ';
+  subIdClause += 'END ';
+  // remove last comma and space
+  attendanceIds = attendanceIds.slice(0, -2);
+  await db.execute(`UPDATE EventAttendance SET memberId=${memberIdClause}, 
+                           attendance=${attendanceClause}, subId=${subIdClause} WHERE attendanceId IN (${attendanceIds})`,
+  memberIdParams.concat(attendanceParams).concat(subIdParams),
+  (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.message);
+    } else {
+      res.send(results);
+    }
+  });
+};
+
+module.exports.delete = async (req, res) => {
+  const attendanceId = req.params.id;
+  await db.execute('DELETE FROM EventAttendance WHERE attendanceId=?',
+    [attendanceId],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        res.send(results);
+      }
+    });
+};

@@ -3,7 +3,12 @@ import {ActivatedRoute} from '@angular/router';
 import {EventService} from '../services/event.service';
 import {DatePipe, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {MatFormField, MatOption, MatSelect} from '@angular/material/select';
-import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule
+} from '@angular/forms';
 import {
   MatCell,
   MatCellDef,
@@ -18,8 +23,8 @@ import {Utilities} from '../utilities/utilities';
 import {Member} from '../models/member';
 import {MBEvent} from '../models/mb-event';
 import {EventAttendance} from '../models/event-attendance';
-import {combineLatest, of, switchMap, tap} from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {SessionCacheService} from '../services/session-cache.service';
 
 @Component({
   selector: 'app-attendance-form',
@@ -55,13 +60,15 @@ export class AttendanceFormComponent implements OnInit {
     type: "",
     title: "",
     date: new Date(),
-    pepBand: "",
+    pepBandId: "",
     termId: -1
   };
 
   private _snackBar = inject(MatSnackBar);
 
   attendees: Member[] = [];
+
+  eventAttendances: EventAttendance[] = [];
 
   attendanceOptions: string[] = []
 
@@ -71,9 +78,14 @@ export class AttendanceFormComponent implements OnInit {
 
   sectionMembers: Member[] = [];
 
+  showRequiredFieldError: boolean = false;
+
+  showSubError: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private sessionCacheService: SessionCacheService) {
     this.form = this.fb.group({
       attendances: this.fb.array([])
     });
@@ -86,51 +98,69 @@ export class AttendanceFormComponent implements OnInit {
   ngOnInit() {
     const eventId = Number(this.route.snapshot.paramMap.get('id'));
 
-    combineLatest([
-      this.eventService.getEvent(eventId),
-      this.eventService.getSectionMembers(2)
-    ]).pipe(
-      tap(([event, sectionMembers]) => {
-        this.event = event;
-        this.sectionMembers = sectionMembers;
-        this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.EVENT);
-      }),
-      switchMap(([event, sectionMembers]) => {
-        if (event?.type === Constants.EVENT_TYPE_EVENT) {
-          return this.eventService.getEventAttendees(eventId);
-        } else {
-          return of(sectionMembers); // wrap static sectionMembers into observable
-        }
-      })
-    ).subscribe(attendees => {
-      this.attendees = attendees;
-      attendees.forEach((attendee) => {
-        this.attendances.push(
-          this.fb.group({
-            attendance: '',
-            sub: ''
-          })
-        );
+    this.sectionMembers = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_MEMBERS);
+
+    this.eventService.getEvent(eventId).subscribe(event => {
+      this.event = event;
+      this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.EVENT);
+      event.attendees?.forEach(member => {
+        this.attendees.push(member);
       });
-    });
+      if (event.attendances) {
+        event.attendances.forEach(att => this.eventAttendances.push(att));
+        this.form = this.fb.group({
+          attendances: this.fb.array(event.attendances.map((att) =>
+            this.fb.group({
+              attendance: [att.attendance],
+              sub: [att.subId ? this.sectionMembers.find(m => m.memberId === att.subId) : null]
+            })
+          ))
+        });
+      }
+
+    })
   }
 
   public onSubmit() {
-    let entries: EventAttendance[] = [];
+    // clear old error messages
+    this.showRequiredFieldError = false;
+    this.showSubError = false;
+
+    const formGroups = this.attendances.controls;
+    let errors: number = 0;
     for (let i = 0; i < this.attendees.length; i++) {
-      let eventAttendance: EventAttendance = {
-        eventId: this.event.eventId,
-        memberId: this.attendees[i].memberId,
-        attendance: this.attendances.controls[i].get('attendance')?.value
+      const group = formGroups[i];
+      const attendance = group.get('attendance')?.value;
+      const sub = group.get('sub')?.value;
+
+      if (!attendance) {
+        group.get('attendance')?.setErrors(({required: true}));
+        this.showRequiredFieldError = true;
+        errors++;
       }
-      entries.push(eventAttendance);
+
+      if (attendance == Constants.ATTENDANCE_SUB && !sub) {
+        group.get('sub')?.setErrors({required: true})
+        this.showSubError = true;
+        errors++;
+      }
+
+      this.eventAttendances[i].attendance = attendance;
+      this.eventAttendances[i].subId = sub ? sub.memberId : null;
     }
-    this.eventService.submitAttendanceForm(entries).subscribe(() => {
-      this.openSnackBar("Form submitted!", "Ok", 3000);
-    }, error => {
-      console.log(error);
-      this.openSnackBar("Error submitting form", "Ok", 3000);
-    })
+
+    if (errors == 0) {
+      this.eventService.submitAttendanceForm(this.eventAttendances).subscribe(() => {
+        this.showRequiredFieldError = false;
+        this.showSubError = false;
+        this.openSnackBar("Form submitted!", "Ok", 3000);
+      }, error => {
+        console.log(error);
+        this.showRequiredFieldError = false;
+        this.showSubError = false;
+        this.openSnackBar("Error submitting form", "Ok", 3000);
+      })
+    }
   }
 
   public markAllPresent() {

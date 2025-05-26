@@ -6,6 +6,7 @@ import {ProfileComponent} from './profile/profile.component';
 import {AttendanceFormComponent} from './attendance-form/attendance-form.component';
 import {UpcomingEventsComponent} from './upcoming-events/upcoming-events.component';
 import {RecentEventsComponent} from './recent-events/recent-events.component';
+import {AdminComponent} from './admin/admin.component';
 
 export const routes: Routes = [
   {
@@ -29,6 +30,10 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent
+  },
+  {
+    path: 'admin',
+    component: AdminComponent
   },
   {
     path: 'attendance-form/:id',

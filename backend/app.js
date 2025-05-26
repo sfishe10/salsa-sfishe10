@@ -13,6 +13,8 @@ const eventRoutes = require('./routes/events');
 const attendanceRoutes = require('./attendance-routes/attendance');
 const attendanceEventRoutes = require('./attendance-routes/events');
 const attendanceMemberRoutes = require('./attendance-routes/members');
+const attendanceTermRoutes = require('./attendance-routes/terms');
+const attendancePepBandRoutes = require('./attendance-routes/pep-bands');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -33,6 +35,8 @@ app.use('/api/event/', eventRoutes);
 app.use('/api/mb-attendance/attendance/', attendanceRoutes);
 app.use('/api/mb-attendance/events/', attendanceEventRoutes);
 app.use('/api/mb-attendance/members/', attendanceMemberRoutes);
+app.use('/api/mb-attendance/terms/', attendanceTermRoutes);
+app.use('/api/mb-attendance/pepBands/', attendancePepBandRoutes);
 
 if (process.env.ENVIRONMENT === 'prod') {
   const httpsServer = https.createServer({

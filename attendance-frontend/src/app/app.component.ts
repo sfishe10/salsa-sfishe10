@@ -1,17 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
-import {ApiService} from './services/api.service';
 import {NgIf} from '@angular/common';
-import {MsalBroadcastService, MsalService} from '@azure/msal-angular';
+import {MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalService} from '@azure/msal-angular';
 import {filter, Subject, takeUntil} from 'rxjs';
-import {AuthenticationResult, EventMessage, EventType} from '@azure/msal-browser';
-import msalInstance from './app.config';
-import {MatSidenavContainer, MatSidenavContent, MatSidenavModule} from '@angular/material/sidenav';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {EventMessage, EventType, InteractionStatus, RedirectRequest} from '@azure/msal-browser';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatToolbar} from '@angular/material/toolbar';
 import {Router} from '@angular/router';
 import {MatDivider} from '@angular/material/divider';
+import {SessionCacheService} from './services/session-cache.service';
 
 @Component({
   selector: 'app-root',
@@ -24,39 +23,52 @@ import {MatDivider} from '@angular/material/divider';
 export class AppComponent implements OnInit, OnDestroy {
 
   private readonly _destroying$ = new Subject<void>();
-  message: any;
+  loginDisplay = false;
+  tokenExpiration: string = '';
 
   constructor(
+    @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
       private authService: MsalService,
-      private apiService: ApiService,
       private msalBroadcastService: MsalBroadcastService,
+      private sessionCacheService: SessionCacheService,
       public router: Router) { };
 
   ngOnInit() {
-    this.msalBroadcastService.msalSubject$
+    this.sessionCacheService.preload();
+
+    this.msalBroadcastService.inProgress$
       .pipe(
-        filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
+        filter((status: InteractionStatus) => status === InteractionStatus.None),
         takeUntil(this._destroying$)
       )
-      .subscribe((result: EventMessage) => {
-        const authResult = result.payload as AuthenticationResult;
-        this.authService.instance.setActiveAccount(authResult.account);
-        console.log('Login successful:', authResult.account);
-
-        this.apiService.getMessage().subscribe(data => {
-          this.message = data;
-        });
+      .subscribe(() => {
+        this.setLoginDisplay();
       });
 
-    // Check if user is already logged in
-    const activeAccount = async() => {
-      await msalInstance.initialize();
-      this.authService.instance.getActiveAccount();
-    }
-    if (!activeAccount) {
-      console.log('User not logged in. Redirecting to login...');
+    // Used for storing and displaying token expiration
+    this.msalBroadcastService.msalSubject$.pipe(filter((msg: EventMessage) => msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS)).subscribe(msg => {
+      this.tokenExpiration=  (msg.payload as any).expiresOn;
+      localStorage.setItem('tokenExpiration', this.tokenExpiration);
+    });
+  }
+
+  // If the user is logged in, present the user with a "logged in" experience
+  setLoginDisplay() {
+    this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
+  }
+
+  // Log the user in and redirect them if MSAL provides a redirect URI otherwise go to the default URI
+  login() {
+    if (this.msalGuardConfig.authRequest) {
+      this.authService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
+    } else {
       this.authService.loginRedirect();
     }
+  }
+
+  // Log the user out
+  logout() {
+    this.authService.logoutRedirect();
   }
 
   ngOnDestroy(): void {

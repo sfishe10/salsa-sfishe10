@@ -1,4 +1,6 @@
 export interface Term {
   termId: number;
-  term: string;
+  termName: string;
+  startDate: Date;
+  endDate: Date;
 }

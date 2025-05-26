@@ -8,11 +8,13 @@ const router = express.Router();
  */
 
 router.post('/', attendance.admin.create);
-// router.put('/:id', attendance.admin.update);
-// router.delete('/:id', attendance.admin.delete);
+router.post('/submitForm', attendance.admin.submitForm);
+router.delete('/:id', attendance.admin.delete);
 
 /**
  * selectors
  */
+
+router.get('/', attendance.selector.getAttendances);
 
 module.exports = router;

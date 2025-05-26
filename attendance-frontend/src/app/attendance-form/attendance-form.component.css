@@ -89,3 +89,8 @@ mat-option {
 .mat-mdc-row {
   font-size: 1rem;
 }
+
+.error-message {
+  font-size: .9rem;
+  color: red;
+}

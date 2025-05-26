@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
+import {APP_INITIALIZER, ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import {
@@ -9,6 +9,8 @@ import {
 import {HTTP_INTERCEPTORS, provideHttpClient} from '@angular/common/http';
 import {BrowserCacheLocation, InteractionType, LogLevel, PublicClientApplication} from '@azure/msal-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import {SessionCacheService} from './services/session-cache.service';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 const SERVER_ROOT = window.location.origin
 
@@ -51,6 +53,7 @@ const msalConfig = {
     windowHashTimeout: 60000,
     iframeHashTimeout: 6000,
     loadFrameTimeout: 0,
+    allowNativeBroker: false
   }
 }
 
@@ -97,5 +100,7 @@ export const appConfig: ApplicationConfig = {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
       multi: true
-    }, provideAnimationsAsync()]
+    },
+    provideAnimationsAsync(),
+    provideNativeDateAdapter()]
 };
