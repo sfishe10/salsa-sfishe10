@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Constants} from '../utilities/constants';
+import {HttpService} from './http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,12 +9,25 @@ import {Constants} from '../utilities/constants';
 export class SessionCacheService {
   baseUrl = "http://localhost:3001/api";
 
-  constructor(private http: HttpClient) {}
+  headers: HttpHeaders | undefined;
+
+  constructor(private http: HttpClient, private httpService: HttpService) {}
 
   public preload() {
 
+    this.httpService.getAccessToken().then(token => {
+      this.headers = new HttpHeaders({
+        Authorization: 'Bearer ' + token
+      });
+    });
+    console.log(this.headers);
+
     this.http.get(this.baseUrl + `/mb-attendance/members/section/2`).subscribe(sectionMembers => {
       this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
+    })
+
+    this.http.get(this.baseUrl + '/me').subscribe(member => {
+      this.set(Constants.STORAGE_KEY_ROLE, member);
     })
 
   }

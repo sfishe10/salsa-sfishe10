@@ -4,25 +4,34 @@ import { routes } from './app.routes';
 import {
   MsalModule,
   MsalGuardConfiguration,
-  MsalInterceptorConfiguration, MsalInterceptor,
+  MsalInterceptorConfiguration, MsalInterceptor, MsalGuard,
 } from '@azure/msal-angular';
-import {HTTP_INTERCEPTORS, provideHttpClient} from '@angular/common/http';
-import {BrowserCacheLocation, InteractionType, LogLevel, PublicClientApplication} from '@azure/msal-browser';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {
+  BrowserCacheLocation,
+  Configuration,
+  InteractionType,
+  LogLevel,
+  PublicClientApplication
+} from '@azure/msal-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {SessionCacheService} from './services/session-cache.service';
 import {provideNativeDateAdapter} from '@angular/material/core';
+import {environment} from '../environments/environment';
 
-const SERVER_ROOT = window.location.origin
+const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
-const msalConfig = {
+export const msalConfig: Configuration = {
   auth: {
-    clientId: "181e8307-909d-49e6-8ae2-7c357ed5a922",
-    authority: "https://login.microsoftonline.com/common", // change to allow only CP emails?
-    redirectUri: `${SERVER_ROOT}/app/auth-response`,
+    clientId: environment.config.auth.clientId,
+    authority: environment.config.auth.authority,
+    redirectUri: environment.config.auth.redirectUri,
+    postLogoutRedirectUri: environment.config.auth.postLogoutRedirectUri,
+    navigateToLoginRequestUrl: true
   },
   cache: {
-    cacheLocation: BrowserCacheLocation.LocalStorage,
-    storeAuthStateInCookie: true,
+    cacheLocation: environment.config.cache.cacheLocation,
+    storeAuthStateInCookie: isIE
   },
   system: {
     loggerOptions: {
@@ -48,17 +57,25 @@ const msalConfig = {
             return;
         }
       },
-      piiLoggingEnabled: false
+      piiLoggingEnabled: true
     },
     windowHashTimeout: 60000,
     iframeHashTimeout: 6000,
-    loadFrameTimeout: 0,
-    allowNativeBroker: false
+    loadFrameTimeout: 0
   }
 }
 
-const msalInstance = new PublicClientApplication(msalConfig);
-export default msalInstance;
+export const protectedResources = {
+  demoApi: {
+    endpoint: environment.config.resources.demoApi.resourceUri,
+    scopes: [environment.config.resources.demoApi.resourceScope],
+  },
+}
+export const loginRequest = {
+  scopes: [
+    ...environment.config.scopes.loginRequest
+  ]
+};
 
 // MSAL Instance Factory
 export function MSALInstanceFactory() {
@@ -68,9 +85,12 @@ export function MSALInstanceFactory() {
 // MSAL Guard Configuration
 export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
-    interactionType: InteractionType.Redirect, // Or InteractionType.Popup
+    interactionType: InteractionType.Redirect,
     authRequest: {
-      scopes: ['user.read'], // Adjust scopes as needed
+      scopes: [
+        ...protectedResources.demoApi.scopes,
+        ...loginRequest.scopes,
+      ]
     }
   };
 }
@@ -78,9 +98,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
 // MSAL Interceptor Configuration
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   return {
-    interactionType: InteractionType.Redirect, // Or InteractionType.Popup
+    interactionType: InteractionType.Redirect,
     protectedResourceMap: new Map([
-      ['https://graph.microsoft.com/v1.0/me', ['user.read']],
+      [protectedResources.demoApi.endpoint, protectedResources.demoApi.scopes],
     ]),
   };
 }
@@ -88,7 +108,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
     importProvidersFrom(
       MsalModule.forRoot(
         MSALInstanceFactory(),
@@ -101,6 +121,7 @@ export const appConfig: ApplicationConfig = {
       useClass: MsalInterceptor,
       multi: true
     },
+    MsalGuard,
     provideAnimationsAsync(),
     provideNativeDateAdapter()]
 };

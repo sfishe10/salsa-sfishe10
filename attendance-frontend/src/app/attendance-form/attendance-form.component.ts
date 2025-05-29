@@ -25,6 +25,9 @@ import {MBEvent} from '../models/mb-event';
 import {EventAttendance} from '../models/event-attendance';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {SessionCacheService} from '../services/session-cache.service';
+import {MsalBroadcastService} from '@azure/msal-angular';
+import {EventMessage, EventType} from '@azure/msal-browser';
+import {filter} from 'rxjs';
 
 @Component({
   selector: 'app-attendance-form',
@@ -85,7 +88,8 @@ export class AttendanceFormComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private fb: FormBuilder,
-              private sessionCacheService: SessionCacheService) {
+              private sessionCacheService: SessionCacheService,
+              private msalBroadcastService: MsalBroadcastService) {
     this.form = this.fb.group({
       attendances: this.fb.array([])
     });

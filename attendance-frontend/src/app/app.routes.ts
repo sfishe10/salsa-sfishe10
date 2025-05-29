@@ -25,19 +25,23 @@ export const routes: Routes = [
   },
   {
     path: 'recent-events',
-    component: RecentEventsComponent
+    component: RecentEventsComponent,
+    canActivate: [MsalGuard]
   },
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    canActivate: [MsalGuard]
   },
   {
     path: 'admin',
-    component: AdminComponent
+    component: AdminComponent,
+    canActivate: [MsalGuard]
   },
   {
     path: 'attendance-form/:id',
-    component: AttendanceFormComponent
+    component: AttendanceFormComponent,
+    canActivate: [MsalGuard]
   },
   {
     path: 'auth-response',

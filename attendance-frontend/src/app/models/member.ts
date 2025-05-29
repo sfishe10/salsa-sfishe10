@@ -5,4 +5,5 @@ export interface Member {
   lastName: string;
   sectionId: number;
   rehearsalConflict: string | null;
+  role: string;
 }

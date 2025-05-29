@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Member} from '../models/member';
 import {MBEvent} from '../models/mb-event';
 import {EventAttendance} from '../models/event-attendance';
-import {HttpService} from './http.service';
 import {Term} from '../models/term';
 import {PepBand} from '../models/pep-band';
 
@@ -14,13 +12,7 @@ import {PepBand} from '../models/pep-band';
 export class EventService {
   baseUrl = "http://localhost:3001/api";
 
-  headers: HttpHeaders;
-
-  constructor(private http: HttpClient, private httpService: HttpService) {
-    this.headers = new HttpHeaders({
-      Authorization: 'Bearer ' + this.httpService.getAccessToken()
-    });
-  }
+  constructor(private http: HttpClient) {}
 
   public getAllEvents(): Observable<MBEvent[]> {
     const url = this.baseUrl + '/mb-attendance/events';
@@ -59,7 +51,7 @@ export class EventService {
 
   public submitAttendanceForm(attendances: EventAttendance[]) {
     const url = this.baseUrl + `/mb-attendance/attendance/submitForm`;
-    return this.http.post<EventAttendance>(url, {attendances: attendances}, {headers: this.headers});
+    return this.http.post<EventAttendance>(url, {attendances: attendances});
   }
 
 }

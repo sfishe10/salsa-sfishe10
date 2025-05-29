@@ -2,8 +2,15 @@ import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {NgIf} from '@angular/common';
 import {MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalService} from '@azure/msal-angular';
-import {filter, Subject, takeUntil} from 'rxjs';
-import {EventMessage, EventType, InteractionStatus, RedirectRequest} from '@azure/msal-browser';
+import {filter, Subject, take, takeUntil} from 'rxjs';
+import {
+  AuthenticationResult,
+  EventMessage,
+  EventType,
+  InteractionStatus,
+  RedirectRequest,
+  SilentRequest
+} from '@azure/msal-browser';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -11,6 +18,8 @@ import {MatToolbar} from '@angular/material/toolbar';
 import {Router} from '@angular/router';
 import {MatDivider} from '@angular/material/divider';
 import {SessionCacheService} from './services/session-cache.service';
+import {Constants} from './utilities/constants';
+import {Member} from './models/member';
 
 @Component({
   selector: 'app-root',
@@ -23,8 +32,9 @@ import {SessionCacheService} from './services/session-cache.service';
 export class AppComponent implements OnInit, OnDestroy {
 
   private readonly _destroying$ = new Subject<void>();
-  loginDisplay = false;
-  tokenExpiration: string = '';
+
+  public me: Member | null = null;
+
 
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -34,37 +44,40 @@ export class AppComponent implements OnInit, OnDestroy {
       public router: Router) { };
 
   ngOnInit() {
-    this.sessionCacheService.preload();
-
     this.msalBroadcastService.inProgress$
       .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None),
-        takeUntil(this._destroying$)
+        filter(status => status === InteractionStatus.None),
+        take(1)
       )
       .subscribe(() => {
-        this.setLoginDisplay();
+        const account = this.authService.instance.getActiveAccount();
+        if (account) {
+          this.authService.instance.setActiveAccount(account);
+          this.sessionCacheService.preload();
+          this.me = this.sessionCacheService.get(Constants.STORAGE_KEY_ROLE);
+        }
       });
-
-    // Used for storing and displaying token expiration
-    this.msalBroadcastService.msalSubject$.pipe(filter((msg: EventMessage) => msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS)).subscribe(msg => {
-      this.tokenExpiration=  (msg.payload as any).expiresOn;
-      localStorage.setItem('tokenExpiration', this.tokenExpiration);
-    });
   }
 
-  // If the user is logged in, present the user with a "logged in" experience
-  setLoginDisplay() {
-    this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
-  }
+  // // If the user is logged in, present the user with a "logged in" experience
+  // setLoginDisplay() {
+  //   this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
+  // }
 
-  // Log the user in and redirect them if MSAL provides a redirect URI otherwise go to the default URI
-  login() {
-    if (this.msalGuardConfig.authRequest) {
-      this.authService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
-    } else {
-      this.authService.loginRedirect();
-    }
-  }
+  // // Log the user in and redirect them if MSAL provides a redirect URI otherwise go to the default URI
+  // login() {
+  //   if (this.msalGuardConfig.authRequest && this.loginDisplay){
+  //     // this.msalGuardConfig.authRequest.account = this.authService.instance.getAllAccounts()[0];
+  //     this.authService.acquireTokenSilent({...this.msalGuardConfig.authRequest} as SilentRequest)
+  //       .subscribe((response: AuthenticationResult) => {
+  //         this.authService.instance.setActiveAccount(response.account);
+  //         console.log(response.accessToken);
+  //         console.log(this.authService.instance.getAllAccounts());
+  //       });
+  //   } else {
+  //     this.authService.loginRedirect();
+  //   }
+  // }
 
   // Log the user out
   logout() {
