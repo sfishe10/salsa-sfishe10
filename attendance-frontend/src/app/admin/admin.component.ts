@@ -1,19 +1,40 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
+import {AfterViewInit, Component, inject, model, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {MatFormField, MatFormFieldModule, MatHint, MatLabel} from '@angular/material/form-field';
 import {MatInput, MatInputModule} from '@angular/material/input';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {Constants} from '../utilities/constants';
-import {NgForOf} from '@angular/common';
-import {MatButton} from '@angular/material/button';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {MatButton, MatButtonModule} from '@angular/material/button';
 import {
-  MatDatepickerModule,
+  MatDatepicker, MatDatepickerInput,
+  MatDatepickerModule, MatDatepickerToggle,
 } from '@angular/material/datepicker';
 import {MBEvent} from '../models/mb-event';
 import {Term} from '../models/term';
 import {EventService} from '../services/event.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {PepBand} from '../models/pep-band';
+import {MatTab, MatTabGroup} from '@angular/material/tabs';
+import {Section} from '../models/section';
+import {
+  MatDialog,
+  MatDialogActions,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle
+} from '@angular/material/dialog';
+import {
+  MatCell, MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
+  MatTable,
+} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {EventsTableComponent} from './events-table/events-table.component';
+import {MembersTableComponent} from './members-table/members-table.component';
+import {AdminService} from '../services/admin.service';
 
 @Component({
   selector: 'app-admin',
@@ -27,83 +48,118 @@ import {PepBand} from '../models/pep-band';
     MatOption,
     NgForOf,
     MatButton,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatTabGroup,
+    MatTab,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    DatePipe,
+    EventsTableComponent,
+    MembersTableComponent
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, AfterViewInit {
 
   private _snackBar = inject(MatSnackBar);
 
-  eventTypeOptions: string[] = [
-    Constants.EVENT_TYPE_EVENT,
-    Constants.EVENT_TYPE_REHEARSAL
-  ]
-
-  pepBandOptions: PepBand[] = [];
-
   terms: Term[] = [];
 
-  eventTitle: string = "";
-  eventType: string | null = null;
-  eventPepBand: string | null = null;
-  eventDate: Date | null = null;
-  eventTime: string = '';
-  eventTerm: Term = {
-    termId: -1,
-    termName: '',
-    startDate: new Date(),
-    endDate: new Date()
-  };
+  selectedTerm: Term | null = null;
 
-  constructor(private eventService: EventService) {
+  termName: string = "";
+  termStartDate: Date | null = null;
+  termEndDate: Date | null = null;
+
+
+  @ViewChild('createTermDialog') createTermDialog!: TemplateRef<any>;
+  termDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('termForm') termForm!: NgForm;
+
+
+  @ViewChild(EventsTableComponent) eventsTable!: EventsTableComponent;
+
+  @ViewChild(MembersTableComponent) membersTable!: MembersTableComponent;
+
+  constructor(private adminService: AdminService,
+              private dialog: MatDialog) {
+  }
+
+  ngAfterViewInit() {
   }
 
   ngOnInit() {
-    this.eventService.getTerms().subscribe(terms => {
-      terms.forEach(term => {
-        this.terms.push(term);
-      })
-    })
+    this.adminService.getTerms().subscribe(terms => {
+      let closestDiff: number | null = null;
+      let closestTerm: Term | null = null;
 
-    this.eventService.getPepBands().subscribe(pepBands => {
-      pepBands.forEach(band => {
-        this.pepBandOptions.push(band);
+      let now = new Date();
+
+      terms.forEach(term => {
+        const start = new Date(term.startDate);
+        const end = new Date(term.endDate);
+
+        this.terms.push(term);
+        if (start <= now && end >= now) {
+          this.selectedTerm = term;
+        }
+        // Track the term with start date closest to now
+        const diff = Math.abs(start.getTime() - now.getTime());
+        if ((!closestDiff || diff < closestDiff) && start > now) {
+          closestDiff = diff;
+          closestTerm = term;
+        }
       })
+      // If no current term matches, fallback to the closest start date
+      this.selectedTerm = this.selectedTerm ?? closestTerm;
+
+      if (this.selectedTerm) {
+        this.onTermChange(this.selectedTerm);
+      }
     })
   }
 
-  submitEvent(form: NgForm) {
-    this.combineDateAndTimeInputs();
+  onTermChange(term: Term) {
+    this.selectedTerm = term;
+    this.eventsTable.onTermChange(term.termId);
+    this.membersTable.onTermChange(term.termId);
+  }
 
-    let newEvent = {
-      eventId: -1, // will get assigned when the backend puts it in the database
-      type: form.value.eventType,
-      title: form.value.eventTitle,
-      date: form.value.eventDate,
-      pepBandId: form.value.eventPepBand ? form.value.eventPepBand.bandId : null,
-      termId: form.value.eventTerm.termId
-    } as MBEvent;
 
-    console.log(newEvent);
+  openTermDialog() {
+    this.termDialogRef = this.dialog.open(this.createTermDialog);
+  }
 
-    this.eventService.createEvent(newEvent).subscribe(newEvent => {
-      this.openSnackBar("Event created!", "Ok", 3000);
+  cancelDialog() {
+    setTimeout(() => {
+      this.termForm?.reset();
+    });
+    this.dialog.closeAll();
+  }
+
+  submitTerm(form: NgForm) {
+    let newTerm = {
+      termId: -1, // will get assigned when the backend puts it in the database
+      termName: form.value.termName,
+      startDate: form.value.termStartDate,
+      endDate: form.value.termEndDate
+    } as Term;
+
+    this.adminService.createTerm(newTerm).subscribe(() => {
+      this.terms.push(newTerm);
+      this.openSnackBar("Term created!", "Ok", 3000);
+      this.termDialogRef.close();
     }, error => {
       console.log(error);
-      this.openSnackBar("Error creating event", "Ok", 3000);
+      this.openSnackBar("Error creating Term", "Ok", 3000);
     })
   }
 
-  combineDateAndTimeInputs() {
-    const [hours, minutes] = this.eventTime.split(':').map(Number);
-    this.eventDate?.setHours(hours, minutes, 0);
-  }
 
   openSnackBar(message: string, action: string, duration: number) {
     this._snackBar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});
   }
-
-  readonly EVENT_TYPE_EVENT = Constants.EVENT_TYPE_EVENT
 }

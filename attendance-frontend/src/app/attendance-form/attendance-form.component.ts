@@ -20,14 +20,12 @@ import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {Constants} from '../utilities/constants';
 import {Utilities} from '../utilities/utilities';
-import {Member} from '../models/member';
 import {MBEvent} from '../models/mb-event';
 import {EventAttendance} from '../models/event-attendance';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {SessionCacheService} from '../services/session-cache.service';
 import {MsalBroadcastService} from '@azure/msal-angular';
-import {EventMessage, EventType} from '@azure/msal-browser';
-import {filter} from 'rxjs';
+import {Member} from '../models/member';
 
 @Component({
   selector: 'app-attendance-form',
@@ -55,7 +53,7 @@ import {filter} from 'rxjs';
 })
 export class AttendanceFormComponent implements OnInit {
 
-  readonly EVENT: string = Constants.EVENT_TYPE_EVENT;
+  readonly PEP_EVENT: string = Constants.EVENT_TYPE_PEP_EVENT;
   readonly REHEARSAL: string = Constants.EVENT_TYPE_REHEARSAL;
 
   event: MBEvent = {
@@ -106,7 +104,7 @@ export class AttendanceFormComponent implements OnInit {
 
     this.eventService.getEvent(eventId).subscribe(event => {
       this.event = event;
-      this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.EVENT);
+      this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.PEP_EVENT);
       event.attendees?.forEach(member => {
         this.attendees.push(member);
       });

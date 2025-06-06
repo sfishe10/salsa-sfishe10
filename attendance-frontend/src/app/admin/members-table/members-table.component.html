@@ -1,0 +1,82 @@
+<div style="display: flex; align-items: center; gap: 10px">
+  <!--        <mat-form-field subscriptSizing="dynamic">-->
+  <!--          <mat-label class="form-label">Filter by section</mat-label>-->
+  <!--          <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">-->
+  <!--            <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>-->
+  <!--          </mat-select>-->
+  <!--        </mat-form-field>-->
+</div><br/><br/>
+<div class="mat-elevation-z4">
+  <table mat-table [dataSource]="memberDataSource">
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let member"> {{member.user.email}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let member"> {{member.user.firstName}} {{member.user.lastName}} </td>
+    </ng-container>
+
+    <!-- Pep Band Column -->
+    <ng-container matColumnDef="pepBand">
+      <th mat-header-cell *matHeaderCellDef> Pep Band </th>
+      <td mat-cell *matCellDef="let member"> {{member.pepBand?.displayName}} </td>
+    </ng-container>
+
+    <!-- Section Column -->
+    <ng-container matColumnDef="section">
+      <th mat-header-cell *matHeaderCellDef> Section </th>
+      <td mat-cell *matCellDef="let member"> {{member.section?.name}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="memberColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: memberColumns;"></tr>
+  </table>
+  <mat-paginator #memberPaginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page">
+  </mat-paginator>
+</div><br/>
+<button mat-flat-button color="primary" (click)="openMemberDialog()">Add Member</button>
+
+
+<ng-template #addMemberDialog>
+  <h2 mat-dialog-title>Add Member</h2>
+  <form #memberForm="ngForm" (ngSubmit)="submitMember(memberForm)">
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-label class="form-label">Email</mat-label>
+        <input matInput id="memberEmail" type="text" name="memberEmail" [(ngModel)]="memberEmail">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Pep Band</mat-label>
+        <mat-select id="memberPepBand" name="memberPepBand" [(ngModel)]="memberPepBand">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of pepBandOptions" [value]="option">{{option.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Section</mat-label>
+        <mat-select id="memberSection" name="memberSection" [(ngModel)]="memberSection">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of sectionOptions" [value]="option">{{option.name}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Rehearsal Conflict</mat-label>
+        <mat-select id="memberRehearsalConflict" name="memberRehearsalConflict" [(ngModel)]="memberRehearsalConflict">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of rehearsalConflictOptions" [value]="option">{{option}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+      <button mat-button type="submit">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>

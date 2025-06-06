@@ -1,9 +1,13 @@
+import {User} from './user';
+import {PepBand} from './pep-band';
+import {Section} from './section';
+import {Term} from './term';
+
 export interface Member {
   memberId: number;
-  pepBandId: string;
-  firstName: string;
-  lastName: string;
-  sectionId: number;
+  user: User;
+  pepBand: PepBand | null;
+  section: Section | null;
   rehearsalConflict: string | null;
-  role: string;
+  term: Term
 }

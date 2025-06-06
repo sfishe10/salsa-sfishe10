@@ -33,7 +33,6 @@ import {Constants} from '../../utilities/constants';
 })
 export class EventComponent {
 
-  protected readonly EVENT = Constants.EVENT_TYPE_EVENT;
   protected readonly REHEARSAL = Constants.EVENT_TYPE_REHEARSAL;
 
   constructor(private router: Router) {

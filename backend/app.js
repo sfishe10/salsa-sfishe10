@@ -18,6 +18,7 @@ const attendanceEventRoutes = require('./attendance-routes/events');
 const attendanceMemberRoutes = require('./attendance-routes/members');
 const attendanceTermRoutes = require('./attendance-routes/terms');
 const attendancePepBandRoutes = require('./attendance-routes/pep-bands');
+const attendanceSectionRoutes = require('./attendance-routes/sections');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -32,22 +33,19 @@ app.use(upload.single('file'));
 
 passport.use(new BearerStrategy({
   // Passport will use this URL to fetch the token validation information from Azure AD
-  identityMetadata: `https://${process.env.AUTHORITY}/${process.env.TENANT_ID}/${process.env.VERSION}/${process.env.DISCOVERY}`,
-  issuer: `https://${process.env.AUTHORITY}/${process.env.TENANT_ID}/${process.env.VERSION}`,
+  identityMetadata: `${process.env.AUTHORITY}/${process.env.VERSION}/${process.env.DISCOVERY}`,
+  issuer: `${process.env.AUTHORITY}/${process.env.VERSION}`,
   clientID: process.env.AUDIENCE,
   audience: process.env.AUDIENCE, // the identifier of the resource that the client wants to access.
-  validateIssuer: process.env.VALIDATE_ISSUER,
-  passReqToCallback: process.env.PASS_REQ_TO_CALLBACK,
+  validateIssuer: process.env.VALIDATE_ISSUER === 'true',
+  passReqToCallback: process.env.PASS_REQ_TO_CALLBACK === 'true',
   loggingLevel: process.env.LOGGING_LEVEL,
   scope: [process.env.SCOPE],
 },
-((token, done) => {
-  console.log('token ', token);
-  return done(null, token, token);
-})));
+((token, done) => done(null, token, token))));
 
 app.use(cors({ origin: ['https://807.band', 'http://localhost:3000', 'http://localhost:4200'], credentials: true }));
-// app.use(passport.authenticate('oauth-bearer', { session: false }));
+app.use(passport.authenticate('oauth-bearer', { session: false }));
 app.use('/api/groups/', groupsRoutes);
 app.use('/api/station/', stationRoutes);
 app.use('/api/user/', userRoutes);
@@ -60,14 +58,59 @@ app.use('/api/mb-attendance/events/', attendanceEventRoutes);
 app.use('/api/mb-attendance/members/', attendanceMemberRoutes);
 app.use('/api/mb-attendance/terms/', attendanceTermRoutes);
 app.use('/api/mb-attendance/pepBands/', attendancePepBandRoutes);
+app.use('/api/mb-attendance/sections/', attendanceSectionRoutes);
 
 app.get('/api/me',
-  passport.authenticate('oauth-bearer', { session: false }),
   async (req, res) => {
-    console.log(req.user);
-    const user = await db.query('SELECT * FROM Member WHERE email = ?', [req.user.preferred_username]);
-    if (!user.length) return res.status(404).json({ message: 'User not found' });
-    return res.json(user[0]);
+    db.execute('SELECT * FROM User WHERE email = ?', [req.user.upn],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send(err.message);
+        }
+        if (!result.length) return res.status(404).json({ message: 'User not found' });
+        const { userId } = result[0];
+        const user = {
+          userId,
+          firstName: result[0].firstName,
+          lastName: result[0].lastName,
+          email: result[0].email,
+          role: result[0].role,
+        };
+        db.execute('SELECT * FROM Member as m '
+          + 'JOIN Term AS t ON m.termId = t.termId '
+          + 'JOIN PepBand AS p ON m.pepBandId = p.bandId '
+          + 'JOIN Section AS s ON m.sectionId = s.sectionId '
+          + 'WHERE userId = ? AND '
+          + 't.startDate <= NOW() AND t.endDate >= NOW()', [userId],
+        (err2, result2) => {
+          if (err2) {
+            console.log(err2);
+            res.status(500).send(err.message);
+          }
+          let member;
+          if (result2.length) {
+            member = {
+              memberId: result2[0].memberId,
+              user,
+              pepBand: {
+                bandId: result2[0].pepBandId,
+                displayName: result2[0].displayName,
+              },
+              section: {
+                sectionId: result2[0].sectionId,
+                name: result2[0].name,
+              },
+              rehearsalConflict: result2[0].rehearsalConflict,
+            };
+          }
+          const me = {
+            user,
+            member,
+          };
+          res.send(me);
+        });
+      });
   });
 
 if (process.env.ENVIRONMENT === 'prod') {

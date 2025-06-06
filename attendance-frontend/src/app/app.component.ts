@@ -2,7 +2,7 @@ import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {NgIf} from '@angular/common';
 import {MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalService} from '@azure/msal-angular';
-import {filter, Subject, take, takeUntil} from 'rxjs';
+import {filter, Subject, take} from 'rxjs';
 import {
   AuthenticationResult,
   EventMessage,
@@ -40,21 +40,37 @@ export class AppComponent implements OnInit, OnDestroy {
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
       private authService: MsalService,
       private msalBroadcastService: MsalBroadcastService,
-      private sessionCacheService: SessionCacheService,
+      public sessionCacheService: SessionCacheService,
       public router: Router) { };
 
   ngOnInit() {
+    this.msalBroadcastService.msalSubject$
+      .pipe(
+        filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
+        take(1)
+      )
+      .subscribe((result: EventMessage) => {
+        const payload = result.payload as AuthenticationResult;
+        this.authService.instance.setActiveAccount(payload.account);
+      });
+
     this.msalBroadcastService.inProgress$
       .pipe(
         filter(status => status === InteractionStatus.None),
         take(1)
       )
       .subscribe(() => {
-        const account = this.authService.instance.getActiveAccount();
+        let account = this.authService.instance.getActiveAccount();
+        if (!account) {
+          const allAccounts = this.authService.instance.getAllAccounts();
+          if (allAccounts.length > 0) {
+            account = allAccounts[0];
+            this.authService.instance.setActiveAccount(account);
+          }
+        }
+
         if (account) {
-          this.authService.instance.setActiveAccount(account);
           this.sessionCacheService.preload();
-          this.me = this.sessionCacheService.get(Constants.STORAGE_KEY_ROLE);
         }
       });
   }

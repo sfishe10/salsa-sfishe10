@@ -16,6 +16,6 @@ router.delete('/:id', terms.admin.delete);
  */
 
 router.get('/', terms.selector.getAll);
-// router.get('/:id', terms.selector.getById);
+router.get('/:id', terms.selector.getById);
 
 module.exports = router;

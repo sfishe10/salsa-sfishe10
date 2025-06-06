@@ -1,12 +1,12 @@
 const db = require('../../config/db');
 
 /**
- * Pep Band selectors
+ * Section selectors
  */
 
 module.exports.getAll = async (req, res) => {
   db.execute(
-    'SELECT * FROM PepBand ORDER BY bandId',
+    'SELECT * FROM Section ORDER BY name',
     (err, results) => {
       if (err) {
         console.log(err);

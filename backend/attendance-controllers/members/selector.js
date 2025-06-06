@@ -16,22 +16,99 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getById = async (req, res) => {
   db.execute(
-    'SELECT * FROM Member WHERE memberId=?',
+    'SELECT m.*, u.firstName, u.lastName, u.email, u.role, s.name, p.displayName ' +
+    'FROM Member as m ' +
+    'JOIN User AS u ON u.userId = m.userId ' +
+    'JOIN Section as s ON m.sectionId = s.sectionId ' +
+    'JOIN PepBand as p ON m.pepBandId = p.bandId ' +
+    'WHERE memberId=?',
     [req.params.id],
     (err, results) => {
-      if (err) console.log(err);
-      res.jsonp(results[0]);
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        const member = {
+          memberId: results[0].memberId,
+          user: {
+            userId: results[0].userId,
+            email: results[0].email,
+            firstName: results[0].firstName,
+            lastName: results[0].lastName,
+            role: results[0].role,
+          },
+          pepBand: {
+            bandId: results[0].pepBandId,
+            displayName: results[0].displayName,
+          },
+          section: {
+            sectionId: results[0].sectionId,
+            name: results[0].name,
+          },
+          rehearsalConflict: results[0].rehearsalConflict,
+        };
+        res.jsonp(member);
+      }
     },
   );
 };
 
 module.exports.getSection = async (req, res) => {
   db.execute(
-    'SELECT * FROM Member WHERE sectionId=?',
+    'SELECT * FROM Member JOIN User ON Member.userId = User.userId WHERE sectionId=?',
     [req.params.id],
     (err, results) => {
       if (err) console.log(err);
       res.jsonp(results);
+    },
+  );
+};
+
+module.exports.getByTermId = async (req, res) => {
+  db.execute(
+    'SELECT Member.*, firstName, lastName, email, role, PepBand.displayName, Section.name, termName, startDate, endDate FROM Member ' +
+    'JOIN User ON Member.userId = User.userId ' +
+    'JOIN PepBand on Member.pepBandId = PepBand.bandId ' +
+    'JOIN Section on Member.sectionId = Section.sectionId ' +
+    'JOIN Term on Member.termId = Term.termId ' +
+    'WHERE Member.termId=?',
+    [req.params.id],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        const members = [];
+        for (let i = 0; i < results.length; i++) {
+          const member = {
+            memberId: results[i].memberId,
+            user: {
+              userId: results[i].userId,
+              firstName: results[i].firstName,
+              lastName: results[i].lastName,
+              email: results[i].email,
+              role: results[i].role,
+            },
+            pepBand: {
+              bandId: results[i].pepBandId,
+              displayName: results[i].displayName,
+            },
+            section: {
+              sectionId: results[i].sectionId,
+              name: results[i].name,
+            },
+            rehearsalConflict: results[i].rehearsalConflict,
+            term: {
+              termId: results[i].termId,
+              termName: results[i].termName,
+              startDate: results[i].startDate,
+              endDate: results[i].endDate,
+            },
+          };
+          members.push(member);
+        }
+        res.jsonp(members);
+      }
     },
   );
 };

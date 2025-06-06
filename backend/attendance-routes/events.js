@@ -19,6 +19,6 @@ router.get('/', events.selector.getAll);
 router.get('/upcoming', events.selector.getUpcoming);
 router.get('/recent', events.selector.getRecent);
 router.get('/:id', events.selector.getById);
-router.get('/:id/members', events.selector.getEventMembers);
+router.get('/term/:id', events.selector.getByTermId);
 
 module.exports = router;

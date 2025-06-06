@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 import {Constants} from '../utilities/constants';
-import {HttpService} from './http.service';
+import {Observable, of, switchMap, tap} from 'rxjs';
+import {Section} from '../models/section';
+import {PepBand} from '../models/pep-band';
 
 @Injectable({
   providedIn: 'root'
@@ -9,27 +11,52 @@ import {HttpService} from './http.service';
 export class SessionCacheService {
   baseUrl = "http://localhost:3001/api";
 
-  headers: HttpHeaders | undefined;
-
-  constructor(private http: HttpClient, private httpService: HttpService) {}
+  constructor(private http: HttpClient) {}
 
   public preload() {
 
-    this.httpService.getAccessToken().then(token => {
-      this.headers = new HttpHeaders({
-        Authorization: 'Bearer ' + token
-      });
+    this.http.get(this.baseUrl + '/me').pipe(
+      tap((response: any) => {
+        // keep track of the logged-in user's role
+        this.set(Constants.STORAGE_KEY_ME, response);
+        const isAdmin = response.user.role === Constants.ROLE_ADMIN;
+        this.set(Constants.STORAGE_KEY_IS_ADMIN, isAdmin);
+        const isOfficer = response.user.role === Constants.ROLE_OFFICER;
+        this.set(Constants.STORAGE_KEY_IS_OFFICER, isOfficer);
+      }),
+      switchMap((response: any) => {
+        // if the user is a member (i.e. attendance taker), fetch the members of their section
+        if (response.member?.sectionId) {
+          const sectionId = response.member.sectionId;
+          return this.http.get(`${this.baseUrl}/mb-attendance/members/section/${sectionId}`);
+        } else {
+          return of(null); // User has no member object, skip section fetch
+        }
+      })
+    ).subscribe(sectionMembers => {
+      if (sectionMembers) {
+        this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
+      }
     });
-    console.log(this.headers);
 
-    this.http.get(this.baseUrl + `/mb-attendance/members/section/2`).subscribe(sectionMembers => {
-      this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
+    this.getSections().subscribe(sections => {
+      this.set(Constants.STORAGE_KEY_SECTIONS, sections);
     })
 
-    this.http.get(this.baseUrl + '/me').subscribe(member => {
-      this.set(Constants.STORAGE_KEY_ROLE, member);
+    this.getPepBands().subscribe(pepBands => {
+      this.set(Constants.STORAGE_KEY_PEP_BANDS, pepBands);
     })
 
+  }
+
+  private getSections(): Observable<Section[]> {
+    const url = this.baseUrl + '/sections';
+    return this.http.get<Section[]>(url);
+  }
+
+  private getPepBands(): Observable<PepBand[]> {
+    const url = this.baseUrl + '/pepBands';
+    return this.http.get<PepBand[]>(url);
   }
 
   get(key: string): any {
@@ -48,4 +75,13 @@ export class SessionCacheService {
   clear(): void {
     sessionStorage.clear();
   }
+
+  public isAdmin() {
+    return this.get(Constants.STORAGE_KEY_IS_ADMIN);
+  }
+
+  public isOfficer() {
+    return this.get(Constants.STORAGE_KEY_IS_OFFICER);
+  }
+
 }
