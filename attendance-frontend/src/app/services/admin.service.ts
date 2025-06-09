@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {Term} from '../models/term';
 import {MBEvent} from '../models/mb-event';
 import {Member} from '../models/member';
+import {User} from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,16 @@ export class AdminService {
   public createMember(memberInfo: any): Observable<Member> {
     const url = this.baseUrl + '/members';
     return this.http.post<Member>(url, {member: memberInfo});
+  }
+
+  public createUser(userInfo: any): Observable<User> {
+    const url = this.baseUrl + '/users';
+    return this.http.post<User>(url, {user: userInfo});
+  }
+
+  public getAllUsers(): Observable<User[]> {
+    const url = this.baseUrl + '/users';
+    return this.http.get<User[]>(url);
   }
 
 }

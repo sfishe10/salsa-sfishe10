@@ -8,7 +8,7 @@ module.exports.create = async (req, res) => {
         res.status(500).send(err.message);
       } else {
         if (!result.length) {
-          res.status(404).json({ message: 'User not found' });
+          return res.status(404).send({ message: 'User not found' });
         }
         const { userId } = result[0];
         const user = {

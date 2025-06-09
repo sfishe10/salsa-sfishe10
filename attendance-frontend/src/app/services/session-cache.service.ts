@@ -9,13 +9,13 @@ import {PepBand} from '../models/pep-band';
   providedIn: 'root'
 })
 export class SessionCacheService {
-  baseUrl = "http://localhost:3001/api";
+  baseUrl = "http://localhost:3001/api/mb-attendance";
 
   constructor(private http: HttpClient) {}
 
   public preload() {
 
-    this.http.get(this.baseUrl + '/me').pipe(
+    this.http.get('http://localhost:3001/api/me').pipe(
       tap((response: any) => {
         // keep track of the logged-in user's role
         this.set(Constants.STORAGE_KEY_ME, response);
@@ -28,7 +28,7 @@ export class SessionCacheService {
         // if the user is a member (i.e. attendance taker), fetch the members of their section
         if (response.member?.sectionId) {
           const sectionId = response.member.sectionId;
-          return this.http.get(`${this.baseUrl}/mb-attendance/members/section/${sectionId}`);
+          return this.http.get(`${this.baseUrl}/members/section/${sectionId}`);
         } else {
           return of(null); // User has no member object, skip section fetch
         }

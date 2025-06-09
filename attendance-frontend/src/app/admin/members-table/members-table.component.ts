@@ -129,11 +129,20 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
 
     this.adminService.createMember(newMember).subscribe((insertedMember: Member) => {
       this.members.push(insertedMember);
+      this.memberDataSource = new MatTableDataSource(this.members);
+      this.memberDataSource.paginator = this.memberPaginator;
       this.openSnackBar("Member added!", "Ok", 3000);
+      setTimeout(() => {
+        this.memberForm?.reset();
+      });
       this.memberDialogRef.close();
     }, error => {
-      console.log(error);
-      this.openSnackBar("Error adding Member", "Ok", 3000);
+      if (error.status === 404) {
+        this.openSnackBar("Invalid email - add User first", "Ok", 3000);
+      } else {
+        console.log(error);
+        this.openSnackBar("Error adding Member", "Ok", 3000);
+      }
     })
   }
 

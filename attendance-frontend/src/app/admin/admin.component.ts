@@ -35,6 +35,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {EventsTableComponent} from './events-table/events-table.component';
 import {MembersTableComponent} from './members-table/members-table.component';
 import {AdminService} from '../services/admin.service';
+import {UsersTableComponent} from './users-table/users-table.component';
 
 @Component({
   selector: 'app-admin',
@@ -56,7 +57,8 @@ import {AdminService} from '../services/admin.service';
     MatDialogActions,
     DatePipe,
     EventsTableComponent,
-    MembersTableComponent
+    MembersTableComponent,
+    UsersTableComponent
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'

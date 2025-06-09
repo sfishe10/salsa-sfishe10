@@ -37,6 +37,16 @@ export class Utilities {
     return attendanceOptions;
   }
 
+  public static getRoleOptions(): string[] {
+    let roleOptions = [
+      Constants.ROLE_ADMIN,
+      Constants.ROLE_OFFICER,
+      Constants.ROLE_ATTENDANCE_TAKER,
+      Constants.ROLE_MEMBER
+    ]
+    return roleOptions;
+  }
+
   public static getPepBandLabel(pepBandId: string): string {
     switch (pepBandId) {
       case Constants.PEP_BAND_ID_A: return Constants.PEP_BAND_LABEL_A;

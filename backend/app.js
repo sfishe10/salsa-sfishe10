@@ -19,6 +19,7 @@ const attendanceMemberRoutes = require('./attendance-routes/members');
 const attendanceTermRoutes = require('./attendance-routes/terms');
 const attendancePepBandRoutes = require('./attendance-routes/pep-bands');
 const attendanceSectionRoutes = require('./attendance-routes/sections');
+const attendanceUserRoutes = require('./attendance-routes/users');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -59,6 +60,7 @@ app.use('/api/mb-attendance/members/', attendanceMemberRoutes);
 app.use('/api/mb-attendance/terms/', attendanceTermRoutes);
 app.use('/api/mb-attendance/pepBands/', attendancePepBandRoutes);
 app.use('/api/mb-attendance/sections/', attendanceSectionRoutes);
+app.use('/api/mb-attendance/users/', attendanceUserRoutes);
 
 app.get('/api/me',
   async (req, res) => {

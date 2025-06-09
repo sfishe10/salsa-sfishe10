@@ -27,9 +27,10 @@ export class Constants {
   static readonly ATTENDANCE_PARTIAL_EXCUSED = 'Partial Excused';
   static readonly ATTENDANCE_SUB = 'Sub';
 
-  static readonly ROLE_ADMIN = 'admin';
-  static readonly ROLE_OFFICER = 'officer';
-  static readonly ROLE_MEMBER = 'member';
+  static readonly ROLE_ADMIN = 'Admin';
+  static readonly ROLE_OFFICER = 'Officer';
+  static readonly ROLE_ATTENDANCE_TAKER = 'Attendance Taker';
+  static readonly ROLE_MEMBER = 'Member';
 
   // SESSION CACHE STORAGE KEYS
   static readonly STORAGE_KEY_ME = 'ME';
