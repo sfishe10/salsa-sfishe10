@@ -26,6 +26,7 @@ import CreateEvent from './pages/events/Create';
 import Groups from './pages/events/Groups';
 import Group from './pages/events/groups/Group';
 import CreateGroup from './pages/events/groups/Create';
+import Progress from './pages/Progress';
 import { getUserByUsername, getPermissions } from './lib/users';
 
 import SignInPage from './SignInPage';
@@ -121,10 +122,10 @@ const App = () => {
                   <Route exact path="/stations/:id/edit">
                     {isAdmin && <EditStation />}
                   </Route>
-
                   <Route exact path="/stations/progress">
-                    <h1>Under construction 🔨</h1>
+                    {isAdmin && <Progress />}
                   </Route>
+
                   <Route exact path="/stations/:id">
                     <Station isAdmin={isAdmin} />
                   </Route>

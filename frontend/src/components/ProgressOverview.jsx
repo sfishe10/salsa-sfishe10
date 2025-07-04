@@ -1,11 +1,11 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import styles from '../styles/modules/MemberOverview.module.scss';
+import styles from '../styles/modules/StationOverview.module.scss';
 
-const MemberOverview = ({ stations, users }) => (
+const ProgressOverview = ({ stations, users }) => (
   <>
     <StationHead stations={stations} />
-    <MemberAttempts users={users} />
+    <StationProgress users={users} stations={stations} />
   </>
 );
 
@@ -13,12 +13,7 @@ const StationHead = ({ stations }) => (
   <>
     <Row className={styles.stationHeaders}>
       <Col xs={3} />
-      <Col className={`${styles.headerColor} ${styles.cellpad}`}>1</Col>
-      <Col className={`${styles.headerColor} ${styles.cellpad}`}>2</Col>
-      <Col className={`${styles.headerColor} ${styles.cellpad}`}>3</Col>
-      <Col className={`${styles.headerColor} ${styles.cellpad}`}>4</Col>
-      <Col className={`${styles.headerColor} ${styles.cellpad}`}>5</Col>
-      <Col className={`${styles.headerColor} ${styles.cellpad}`}>6</Col>
+      <Col className={`${styles.headerColor} ${styles.cellpad}`}>Progress</Col>
     </Row>
     <Row className={styles.stationHeaders}>
       <Col xs={3} />
@@ -27,6 +22,54 @@ const StationHead = ({ stations }) => (
     </Row>
   </>
 );
+
+const StationProgress = ({ users }) => {
+  const stationIds = [4, 5, 6, 7, 8, 9];
+  const userIdSet = new Set(users.map((user) => user.userID));
+  const totalUsers = userIdSet.size;
+  const stationInfo = stationIds.map((station) => (
+    <div key={station}>
+      <Row className={styles.sectionHead}>
+        <Col className={styles.headerColor} xs={2}>{''.concat(station - 3)}</Col>
+        <StationData
+          filteredUsers={users.filter((attempt) => attempt.sID === station)}
+          totalUsers={totalUsers}
+        />
+      </Row>
+    </div>
+  ));
+
+  return <>{stationInfo}</>;
+};
+
+const StationData = ({ filteredUsers, totalUsers }) => {
+  const numPassing = filteredUsers.filter((attempt) => attempt.passed === 1).length;
+  const passPercent = numPassing / totalUsers;
+  const failPercent = 1 - passPercent;
+  console.log(filteredUsers);
+  const completionInfo = (
+    <>
+      <Col xs={1}>{''.concat(numPassing, '/', totalUsers)}</Col>
+      <Col className={styles['progress-bar-container']}>
+        <div
+          className={styles['progress-bar-pass']}
+          style={{ width: `${passPercent * 100}%` }}
+        />
+        <div
+          className={styles['progress-bar-fail']}
+          style={{ width: `${failPercent * 100}%` }}
+        />
+      </Col>
+    </>
+  );
+
+  return <>{completionInfo}</>;
+};
+
+/* const SectionProgress = ({ users }) => {
+  console.log(users);
+  return <>Test</>;
+}; */
 
 const StationBoxes = ({ level, stationData }) => {
   const stations = stationData.filter((station) => station.class === level);
@@ -39,7 +82,7 @@ const StationBoxes = ({ level, stationData }) => {
   return <>{stationTag}</>;
 };
 
-const MemberAttempts = ({ users }) => {
+/* const MemberAttempts = ({ users }) => {
   const sectionSorted = {};
 
   users.forEach((user) => {
@@ -62,9 +105,9 @@ const MemberAttempts = ({ users }) => {
   ));
 
   return <>{sectionInfo}</>;
-};
+}; */
 
-const Members = ({ members }) => {
+/* const Members = ({ members }) => {
   const tempMembers = Object.keys(members).map((name) => (
     <Row key={name}>
       <Col xs={3} className={styles.nameColor}>{name}</Col>
@@ -102,6 +145,6 @@ const Attempts = ({ attempts }) => {
   });
 
   return <>{stations}</>;
-};
+}; */
 
-export default MemberOverview;
+export default ProgressOverview;
