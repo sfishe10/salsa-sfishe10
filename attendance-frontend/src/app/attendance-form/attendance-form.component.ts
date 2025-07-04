@@ -83,6 +83,8 @@ export class AttendanceFormComponent implements OnInit {
 
   showSubError: boolean = false;
 
+  previouslySubmitted: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private fb: FormBuilder,
@@ -101,17 +103,44 @@ export class AttendanceFormComponent implements OnInit {
     const eventId = Number(this.route.snapshot.paramMap.get('id'));
 
     this.sectionMembers = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_MEMBERS);
+    console.log(this.sectionMembers);
 
     this.eventService.getEvent(eventId).subscribe(event => {
       this.event = event;
       this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.PEP_EVENT);
-      event.attendees?.forEach(member => {
-        this.attendees.push(member);
-      });
-      if (event.attendances) {
+      if (this.event?.type === this.PEP_EVENT) {
+        this.sectionMembers
+          .filter(x => x.pepBand?.bandId === event.pepBandId)
+          .forEach(member => this.attendees.push(member));
+      } else {
+        this.sectionMembers
+          .forEach(member => this.attendees.push(member));
+      }
+
+      if (event.attendances && event.attendances.length > 0) {
+        // the form has been previously submitted; populate the submitted values
+        this.previouslySubmitted = true;
         event.attendances.forEach(att => this.eventAttendances.push(att));
         this.form = this.fb.group({
           attendances: this.fb.array(event.attendances.map((att) =>
+            this.fb.group({
+              attendance: [att.attendance],
+              sub: [att.subId ? this.sectionMembers.find(m => m.memberId === att.subId) : null]
+            })
+          ))
+        });
+      } else {
+        // the form has not been submitted yet; create a blank form
+        this.attendees.forEach(member => {
+          this.eventAttendances.push({
+            eventId: eventId,
+            attendance: "",
+            memberId: member.memberId,
+            subId: null
+          })
+        })
+        this.form = this.fb.group({
+          attendances: this.fb.array(this.eventAttendances.map((att) =>
             this.fb.group({
               attendance: [att.attendance],
               sub: [att.subId ? this.sectionMembers.find(m => m.memberId === att.subId) : null]
@@ -128,6 +157,29 @@ export class AttendanceFormComponent implements OnInit {
     this.showRequiredFieldError = false;
     this.showSubError = false;
 
+    let errors = this.validateForm();
+
+    if (errors == 0) {
+      let submitMethod;
+      if (this.previouslySubmitted) {
+        submitMethod = this.eventService.submitAttendanceForm.bind(this.eventService);
+      } else {
+        submitMethod = this.eventService.createAttendanceEntries.bind(this.eventService);
+      }
+      submitMethod(this.eventAttendances).subscribe(() => {
+        this.showRequiredFieldError = false;
+        this.showSubError = false;
+        this.openSnackBar("Form submitted!", "Ok", 3000);
+      }, error => {
+        console.log(error);
+        this.showRequiredFieldError = false;
+        this.showSubError = false;
+        this.openSnackBar("Error submitting form", "Ok", 3000);
+      })
+    }
+  }
+
+  private validateForm() {
     const formGroups = this.attendances.controls;
     let errors: number = 0;
     for (let i = 0; i < this.attendees.length; i++) {
@@ -150,19 +202,7 @@ export class AttendanceFormComponent implements OnInit {
       this.eventAttendances[i].attendance = attendance;
       this.eventAttendances[i].subId = sub ? sub.memberId : null;
     }
-
-    if (errors == 0) {
-      this.eventService.submitAttendanceForm(this.eventAttendances).subscribe(() => {
-        this.showRequiredFieldError = false;
-        this.showSubError = false;
-        this.openSnackBar("Form submitted!", "Ok", 3000);
-      }, error => {
-        console.log(error);
-        this.showRequiredFieldError = false;
-        this.showSubError = false;
-        this.openSnackBar("Error submitting form", "Ok", 3000);
-      })
-    }
+    return errors;
   }
 
   public markAllPresent() {

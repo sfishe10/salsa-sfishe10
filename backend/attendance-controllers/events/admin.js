@@ -1,8 +1,9 @@
 const db = require('../../config/db');
 
 module.exports.create = async (req, res) => {
+  console.log(req.body.event);
   const formattedDate = new Date(req.body.event.date).toISOString().slice(0, 19).replace('T', ' ');
-  db.execute('CALL CreateEventAndAttendance(?, ?, ?, ?, ?)',
+  db.execute('INSERT INTO MBEvent (type, title, date, pepBandId, termId) VALUES (?, ?, ?, ?, ?)',
     [req.body.event.type, req.body.event.title, formattedDate,
       req.body.event.pepBandId, req.body.event.termId],
     (err, result) => {

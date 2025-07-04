@@ -55,11 +55,50 @@ module.exports.getById = async (req, res) => {
 
 module.exports.getSection = async (req, res) => {
   db.execute(
-    'SELECT * FROM Member JOIN User ON Member.userId = User.userId WHERE sectionId=?',
+    'SELECT Member.*, User.*, PepBand.*, Section.*, Term.* FROM Member ' +
+    'JOIN User ON Member.userId = User.userId ' +
+    'JOIN Term ON Member.termId = Term.termId ' +
+    'JOIN PepBand ON Member.pepBandId = PepBand.bandId ' +
+    'JOIN Section ON Member.sectionId = Section.sectionId ' +
+    'WHERE Member.sectionId=? AND Term.startDate < NOW() AND ' +
+    'Term.endDate > NOW()',
     [req.params.id],
     (err, results) => {
-      if (err) console.log(err);
-      res.jsonp(results);
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        const members = [];
+        for (let i = 0; i < results.length; i++) {
+          const member = {
+            memberId: results[i].memberId,
+            user: {
+              userId: results[i].userId,
+              firstName: results[i].firstName,
+              lastName: results[i].lastName,
+              email: results[i].email,
+              role: results[i].role,
+            },
+            pepBand: {
+              bandId: results[i].pepBandId,
+              displayName: results[i].displayName,
+            },
+            section: {
+              sectionId: results[i].sectionId,
+              name: results[i].name,
+            },
+            rehearsalConflict: results[i].rehearsalConflict,
+            term: {
+              termId: results[i].termId,
+              termName: results[i].termName,
+              startDate: results[i].startDate,
+              endDate: results[i].endDate,
+            },
+          };
+          members.push(member);
+        }
+        res.jsonp(members);
+      }
     },
   );
 };

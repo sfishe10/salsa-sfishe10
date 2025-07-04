@@ -45,6 +45,7 @@ passport.use(new BearerStrategy({
 },
 ((token, done) => done(null, token, token))));
 
+
 app.use(cors({ origin: ['https://807.band', 'http://localhost:3000', 'http://localhost:4200'], credentials: true }));
 app.use(passport.authenticate('oauth-bearer', { session: false }));
 app.use('/api/groups/', groupsRoutes);
@@ -68,7 +69,7 @@ app.get('/api/me',
       (err, result) => {
         if (err) {
           console.log(err);
-          res.status(500).send(err.message);
+          return res.status(500).send(err.message);
         }
         if (!result.length) return res.status(404).json({ message: 'User not found' });
         const { userId } = result[0];

@@ -2,7 +2,6 @@ const db = require('../../config/db');
 
 module.exports.create = async (req, res) => {
   const params = [req.params.eventId];
-  // remove last comma and space
   await db.execute('INSERT INTO EventAttendance (eventId, memberId, attendance, subId) VALUES (?, ?, NULL, NULL)',
     params,
     (err, result) => {
@@ -61,6 +60,28 @@ module.exports.submitForm = async (req, res) => {
                            attendance=${attendanceClause}, subId=${subIdClause} WHERE attendanceId IN (${attendanceIds})`,
   memberIdParams.concat(attendanceParams).concat(subIdParams),
   (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.message);
+    } else {
+      res.send(results);
+    }
+  });
+};
+
+module.exports.createEntries = async (req, res) => {
+  const params = [];
+  let insertString = 'INSERT INTO EventAttendance (eventId, memberId, attendance, subId) VALUES ';
+  req.body.attendances.forEach((attendance) => {
+    insertString += '(?, ?, ?, ?), ';
+    params.push(attendance.eventId);
+    params.push(attendance.memberId);
+    params.push(attendance.attendance);
+    params.push(attendance.subId);
+  });
+  // remove last comma and space
+  insertString = insertString.slice(0, -2);
+  await db.execute(insertString, params, (err, results) => {
     if (err) {
       console.log(err);
       res.status(500).send(err.message);

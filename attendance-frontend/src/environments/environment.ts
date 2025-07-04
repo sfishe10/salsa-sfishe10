@@ -3,7 +3,7 @@ const SERVER_ROOT = window.location.origin
 export const environment = {
   production: false,
 
-  serviceURL: "http://localhost:4013",
+  serviceURL: "http://localhost:3001/api",
   config: {
     auth: {
       "clientId": "181e8307-909d-49e6-8ae2-7c357ed5a922",

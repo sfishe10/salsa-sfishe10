@@ -14,7 +14,6 @@ export class SessionCacheService {
   constructor(private http: HttpClient) {}
 
   public preload() {
-
     this.http.get('http://localhost:3001/api/me').pipe(
       tap((response: any) => {
         // keep track of the logged-in user's role
@@ -26,8 +25,8 @@ export class SessionCacheService {
       }),
       switchMap((response: any) => {
         // if the user is a member (i.e. attendance taker), fetch the members of their section
-        if (response.member?.sectionId) {
-          const sectionId = response.member.sectionId;
+        if (response.member?.section.sectionId) {
+          const sectionId = response.member.section.sectionId;
           return this.http.get(`${this.baseUrl}/members/section/${sectionId}`);
         } else {
           return of(null); // User has no member object, skip section fetch
@@ -35,6 +34,7 @@ export class SessionCacheService {
       })
     ).subscribe(sectionMembers => {
       if (sectionMembers) {
+        console.log(sectionMembers);
         this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
       }
     });

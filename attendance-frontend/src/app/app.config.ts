@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import {
@@ -8,14 +8,12 @@ import {
 } from '@azure/msal-angular';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {
-  BrowserCacheLocation,
   Configuration,
   InteractionType,
   LogLevel,
   PublicClientApplication
 } from '@azure/msal-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import {SessionCacheService} from './services/session-cache.service';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import {environment} from '../environments/environment';
 

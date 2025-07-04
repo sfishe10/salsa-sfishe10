@@ -32,4 +32,9 @@ export class EventService {
     return this.http.post<EventAttendance>(url, {attendances: attendances});
   }
 
+  public createAttendanceEntries(attendances: EventAttendance[]) {
+    const url = this.baseUrl + `/attendance/createEntries`;
+    return this.http.post<EventAttendance>(url, {attendances: attendances});
+  }
+
 }
