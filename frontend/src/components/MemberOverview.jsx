@@ -76,26 +76,32 @@ const Members = ({ members }) => {
 };
 
 const Attempts = ({ attempts }) => {
-  const stations = attempts.map((attempt) => {
+  const stationIds = Array.from(new Set(attempts.map((a) => a.sID)));
+
+  const stations = stationIds.map((stationId) => {
     let statusClass = `${styles.attempt} ${styles.cellpad} `;
     let mark = null;
 
-    if (attempt.passed === 1) {
+    const attemptList = attempts.filter((a) => a.sID === stationId);
+    const baseAttempt = attemptList[0];
+
+    if (baseAttempt.passed === 1) {
       statusClass += styles.completed;
       mark = '\u2713';
-    } else if (attempt.attempts > 0) {
+    } else if (baseAttempt.attempts > 0) {
       statusClass += styles.attempted;
-      mark = '\u2573';
+      mark = '\u2573'.repeat(baseAttempt.attempts);
     } else {
       statusClass += styles.no_attempts;
       mark = '\u20E0';
     }
 
-    const moreInfo = `Evaluated by: ${attempt.evaluator
-    }\nEvaluated at: ${attempt.evalTime}`;
+    const moreInfo = attemptList
+      .map((a, i) => `Attempt ${i + 1}:\n  Evaluated by: ${a.evaluator}\n  Evaluated at: ${a.evalTime}`)
+      .join('\n\n');
 
     return (
-      <Col className={statusClass} title={moreInfo} key={`${attempt.name}, sID ${attempt.sID}`}>
+      <Col className={statusClass} title={moreInfo} key={`${baseAttempt.name}, sID ${baseAttempt.sID}`}>
         {mark}
       </Col>
     );
