@@ -18,9 +18,9 @@ module.exports.getById = async (req, res) => {
   db.execute(
     'SELECT m.*, u.firstName, u.lastName, u.email, u.role, s.name, p.displayName ' +
     'FROM Member as m ' +
-    'JOIN User AS u ON u.userId = m.userId ' +
+    'JOIN User AS u ON u.email = m.email ' +
     'JOIN Section as s ON m.sectionId = s.sectionId ' +
-    'JOIN PepBand as p ON m.pepBandId = p.bandId ' +
+    'LEFT JOIN PepBand as p ON m.pepBandId = p.bandId ' +
     'WHERE memberId=?',
     [req.params.id],
     (err, results) => {
@@ -28,10 +28,12 @@ module.exports.getById = async (req, res) => {
         console.log(err);
         res.status(500).send(err.message);
       } else {
+        if (!results.length) {
+          return res.status(404).send('The member you\'re looking for does not exist');
+        }
         const member = {
           memberId: results[0].memberId,
           user: {
-            userId: results[0].userId,
             email: results[0].email,
             firstName: results[0].firstName,
             lastName: results[0].lastName,

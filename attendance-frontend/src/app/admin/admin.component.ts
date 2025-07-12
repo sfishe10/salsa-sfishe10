@@ -12,11 +12,8 @@ import {
 } from '@angular/material/datepicker';
 import {MBEvent} from '../models/mb-event';
 import {Term} from '../models/term';
-import {EventService} from '../services/event.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {PepBand} from '../models/pep-band';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
-import {Section} from '../models/section';
 import {
   MatDialog,
   MatDialogActions,
@@ -24,14 +21,6 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {
-  MatCell, MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable,
-} from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
 import {EventsTableComponent} from './events-table/events-table.component';
 import {MembersTableComponent} from './members-table/members-table.component';
 import {AdminService} from '../services/admin.service';

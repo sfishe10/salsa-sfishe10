@@ -5,6 +5,7 @@ import {AttendanceFormComponent} from './attendance-form/attendance-form.compone
 import {UpcomingEventsComponent} from './upcoming-events/upcoming-events.component';
 import {RecentEventsComponent} from './recent-events/recent-events.component';
 import {AdminComponent} from './admin/admin.component';
+import {MemberPageComponent} from './admin/member-page/member-page.component';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,11 @@ export const routes: Routes = [
   {
     path: 'attendance-form/:id',
     component: AttendanceFormComponent,
+    canActivate: [MsalGuard]
+  },
+  {
+    path: 'member/:id',
+    component: MemberPageComponent,
     canActivate: [MsalGuard]
   },
   {

@@ -27,6 +27,7 @@ import {Constants} from '../../utilities/constants';
 import {SessionCacheService} from '../../services/session-cache.service';
 import {AdminService} from '../../services/admin.service';
 import {MatIcon} from '@angular/material/icon';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-members-table',
@@ -95,7 +96,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
 
   constructor(private adminService: AdminService,
               private dialog: MatDialog,
-              private sessionCacheService: SessionCacheService) {
+              private sessionCacheService: SessionCacheService,
+              private router: Router) {
   }
 
   ngAfterViewInit() {
@@ -181,7 +183,7 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
         console.log(res);
         this.onTermChange(termId);
         this.onCancelDialog();
-        this.openSnackBar('Member added', 'OK', 3000);
+        this.openSnackBar('Members added', 'OK', 3000);
       },
       error: (err: any) => {
         console.error('Upload error:', err)
@@ -194,6 +196,10 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   clearFile(fileInput: HTMLInputElement) {
     this.selectedFile = null;
     fileInput.value = '';
+  }
+
+  navigateToMember(memberId: number) {
+    this.router.navigate(['/member', memberId]);
   }
 
   openSnackBar(message: string, action: string, duration: number) {

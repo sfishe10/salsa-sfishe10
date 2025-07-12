@@ -34,7 +34,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="memberColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: memberColumns;"></tr>
+    <tr (click)="navigateToMember(row.memberId)" class="clickable-row" mat-row *matRowDef="let row; columns: memberColumns;"></tr>
   </table>
   <mat-paginator #memberPaginator [pageSizeOptions]="[5, 10, 20]"
                  showFirstLastButtons
