@@ -34,7 +34,6 @@ export class SessionCacheService {
       })
     ).subscribe(sectionMembers => {
       if (sectionMembers) {
-        console.log(sectionMembers);
         this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
       }
     });

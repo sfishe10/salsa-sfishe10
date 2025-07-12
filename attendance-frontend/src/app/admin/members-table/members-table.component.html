@@ -41,8 +41,27 @@
                  aria-label="Select page">
   </mat-paginator>
 </div><br/>
+<button mat-stroked-button (click)="onUploadCsvClicked()">Upload CSV</button>&nbsp;
 <button mat-flat-button color="primary" (click)="openMemberDialog()">Add Member</button>
 
+<ng-template #uploadCsvDialog>
+  <h2 mat-dialog-title>Upload CSV File</h2>
+  <mat-dialog-content style="padding-bottom:0">
+    <div style="display:flex; align-items:center">
+      <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>
+      <button *ngIf="selectedFile"
+              mat-icon-button
+              aria-label="Remove file"
+              (click)="clearFile(fileInput)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+  </mat-dialog-actions>
+</ng-template>
 
 <ng-template #addMemberDialog>
   <h2 mat-dialog-title>Add Member</h2>

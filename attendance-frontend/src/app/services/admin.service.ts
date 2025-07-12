@@ -55,4 +55,9 @@ export class AdminService {
     return this.http.get<User[]>(url);
   }
 
+  public uploadMemberCsv(formData: FormData, termId: number): any {
+    const url = this.baseUrl + `/members/term/${termId}/uploadCsv`;
+    return this.http.post<any>(url, formData);
+  }
+
 }

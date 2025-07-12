@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const multer = require('multer');
 const https = require('https');
 const fs = require('fs');
 const dotenv = require('dotenv');
@@ -23,14 +22,12 @@ const attendanceUserRoutes = require('./attendance-routes/users');
 
 const app = express();
 const port = process.env.PORT || 3001;
-const upload = multer();
 const db = require('./config/db');
 
 dotenv.config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(upload.single('file'));
 
 passport.use(new BearerStrategy({
   // Passport will use this URL to fetch the token validation information from Azure AD
@@ -44,7 +41,6 @@ passport.use(new BearerStrategy({
   scope: [process.env.SCOPE],
 },
 ((token, done) => done(null, token, token))));
-
 
 app.use(cors({ origin: ['https://807.band', 'http://localhost:3000', 'http://localhost:4200'], credentials: true }));
 app.use(passport.authenticate('oauth-bearer', { session: false }));
@@ -65,27 +61,26 @@ app.use('/api/mb-attendance/users/', attendanceUserRoutes);
 
 app.get('/api/me',
   async (req, res) => {
-    db.execute('SELECT * FROM User WHERE email = ?', [req.user.upn],
+    const email = req.user.upn;
+    db.execute('SELECT * FROM User WHERE email = ?', [email],
       (err, result) => {
         if (err) {
           console.log(err);
           return res.status(500).send(err.message);
         }
         if (!result.length) return res.status(404).json({ message: 'User not found' });
-        const { userId } = result[0];
         const user = {
-          userId,
           firstName: result[0].firstName,
           lastName: result[0].lastName,
-          email: result[0].email,
+          email,
           role: result[0].role,
         };
         db.execute('SELECT * FROM Member as m '
           + 'JOIN Term AS t ON m.termId = t.termId '
           + 'JOIN PepBand AS p ON m.pepBandId = p.bandId '
           + 'JOIN Section AS s ON m.sectionId = s.sectionId '
-          + 'WHERE userId = ? AND '
-          + 't.startDate <= NOW() AND t.endDate >= NOW()', [userId],
+          + 'WHERE email = ? AND '
+          + 't.startDate <= NOW() AND t.endDate >= NOW()', [email],
         (err2, result2) => {
           if (err2) {
             console.log(err2);

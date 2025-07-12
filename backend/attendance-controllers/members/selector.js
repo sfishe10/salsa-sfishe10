@@ -97,7 +97,7 @@ module.exports.getSection = async (req, res) => {
           };
           members.push(member);
         }
-        res.jsonp(members);
+        res.send(members);
       }
     },
   );
@@ -105,9 +105,9 @@ module.exports.getSection = async (req, res) => {
 
 module.exports.getByTermId = async (req, res) => {
   db.execute(
-    'SELECT Member.*, firstName, lastName, email, role, PepBand.displayName, Section.name, termName, startDate, endDate FROM Member ' +
-    'JOIN User ON Member.userId = User.userId ' +
-    'JOIN PepBand on Member.pepBandId = PepBand.bandId ' +
+    'SELECT Member.*, firstName, lastName, role, PepBand.displayName, Section.name, termName, startDate, endDate FROM Member ' +
+    'JOIN User ON Member.email = User.email ' +
+    'LEFT JOIN PepBand on Member.pepBandId = PepBand.bandId ' +
     'JOIN Section on Member.sectionId = Section.sectionId ' +
     'JOIN Term on Member.termId = Term.termId ' +
     'WHERE Member.termId=?',
@@ -122,7 +122,6 @@ module.exports.getByTermId = async (req, res) => {
           const member = {
             memberId: results[i].memberId,
             user: {
-              userId: results[i].userId,
               firstName: results[i].firstName,
               lastName: results[i].lastName,
               email: results[i].email,
@@ -146,7 +145,7 @@ module.exports.getByTermId = async (req, res) => {
           };
           members.push(member);
         }
-        res.jsonp(members);
+        res.send(members);
       }
     },
   );

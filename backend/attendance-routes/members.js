@@ -1,5 +1,8 @@
 const express = require('express');
+const multer = require('multer');
 const members = require('../attendance-controllers/members');
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -8,6 +11,7 @@ const router = express.Router();
  */
 
 router.post('/', members.admin.create);
+router.post('/term/:id/uploadCsv', upload.single('file'), members.admin.uploadCsv);
 
 /**
  * selectors
