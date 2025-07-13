@@ -68,10 +68,10 @@ module.exports.getUpcoming = async (req, res) => {
 module.exports.getById = async (req, res) => {
   db.execute('SELECT e.eventId, e.title, e.type, e.date, e.pepBandId AS eventPepBandId, e.termId, ' +
       'ea.attendanceId, ea.memberId, ea.attendance, ea.subId, m.pepBandId as memberPepBandId, ' +
-      'm.sectionId, m.rehearsalConflict, u.userId, u.firstName, u.lastName, u.email, u.role, p.displayName, s.name as sectionName ' +
+      'm.sectionId, m.rehearsalConflict, u.firstName, u.lastName, u.email, u.role, p.displayName, s.name as sectionName ' +
       'FROM MBEvent e LEFT JOIN EventAttendance ea ON e.eventId = ea.eventId ' +
       'LEFT JOIN Member m ON ea.memberId = m.memberId ' +
-      'LEFT JOIN User u on m.userId = u.userId ' +
+      'LEFT JOIN User u on m.email = u.email ' +
       'LEFT JOIN PepBand p on m.pepBandId = p.bandId ' +
       'LEFT JOIN Section s on m.sectionId = s.sectionId ' +
       'WHERE e.eventId=?',
@@ -94,7 +94,6 @@ module.exports.getById = async (req, res) => {
           .map((row) => ({
             memberId: row.memberId,
             user: {
-              userId: row.userId,
               firstName: row.firstName,
               lastName: row.lastName,
               email: row.email,
