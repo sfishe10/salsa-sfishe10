@@ -13,28 +13,48 @@
         </div>
         <p align="right">{{selectedTerm?.startDate | date: 'MMMM d, YYYY'}} - {{selectedTerm?.endDate | date: 'MMMM d, YYYY'}}</p>
       </div>
-      <app-events-table [selectedTerm]="selectedTerm"></app-events-table>
-      <app-members-table [selectedTerm]="selectedTerm"></app-members-table>
+      <mat-accordion multi>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>Events</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-events-table [selectedTerm]="selectedTerm"></app-events-table>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>Members</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-members-table [selectedTerm]="selectedTerm"></app-members-table>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
   </mat-tab>
   <mat-tab label="Users">
     <div style="padding: 10px">
       <mat-accordion multi>
         <mat-expansion-panel>
-          <mat-expansion-panel-header>{{ROLE_ADMIN}}s</mat-expansion-panel-header><br/>
-          <app-users-table [role]="ROLE_ADMIN"></app-users-table>
+          <mat-expansion-panel-header>{{ROLE_ADMIN}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_ADMIN"></app-users-table>
+          </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
-          <mat-expansion-panel-header>{{ROLE_OFFICER}}s</mat-expansion-panel-header><br/>
-          <app-users-table [role]="ROLE_OFFICER"></app-users-table>
+          <mat-expansion-panel-header>{{ROLE_OFFICER}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_OFFICER"></app-users-table>
+          </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
-          <mat-expansion-panel-header>{{ROLE_ATTENDANCE_TAKER}}s</mat-expansion-panel-header><br/>
-          <app-users-table [role]="ROLE_ATTENDANCE_TAKER"></app-users-table>
+          <mat-expansion-panel-header>{{ROLE_ATTENDANCE_TAKER}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_ATTENDANCE_TAKER"></app-users-table>
+          </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
-          <mat-expansion-panel-header>{{ROLE_MEMBER}}s</mat-expansion-panel-header><br/>
-          <app-users-table [role]="ROLE_MEMBER"></app-users-table>
+          <mat-expansion-panel-header>{{ROLE_MEMBER}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_MEMBER"></app-users-table>
+          </div>
         </mat-expansion-panel>
       </mat-accordion><br/>
       <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>
