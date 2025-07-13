@@ -1,16 +1,14 @@
-import {AfterViewInit, Component, inject, model, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {MatFormField, MatFormFieldModule, MatHint, MatLabel} from '@angular/material/form-field';
-import {MatInput, MatInputModule} from '@angular/material/input';
+import {AfterViewInit, Component, inject, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatOption, MatSelect} from '@angular/material/select';
+import {DatePipe, NgForOf} from '@angular/common';
+import {MatButton} from '@angular/material/button';
 import {Constants} from '../utilities/constants';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {MatButton, MatButtonModule} from '@angular/material/button';
 import {
-  MatDatepicker, MatDatepickerInput,
-  MatDatepickerModule, MatDatepickerToggle,
+  MatDatepickerModule
 } from '@angular/material/datepicker';
-import {MBEvent} from '../models/mb-event';
 import {Term} from '../models/term';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
@@ -25,6 +23,11 @@ import {EventsTableComponent} from './events-table/events-table.component';
 import {MembersTableComponent} from './members-table/members-table.component';
 import {AdminService} from '../services/admin.service';
 import {UsersTableComponent} from './users-table/users-table.component';
+import {MatAccordion, MatExpansionPanel, MatExpansionPanelHeader} from '@angular/material/expansion';
+import {MatDivider} from '@angular/material/divider';
+import {User} from '../models/user';
+import {MatTableDataSource} from '@angular/material/table';
+import {Utilities} from '../utilities/utilities';
 
 @Component({
   selector: 'app-admin',
@@ -47,7 +50,10 @@ import {UsersTableComponent} from './users-table/users-table.component';
     DatePipe,
     EventsTableComponent,
     MembersTableComponent,
-    UsersTableComponent
+    UsersTableComponent,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -64,12 +70,23 @@ export class AdminComponent implements OnInit, AfterViewInit {
   termStartDate: Date | null = null;
   termEndDate: Date | null = null;
 
+  userEmail: string = '';
+  userFirstName: string = '';
+  userLastName: string = '';
+  userRole: string = '';
 
   @ViewChild('createTermDialog') createTermDialog!: TemplateRef<any>;
   termDialogRef!: MatDialogRef<any>;
 
   @ViewChild('termForm') termForm!: NgForm;
 
+  @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
+  userDialogRef!: MatDialogRef<any>;
+  @ViewChild('userForm') userForm!: NgForm;
+
+  @ViewChildren(UsersTableComponent) userTables!: QueryList<UsersTableComponent>;
+
+  userRoleOptions: string[] = Utilities.getRoleOptions();
 
   @ViewChild(EventsTableComponent) eventsTable!: EventsTableComponent;
 
@@ -149,8 +166,49 @@ export class AdminComponent implements OnInit, AfterViewInit {
     })
   }
 
+  openUserDialog() {
+    this.userDialogRef = this.dialog.open(this.addUserDialog);
+  }
+
+  onCancelDialog() {
+    setTimeout(() => {
+      this.userForm?.reset();
+    });
+    this.dialog.closeAll();
+  }
+
+  submitUser(form: NgForm) {
+    let newUser = {
+      email: form.value.userEmail,
+      firstName: form.value.userFirstName,
+      lastName: form.value.userLastName,
+      role: form.value.userRole
+    }
+
+    this.adminService.createUser(newUser).subscribe((insertedUser: User) => {
+      this.userTables.forEach(table => {
+        table.fetchUsers();
+      })
+      this.openSnackBar("User added!", "Ok", 3000);
+      form.reset();
+      this.userDialogRef.close();
+    }, error => {
+      if (error.status === 409) {
+        this.openSnackBar("Invalid email - already in use", "Ok", 3000);
+      } else {
+        console.log(error);
+        this.openSnackBar("Error adding User", "Ok", 3000);
+      }
+    })
+  }
 
   openSnackBar(message: string, action: string, duration: number) {
     this._snackBar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});
   }
+
+  readonly ROLE_ADMIN = Constants.ROLE_ADMIN;
+  readonly ROLE_OFFICER = Constants.ROLE_OFFICER;
+  readonly ROLE_ATTENDANCE_TAKER = Constants.ROLE_ATTENDANCE_TAKER;
+  readonly ROLE_MEMBER = Constants.ROLE_MEMBER;
+
 }

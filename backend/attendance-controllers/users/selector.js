@@ -12,7 +12,7 @@ module.exports.getAll = async (req, res) => {
         console.log(err);
         res.status(500).send(err.message);
       } else {
-        res.jsonp(results);
+        res.send(results);
       }
     },
   );
@@ -27,7 +27,22 @@ module.exports.getById = async (req, res) => {
         console.log(err);
         res.status(500).send(err.message);
       } else {
-        res.jsonp(results);
+        res.send(results);
+      }
+    },
+  );
+};
+
+module.exports.getByRole = async (req, res) => {
+  db.execute(
+    'SELECT * FROM User where role=? ORDER BY lastName',
+    [req.params.role],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        res.send(results);
       }
     },
   );

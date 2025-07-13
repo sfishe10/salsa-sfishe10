@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -20,7 +20,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {Utilities} from '../../utilities/utilities';
 import {Member} from '../../models/member';
 
@@ -40,6 +40,7 @@ import {Member} from '../../models/member';
     MatHeaderRowDef,
     MatRowDef,
     FormsModule,
+    NgIf,
     MatButton,
     MatDialogActions,
     MatDialogContent,
@@ -57,38 +58,45 @@ import {Member} from '../../models/member';
 export class UsersTableComponent implements OnInit, AfterViewInit {
   private _snackBar = inject(MatSnackBar);
 
-  @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
-  userDialogRef!: MatDialogRef<any>;
+  @Input('role')
+  role: string | null = null;
 
   @ViewChild('userPaginator') userPaginator: MatPaginator | null = null;
 
-  @ViewChild('userForm') userForm!: NgForm;
-
-  userRoleOptions: string[] = Utilities.getRoleOptions();
+  @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
+  userDialogRef!: MatDialogRef<any>;
 
   users: User[] = [];
-  userColumns: string[] = ['email', 'name', 'role'];
+  userColumns: string[] = [];
   userDataSource: MatTableDataSource<User> = new MatTableDataSource<User>(this.users);
 
-  userEmail: string = '';
-  userFirstName: string = '';
-  userLastName: string = '';
-  userRole: string = '';
-
   constructor(private adminService: AdminService,
-              private dialog: MatDialog,
-              private sessionCacheService: SessionCacheService) {
+              private dialog: MatDialog) {
   }
 
   ngAfterViewInit() {
+    this.userDataSource.paginator = this.userPaginator;
   }
 
   ngOnInit() {
-    this.adminService.getAllUsers().subscribe(users => {
-      this.users = users;
-      this.userDataSource = new MatTableDataSource(this.users);
-      this.userDataSource.paginator = this.userPaginator;
-    })
+    this.userColumns = this.role ? ['email', 'name'] : ['email', 'name', 'role'];
+    this.fetchUsers();
+  }
+
+  fetchUsers() {
+    if (!this.role) {
+      this.adminService.getAllUsers().subscribe(users => {
+        this.users = users;
+        this.userDataSource = new MatTableDataSource(this.users);
+        this.userDataSource.paginator = this.userPaginator;
+      })
+    } else {
+      this.adminService.getUsersByRole(this.role).subscribe(users => {
+        this.users = users;
+        this.userDataSource = new MatTableDataSource(this.users);
+        this.userDataSource.paginator = this.userPaginator;
+      })
+    }
   }
 
   openUserDialog() {
@@ -96,35 +104,7 @@ export class UsersTableComponent implements OnInit, AfterViewInit {
   }
 
   onCancelDialog() {
-    setTimeout(() => {
-      this.userForm?.reset();
-    });
     this.dialog.closeAll();
-  }
-
-  submitUser(form: NgForm) {
-    let newUser = {
-      email: form.value.userEmail,
-      firstName: form.value.userFirstName,
-      lastName: form.value.userLastName,
-      role: form.value.userRole
-    }
-
-    this.adminService.createUser(newUser).subscribe((insertedUser: User) => {
-      this.users.push(insertedUser);
-      this.userDataSource = new MatTableDataSource(this.users);
-      this.userDataSource.paginator = this.userPaginator;
-      this.openSnackBar("User added!", "Ok", 3000);
-      form.reset();
-      this.userDialogRef.close();
-    }, error => {
-      if (error.status === 409) {
-        this.openSnackBar("Invalid email - already in use", "Ok", 3000);
-      } else {
-        console.log(error);
-        this.openSnackBar("Error adding User", "Ok", 3000);
-      }
-    })
   }
 
 

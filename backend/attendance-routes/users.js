@@ -15,5 +15,6 @@ router.post('/', users.admin.create);
 
 router.get('/', users.selector.getAll);
 router.get('/:id', users.selector.getById);
+router.get('/role/:role', users.selector.getByRole);
 
 module.exports = router;

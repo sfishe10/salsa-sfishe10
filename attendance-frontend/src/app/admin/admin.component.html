@@ -19,10 +19,27 @@
   </mat-tab>
   <mat-tab label="Users">
     <div style="padding: 10px">
-      <app-users-table></app-users-table>
+      <mat-accordion multi>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_ADMIN}}s</mat-expansion-panel-header><br/>
+          <app-users-table [role]="ROLE_ADMIN"></app-users-table>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_OFFICER}}s</mat-expansion-panel-header><br/>
+          <app-users-table [role]="ROLE_OFFICER"></app-users-table>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_ATTENDANCE_TAKER}}s</mat-expansion-panel-header><br/>
+          <app-users-table [role]="ROLE_ATTENDANCE_TAKER"></app-users-table>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_MEMBER}}s</mat-expansion-panel-header><br/>
+          <app-users-table [role]="ROLE_MEMBER"></app-users-table>
+        </mat-expansion-panel>
+      </mat-accordion><br/>
+      <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>
     </div>
   </mat-tab>
-  <mat-tab label="Roles"></mat-tab>
 </mat-tab-group>
 
 
@@ -49,6 +66,37 @@
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button type="button" (click)="cancelDialog()">Cancel</button>
+      <button mat-button type="submit">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #addUserDialog>
+  <h2 mat-dialog-title>Add User</h2>
+  <form #userForm="ngForm" (ngSubmit)="submitUser(userForm)">
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-label class="form-label">Email</mat-label>
+        <input matInput id="userEmail" type="text" name="userEmail" [(ngModel)]="userEmail">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">First Name</mat-label>
+        <input matInput id="userFirstName" type="text" name="userFirstName" [(ngModel)]="userFirstName">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Last Name</mat-label>
+        <input matInput id="userLastName" type="text" name="userLastName" [(ngModel)]="userLastName">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Role</mat-label>
+        <mat-select id="userRole" name="userRole" [(ngModel)]="userRole">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of userRoleOptions" [value]="option">{{option}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
       <button mat-button type="submit">Submit</button>
     </mat-dialog-actions>
   </form>
