@@ -58,7 +58,7 @@ module.exports.getById = async (req, res) => {
 module.exports.getSection = async (req, res) => {
   db.execute(
     'SELECT Member.*, User.*, PepBand.*, Section.*, Term.* FROM Member ' +
-    'JOIN User ON Member.userId = User.userId ' +
+    'JOIN User ON Member.email = User.email ' +
     'JOIN Term ON Member.termId = Term.termId ' +
     'JOIN PepBand ON Member.pepBandId = PepBand.bandId ' +
     'JOIN Section ON Member.sectionId = Section.sectionId ' +
@@ -75,7 +75,6 @@ module.exports.getSection = async (req, res) => {
           const member = {
             memberId: results[i].memberId,
             user: {
-              userId: results[i].userId,
               firstName: results[i].firstName,
               lastName: results[i].lastName,
               email: results[i].email,

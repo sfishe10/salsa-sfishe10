@@ -41,8 +41,13 @@
                  aria-label="Select page">
   </mat-paginator>
 </div><br/>
-<button mat-stroked-button (click)="onUploadCsvClicked()">Upload CSV</button>&nbsp;
-<button mat-flat-button color="primary" (click)="openMemberDialog()">Add Member</button>
+<div style="display: flex; justify-content: space-between">
+  <div>
+    <button mat-stroked-button (click)="onUploadCsvClicked('addMembers')">Upload Members CSV</button>&nbsp;
+    <button mat-flat-button color="primary" (click)="openMemberDialog()">Add Member</button>
+  </div>
+  <button style="margin-left: auto" mat-stroked-button (click)="onUploadCsvClicked('assignPepBands')">Upload Pep Bands CSV</button>&nbsp;
+</div>
 
 <ng-template #uploadCsvDialog>
   <h2 mat-dialog-title>Upload CSV File</h2>
@@ -98,4 +103,18 @@
       <button mat-button type="submit">Submit</button>
     </mat-dialog-actions>
   </form>
+</ng-template>
+
+<ng-template #pepBandUploadConfirmationDialog>
+  <h2 mat-dialog-title>The following emails are not associated with a member for this term:</h2>
+  <mat-dialog-content>
+    <ul>
+      <li *ngFor="let email of emailsMissingMembers">{{ email }}</li>
+    </ul>
+    <span style="color:black">Proceed and skip these emails?</span>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialogAndClearEmails()">Cancel</button>&nbsp;
+    <button mat-button (click)="uploadFile()">Proceed</button>
+  </mat-dialog-actions>
 </ng-template>

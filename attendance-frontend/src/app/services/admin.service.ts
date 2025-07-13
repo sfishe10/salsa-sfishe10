@@ -60,4 +60,9 @@ export class AdminService {
     return this.http.post<any>(url, formData);
   }
 
+  public uploadPepBandsCsv(formData: FormData, termId: number): any {
+    const url = this.baseUrl + `/members/term/${termId}/uploadPepBandsCsv`;
+    return this.http.post<any>(url, formData);
+  }
+
 }

@@ -117,3 +117,77 @@ module.exports.uploadCsv = async (req, res) => {
       res.status(500).json({ error: 'Failed to parse CSV' });
     });
 };
+
+module.exports.uploadPepBandsCsv = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  const parsedMembers = [];
+  const emailsToSkip = req.body.emailsToSkip;
+
+  // Convert buffer to string, remove BOM if present, then convert back to buffer
+  const rawCsvString = req.file.buffer.toString('utf8').replace(/^\uFEFF/, '');
+  const cleanedBuffer = Buffer.from(rawCsvString, 'utf8');
+
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(cleanedBuffer);
+  bufferStream.pipe(csv()).on('data', (row) => {
+    const email = row.Email?.trim().toLowerCase() ?? '';
+    const pepBandId = row['Pep Band']?.trim().toUpperCase() ?? '';
+    if (!(emailsToSkip.includes(email))) {
+      const member = {
+        email,
+        pepBandId,
+      };
+      parsedMembers.push(member);
+    }
+  })
+    .on('end', () => {
+      console.log('Parsed CSV:', parsedMembers);
+      // make sure all the emails belong to members in that term
+      const emails = parsedMembers.map((member) => member.email);
+      const placeholders = emails.map(() => 'SELECT ? AS email').join(' UNION ALL ');
+
+      const selectString = `SELECT input_emails.email FROM (${placeholders}) AS input_emails
+            LEFT JOIN Member ON input_emails.email = Member.email AND Member.termId = ?
+            WHERE Member.email IS NULL`;
+      const params = [...emails, req.params.id];
+      db.execute(selectString, params, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send(err.message);
+        }
+        if (results.length) {
+          // some emails from the csv file do not have members attached to them in this term
+          return res.status(422).send(results);
+        }
+        // now update the members
+        let pepBandClause = 'CASE email ';
+        let emailString = '';
+        const emailParams = [];
+        const pepBandParams = [];
+        parsedMembers.forEach((member) => {
+          pepBandClause += 'WHEN ? THEN ? ';
+          pepBandParams.push(member.email);
+          pepBandParams.push(member.pepBandId);
+          emailString += '?, ';
+          emailParams.push(member.email);
+        });
+        pepBandClause += 'END ';
+        emailString = emailString.slice(0, -2);
+        const updateString = `UPDATE Member SET pepBandId=${pepBandClause} WHERE email IN (${emailString})`;
+        db.execute(updateString, pepBandParams.concat(emailParams), (err2, result) => {
+          if (err2) {
+            console.log(err2);
+            res.status(500).send(err2.message);
+          } else {
+            res.send(result);
+          }
+        });
+      });
+    })
+    .on('error', (error) => {
+      console.error('Error parsing CSV:', error);
+      return res.status(500).json({ error: 'Failed to parse CSV' });
+    });
+};

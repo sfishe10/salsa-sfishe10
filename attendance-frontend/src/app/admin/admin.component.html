@@ -1,16 +1,18 @@
 <mat-tab-group>
   <mat-tab label="View Term">
     <div style="padding: 10px">
-      <div style="display: flex; align-items: center; gap: 10px">
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label class="form-label">Select a term</mat-label>
-          <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
-            <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <button mat-flat-button color="primary" (click)="openTermDialog()">Create Term</button>
+      <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <mat-form-field subscriptSizing="dynamic">
+            <mat-label class="form-label">Select a term</mat-label>
+            <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
+              <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-flat-button color="primary" (click)="openTermDialog()">Create Term</button>
+        </div>
+        <p align="right">{{selectedTerm?.startDate | date: 'MMMM d, YYYY'}} - {{selectedTerm?.endDate | date: 'MMMM d, YYYY'}}</p>
       </div>
-      <p align="right">{{selectedTerm?.startDate | date: 'MMMM d, YYYY'}} - {{selectedTerm?.endDate | date: 'MMMM d, YYYY'}}</p>
       <app-events-table [selectedTerm]="selectedTerm"></app-events-table>
       <app-members-table [selectedTerm]="selectedTerm"></app-members-table>
     </div>

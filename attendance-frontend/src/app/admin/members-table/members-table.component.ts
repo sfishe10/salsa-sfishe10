@@ -74,6 +74,9 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   @ViewChild('uploadCsvDialog') uploadCsvDialog!: TemplateRef<any>;
   uploadCsvDialogRef!: MatDialogRef<any>;
 
+  @ViewChild('pepBandUploadConfirmationDialog') pepBandUploadConfirmationDialog!: TemplateRef<any>;
+  pepBandDialogRef!: MatDialogRef<any>;
+
   sectionOptions: Section[] = [];
   pepBandOptions: PepBand[] = [];
 
@@ -93,6 +96,10 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   @Input('selectedTerm') selectedTerm?: Term | null = null;
 
   selectedFile: File | null = null;
+
+  uploadCsvType: string | null = null;
+
+  emailsMissingMembers: string[] = [];
 
   constructor(private adminService: AdminService,
               private dialog: MatDialog,
@@ -159,7 +166,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
     })
   }
 
-  onUploadCsvClicked() {
+  onUploadCsvClicked(uploadCsvType: string) {
+    this.uploadCsvType = uploadCsvType;
     this.uploadCsvDialogRef = this.dialog.open(this.uploadCsvDialog);
   }
 
@@ -174,23 +182,54 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    if (!this.selectedTerm) { return; }
+    if (!this.selectedTerm) return;
 
     let termId = this.selectedTerm.termId;
 
-    this.adminService.uploadMemberCsv(formData, termId).subscribe({
-      next: (res: any) => {
-        console.log(res);
-        this.onTermChange(termId);
-        this.onCancelDialog();
-        this.openSnackBar('Members added', 'OK', 3000);
-      },
-      error: (err: any) => {
-        console.error('Upload error:', err)
-        this.onCancelDialog();
-        this.openSnackBar('Error uploading CSV', 'OK', 3000);
-      },
-    });
+    if (this.uploadCsvType == 'addMembers') {
+      this.adminService.uploadMemberCsv(formData, termId).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.onTermChange(termId);
+          this.onCancelDialog();
+          this.openSnackBar('Members added', 'OK', 3000);
+        },
+        error: (err: any) => {
+          console.error('Upload error:', err)
+          this.onCancelDialog();
+          this.openSnackBar('Error uploading CSV', 'OK', 3000);
+        },
+      });
+    } else if (this.uploadCsvType == 'assignPepBands') {
+      formData.append('emailsToSkip', JSON.stringify(this.emailsMissingMembers));
+      this.adminService.uploadPepBandsCsv(formData, termId).subscribe({
+        next: (res: any) => {
+          this.emailsMissingMembers = [];
+          this.onTermChange(termId);
+          this.onCancelDialog();
+          this.openSnackBar('Pep Bands Assigned', 'OK', 3000);
+        },
+        error: (err: any) => {
+          if (err.status === 422) {
+            this.emailsMissingMembers = [];
+            console.log(err.error);
+            err.error.forEach((emailObj: any) => {
+              this.emailsMissingMembers.push(emailObj.email);
+            })
+            this.pepBandDialogRef = this.dialog.open(this.pepBandUploadConfirmationDialog);
+          } else {
+            console.error('Upload error:', err)
+            this.onCancelDialog();
+            this.openSnackBar('Error uploading CSV', 'OK', 3000);
+          }
+        },
+      });
+    }
+  }
+
+  closeDialogAndClearEmails() {
+    this.emailsMissingMembers = [];
+    this.onCancelDialog();
   }
 
   clearFile(fileInput: HTMLInputElement) {
