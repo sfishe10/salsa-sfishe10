@@ -5,7 +5,7 @@ module.exports.create = async (req, res) => {
   const formattedDate = new Date(req.body.event.date).toISOString().slice(0, 19).replace('T', ' ');
   db.execute('INSERT INTO MBEvent (type, title, date, pepBandId, termId) VALUES (?, ?, ?, ?, ?)',
     [req.body.event.type, req.body.event.title, formattedDate,
-      req.body.event.pepBandId, req.body.event.termId],
+      req.body.event.pepBand.bandId, req.body.event.term.termId],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -17,24 +17,24 @@ module.exports.create = async (req, res) => {
 };
 
 module.exports.updateEvent = async (req, res) => {
-  const eventID = req.params.id;
-  let updates = '';
-
-  Object.keys(req.body).forEach((key) => {
-    if (req.body[key] === 'DEFAULT') {
-      updates += `${key}=DEFAULT, `;
-    } else if (!req.body[key]) {
-      updates += `${key}=NULL, `;
+  const eventId = req.params.id;
+  const event = req.body.event;
+  const formattedDate = new Date(event.date).toISOString().slice(0, 19).replace('T', ' ');
+  let params = [event.type, event.title, formattedDate, event.term.termId, eventId];
+  let pepBandClause = '';
+  if (event.type === 'Pep Event') {
+    pepBandClause = 'pepBandId=?, ';
+    params = [event.type, event.title, formattedDate, event.pepBand.bandId, event.term.termId, eventId];
+  }
+  const SQL = `UPDATE MBEvent SET type=?, title=?, date=?, ${pepBandClause} termId=? WHERE eventId=?`;
+  db.execute(SQL, params, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.message);
     } else {
-      updates += `${key}='${req.body[key]}', `;
+      res.send(result);
     }
   });
-  updates = updates.slice(0, -2);
-
-  const SQL = `UPDATE Events SET ${updates} WHERE eventID=${eventID}`;
-  db.execute(SQL);
-
-  res.end();
 };
 
 module.exports.delete = async (req, res) => {

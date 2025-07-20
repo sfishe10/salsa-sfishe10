@@ -35,6 +35,11 @@ export class AdminService {
     return this.http.post<MBEvent>(url, {event: event})
   }
 
+  public updateEvent(event: MBEvent) {
+    const url = this.baseUrl + `/events/${event.eventId}`;
+    return this.http.put<MBEvent>(url, {event: event});
+  }
+
   public createTerm(term: Term): Observable<Term> {
     const url = this.baseUrl + '/terms';
     return this.http.post<Term>(url, {term: term})

@@ -1,1 +1,39 @@
-<p>event-page works!</p>
+<div>
+  <div style="margin-bottom: 10px;">
+    <mat-icon class="back-button" (click)="goBack()">arrow_back</mat-icon>
+  </div>
+  <form #eventForm="ngForm" (ngSubmit)="saveEvent(eventForm)">
+    <div style="display: flex; flex-direction: column">
+      <mat-form-field style="max-width: 400px">
+        <mat-label class="form-label">Title</mat-label>
+        <input matInput id="eventTitle" type="text" name="eventTitle" [(ngModel)]="eventTitle">
+      </mat-form-field>
+      <mat-form-field style="max-width: 400px">
+        <mat-label class="form-label">Type</mat-label>
+        <mat-select id="eventType" name="eventType" [(ngModel)]="eventType">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of eventTypeOptions" [value]="option">{{option}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="eventType === EVENT_TYPE_PEP_EVENT" style="max-width: 400px">
+        <mat-label class="form-label">Pep Band</mat-label>
+        <mat-select id="eventPepBand" name="eventPepBand" [(ngModel)]="eventPepBand">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of pepBandOptions" [value]="option">{{option.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field style="max-width: 400px">
+        <mat-label class="form-label">Event Date</mat-label>
+        <input matInput [matDatepicker]="eventPicker" name="eventDate" [(ngModel)]="eventDate">
+        <mat-datepicker-toggle matIconSuffix [for]="eventPicker"></mat-datepicker-toggle>
+        <mat-datepicker #eventPicker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field style="max-width: 400px">
+        <mat-label>Event time</mat-label>
+        <input matInput type="time" name="eventTime"
+               [(ngModel)]="eventTime">
+      </mat-form-field>
+    </div>
+    <button mat-flat-button color="primary" type="submit">Save Changes</button>
+  </form>
+</div>

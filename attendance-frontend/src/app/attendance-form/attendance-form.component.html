@@ -1,12 +1,12 @@
 <div class="event-date">
   <mat-icon class="calendar-icon">event</mat-icon>
-  <span>{{event.date | date: 'EEEE, MMMM d h:mm a' }}</span>
+  <span>{{event?.date | date: 'EEEE, MMMM d h:mm a' }}</span>
 </div>
 <div class="event-title">
-  <span *ngIf="event.pepBandId">{{event.pepBandId}} Band: </span>
-  <span>{{event.title}}</span>
+  <span *ngIf="event?.pepBand?.bandId">{{event?.pepBand?.bandId}} Band: </span>
+  <span>{{event?.title}}</span>
 </div>
-<div *ngIf="event.type === REHEARSAL" class="rehearsal-conflict-legend">
+<div *ngIf="event?.type === REHEARSAL" class="rehearsal-conflict-legend">
   <div>
     <span style="color: var(--arriving-late-color)">{{Constants.REHEARSAL_CONFLICT_ARRIVING_LATE}}</span><br/>
     <span style="color: var(--leaving-early-color)">{{Constants.REHEARSAL_CONFLICT_LEAVING_EARLY}}</span><br/>
@@ -33,7 +33,7 @@
       <table mat-table [dataSource]="attendees">
         <ng-container matColumnDef="name">
           <td mat-cell *matCellDef="let attendee" class="name-cell"
-              [ngStyle]="event.type === REHEARSAL ?
+              [ngStyle]="event?.type === REHEARSAL ?
                 {'color': 'var(--' + Utilities.getConflictColor(attendee.rehearsalConflict) + '-color)'} : {'color': 'black'}">
               {{attendee.user.firstName}} {{attendee.user.lastName}} </td>
         </ng-container>

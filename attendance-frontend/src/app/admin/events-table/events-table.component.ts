@@ -34,6 +34,7 @@ import {Term} from '../../models/term';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {SessionCacheService} from '../../services/session-cache.service';
 import {AdminService} from '../../services/admin.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-events-table',
@@ -104,7 +105,8 @@ export class EventsTableComponent implements OnInit, AfterViewInit {
 
   constructor(private adminService: AdminService,
               private dialog: MatDialog,
-              private sessionCacheService: SessionCacheService) {
+              private sessionCacheService: SessionCacheService,
+              private router: Router) {
   }
 
   ngAfterViewInit() {
@@ -143,8 +145,8 @@ export class EventsTableComponent implements OnInit, AfterViewInit {
       type: form.value.eventType,
       title: form.value.eventTitle,
       date: form.value.eventDate,
-      pepBandId: form.value.eventPepBand ? form.value.eventPepBand.bandId : null,
-      termId: this.selectedTerm?.termId
+      pepBand: form.value.eventPepBand ?? null,
+      term: this.selectedTerm
     } as MBEvent;
 
     this.adminService.createEvent(newEvent).subscribe(() => {
@@ -165,10 +167,13 @@ export class EventsTableComponent implements OnInit, AfterViewInit {
     this.eventDate?.setHours(hours, minutes, 0);
   }
 
+  navigateToEvent(eventId: number) {
+    this.router.navigate(['/event', eventId]);
+  }
+
   openSnackBar(message: string, action: string, duration: number) {
     this._snackBar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});
   }
 
-  protected readonly Utilities = Utilities;
   readonly EVENT_TYPE_PEP_EVENT = Constants.EVENT_TYPE_PEP_EVENT
 }

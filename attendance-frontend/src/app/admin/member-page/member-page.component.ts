@@ -1,17 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Member} from '../../models/member';
-import {MemberService} from '../../member.service';
+import {MemberService} from '../../services/member.service';
 import {MatIcon} from '@angular/material/icon';
-import {Location} from '@angular/common';
-import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-member-page',
   standalone: true,
   imports: [
-    MatIcon,
-    MatButton
+    MatIcon
   ],
   templateUrl: './member-page.component.html',
   styleUrl: './member-page.component.css'

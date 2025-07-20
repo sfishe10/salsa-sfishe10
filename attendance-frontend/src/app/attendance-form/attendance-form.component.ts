@@ -56,14 +56,7 @@ export class AttendanceFormComponent implements OnInit {
   readonly PEP_EVENT: string = Constants.EVENT_TYPE_PEP_EVENT;
   readonly REHEARSAL: string = Constants.EVENT_TYPE_REHEARSAL;
 
-  event: MBEvent = {
-    eventId: -1,
-    type: "",
-    title: "",
-    date: new Date(),
-    pepBandId: "",
-    termId: -1
-  };
+  event: MBEvent | null = null;
 
   private _snackBar = inject(MatSnackBar);
 
@@ -110,7 +103,7 @@ export class AttendanceFormComponent implements OnInit {
       this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.PEP_EVENT);
       if (this.event?.type === this.PEP_EVENT) {
         this.sectionMembers
-          .filter(x => x.pepBand?.bandId === event.pepBandId)
+          .filter(x => x.pepBand?.bandId === event.pepBand?.bandId)
           .forEach(member => this.attendees.push(member));
       } else {
         this.sectionMembers
