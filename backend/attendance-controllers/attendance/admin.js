@@ -42,13 +42,13 @@ module.exports.submitForm = async (req, res) => {
     const attendanceId = attendance.attendanceId;
     memberIdClause += 'WHEN ? THEN ? ';
     memberIdParams.push(attendanceId);
-    memberIdParams.push(attendance.memberId);
+    memberIdParams.push(attendance.member.memberId);
     attendanceClause += 'WHEN ? THEN ? ';
     attendanceParams.push(attendanceId);
     attendanceParams.push(attendance.attendance);
     subIdClause += 'WHEN ? THEN ? ';
     subIdParams.push(attendanceId);
-    subIdParams.push(attendance.subId);
+    subIdParams.push(attendance.sub ? attendance.sub.memberId : null);
     attendanceIds += `${attendanceId}, `;
   });
   memberIdClause += 'END ';

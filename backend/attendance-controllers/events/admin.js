@@ -3,9 +3,10 @@ const db = require('../../config/db');
 module.exports.create = async (req, res) => {
   console.log(req.body.event);
   const formattedDate = new Date(req.body.event.date).toISOString().slice(0, 19).replace('T', ' ');
-  db.execute('INSERT INTO MBEvent (type, title, date, pepBandId, termId) VALUES (?, ?, ?, ?, ?)',
+  const pepBandId = req.body.event.pepBand ? req.body.event.pepBand.bandId : null;
+  db.execute('CALL CreateEventAndAttendance(?, ?, ?, ?, ?)',
     [req.body.event.type, req.body.event.title, formattedDate,
-      req.body.event.pepBand.bandId, req.body.event.term.termId],
+      pepBandId, req.body.event.term.termId],
     (err, result) => {
       if (err) {
         console.log(err);

@@ -16,11 +16,12 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getById = async (req, res) => {
   db.execute(
-    'SELECT m.*, u.firstName, u.lastName, u.email, u.role, s.name, p.displayName ' +
+    'SELECT m.*, u.firstName, u.lastName, u.email, u.role, s.name, p.displayName, t.startDate, t.endDate, t.termName ' +
     'FROM Member as m ' +
     'JOIN User AS u ON u.email = m.email ' +
     'JOIN Section as s ON m.sectionId = s.sectionId ' +
     'LEFT JOIN PepBand as p ON m.pepBandId = p.bandId ' +
+    'JOIN Term as t ON m.termId = t.termId ' +
     'WHERE memberId=?',
     [req.params.id],
     (err, results) => {
@@ -48,8 +49,14 @@ module.exports.getById = async (req, res) => {
             name: results[0].name,
           },
           rehearsalConflict: results[0].rehearsalConflict,
+          term: {
+            termId: results[0].termId,
+            startDate: results[0].startDate,
+            endDate: results[0].endDate,
+            termName: results[0].termName,
+          },
         };
-        res.jsonp(member);
+        res.send(member);
       }
     },
   );
@@ -60,7 +67,7 @@ module.exports.getSection = async (req, res) => {
     'SELECT Member.*, User.*, PepBand.*, Section.*, Term.* FROM Member ' +
     'JOIN User ON Member.email = User.email ' +
     'JOIN Term ON Member.termId = Term.termId ' +
-    'JOIN PepBand ON Member.pepBandId = PepBand.bandId ' +
+    'LEFT JOIN PepBand ON Member.pepBandId = PepBand.bandId ' +
     'JOIN Section ON Member.sectionId = Section.sectionId ' +
     'WHERE Member.sectionId=? AND Term.startDate < NOW() AND ' +
     'Term.endDate > NOW()',
@@ -80,10 +87,11 @@ module.exports.getSection = async (req, res) => {
               email: results[i].email,
               role: results[i].role,
             },
-            pepBand: {
-              bandId: results[i].pepBandId,
-              displayName: results[i].displayName,
-            },
+            pepBand: results[i].pepBandId
+              ? {
+                bandId: results[i].pepBandId,
+                displayName: results[i].displayName,
+              } : null,
             section: {
               sectionId: results[i].sectionId,
               name: results[i].name,
@@ -98,6 +106,7 @@ module.exports.getSection = async (req, res) => {
           };
           members.push(member);
         }
+        console.log(members);
         res.send(members);
       }
     },

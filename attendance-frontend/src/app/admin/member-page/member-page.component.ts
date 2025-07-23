@@ -1,14 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Member} from '../../models/member';
 import {MemberService} from '../../services/member.service';
 import {MatIcon} from '@angular/material/icon';
+import {FormsModule} from '@angular/forms';
+import {NgIf} from '@angular/common';
+import {AttendanceTableComponent} from '../../shared/attendance-table/attendance-table.component';
 
 @Component({
   selector: 'app-member-page',
   standalone: true,
   imports: [
-    MatIcon
+    MatIcon,
+    FormsModule,
+    NgIf,
+    AttendanceTableComponent
   ],
   templateUrl: './member-page.component.html',
   styleUrl: './member-page.component.css'

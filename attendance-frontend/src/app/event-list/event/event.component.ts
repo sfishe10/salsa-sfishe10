@@ -45,4 +45,6 @@ export class EventComponent {
     this.router.navigate(['/attendance-form', this.event?.eventId]);
   }
 
+  protected readonly EVENT_TYPE_PEP_EVENT = Constants.EVENT_TYPE_PEP_EVENT;
+
 }

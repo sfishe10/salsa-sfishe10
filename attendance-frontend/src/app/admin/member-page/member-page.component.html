@@ -1,5 +1,14 @@
-<div class="member-name">
-  <mat-icon class="back-button" (click)="goBack()">arrow_back</mat-icon>
-
-  <span style="margin-left: 10px">{{member?.user?.firstName}} {{member?.user?.lastName}}</span>
+<div style="display: flex; flex-direction: column; gap: 20px; font-size: 1.2rem;">
+  <div class="member-name">
+    <mat-icon class="back-button" (click)="goBack()">arrow_back</mat-icon>
+    <span style="margin-left: 10px">{{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;</span>
+    <span style="color: dimgray">- {{member?.user?.email}}</span>
+  </div>
+  <span>{{member?.section?.name}}</span>
+  <span>Term: {{member?.term?.termName}}</span>
+  <span>Rehearsal Conflict:
+    <span *ngIf="member?.rehearsalConflict">{{member?.rehearsalConflict}}</span>
+    <span *ngIf="!member?.rehearsalConflict">None</span>
+  </span>
+  <app-attendance-table [memberId]="member ? member.memberId : null"></app-attendance-table>
 </div>

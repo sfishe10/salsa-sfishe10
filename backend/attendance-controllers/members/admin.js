@@ -4,8 +4,9 @@ const db = require('../../config/db');
 
 module.exports.create = async (req, res) => {
   const email = req.body.member.email;
+  const pepBandId = req.body.member.pepBand ? req.body.member.pepBand.bandId : null;
   console.log(email);
-    db.execute('SELECT * FROM User WHERE email=?', [email],
+  db.execute('SELECT * FROM User WHERE email=?', [email],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -21,8 +22,8 @@ module.exports.create = async (req, res) => {
           role: result[0].role,
         };
         db.execute('INSERT INTO MEMBER(email, pepBandId, sectionId, termId, rehearsalConflict) VALUES (?, ?, ?, ?, ?)',
-          [email, req.body.member.pepBand.bandId,
-            req.body.member.section.sectionId, req.body.member.term.termId, req.body.member.rehearsalConflict],
+          [email, pepBandId, req.body.member.section.sectionId, req.body.member.term.termId,
+            req.body.member.rehearsalConflict],
           (err2, result2) => {
             if (err2) {
               console.log(err2);
@@ -36,7 +37,13 @@ module.exports.create = async (req, res) => {
                 term: req.body.member.term,
                 rehearsalConflict: req.body.member.rehearsalConflict,
               };
-              res.send(member);
+              db.execute('CALL AddAttendancesForNewMembers(?)', [req.body.member.term.termId], (err3) => {
+                if (err3) {
+                  console.error(err3);
+                  return res.status(500).send(err3.message);
+                }
+                res.send(member);
+              });
             }
           });
       }
@@ -106,7 +113,14 @@ module.exports.uploadCsv = async (req, res) => {
               console.log(err2);
               res.status(500).send(err2.message);
             } else {
-              res.send(result);
+              // in case events have already been created, create blank EventAttendance objects for each new member
+              db.execute('CALL AddAttendancesForNewMembers(?)', [req.params.id], (err3) => {
+                if (err3) {
+                  console.error(err3);
+                  return res.status(500).send(err3.message);
+                }
+                res.send(result);
+              });
             }
           });
         }
@@ -181,7 +195,13 @@ module.exports.uploadPepBandsCsv = async (req, res) => {
             console.log(err2);
             res.status(500).send(err2.message);
           } else {
-            res.send(result);
+            db.execute('CALL AddAttendancesForNewMembers(?)', [req.params.id], (err3) => {
+              if (err3) {
+                console.error(err3);
+                return res.status(500).send(err3.message);
+              }
+              res.send(result);
+            });
           }
         });
       });

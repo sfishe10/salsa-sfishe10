@@ -1,6 +1,10 @@
+import {MBEvent} from './mb-event';
+import {Member} from './member';
+
 export interface EventAttendance {
-  eventId: number;
+  attendanceId: number;
+  event: MBEvent;
   attendance: string;
-  memberId: number;
-  subId: number | null;
+  member: Member;
+  sub: Member | null;
 }

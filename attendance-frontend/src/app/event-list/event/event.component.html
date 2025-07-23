@@ -2,15 +2,15 @@
   <mat-card (click)="navigateToForm()" [ngStyle]="{'background-color': event?.type == REHEARSAL ? 'var(--accent-color)' : 'var(--primary-color)'}">
     <mat-card-header>
 <!--      for events, the arrow is in line with the tag-->
-      <div *ngIf="!(event?.pepBandId == null)" class="event-header-container">
+      <div *ngIf="event?.type === EVENT_TYPE_PEP_EVENT" class="event-header-container">
         <div class="tag-arrow-container">
-          <app-event-tag [tagText]="event?.pepBandId + ' Band'"></app-event-tag>
+          <app-event-tag [tagText]="event?.pepBand?.displayName"></app-event-tag>
           <mat-icon class="material-symbols-outlined">arrow_right_alt</mat-icon>
         </div>
         <mat-card-title>{{event?.title}}</mat-card-title>
       </div>
 <!--      for rehearsals, the arrow is in line with the title-->
-      <div *ngIf="event?.pepBandId == null" class="title-arrow-container">
+      <div *ngIf="event?.type != EVENT_TYPE_PEP_EVENT" class="title-arrow-container">
         <mat-card-title>{{event?.title}}</mat-card-title>
         <mat-icon class="material-symbols-outlined">arrow_right_alt</mat-icon>
       </div>
