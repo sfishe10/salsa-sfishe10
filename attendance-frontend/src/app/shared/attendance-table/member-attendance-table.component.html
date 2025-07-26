@@ -26,7 +26,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="attendanceColumns"></tr>
-<!--    <tr (click)="navigateToEvent(row.eventId)" class="clickable-row" mat-row *matRowDef="let row; columns: eventColumns;"></tr>-->
+    <tr mat-row *matRowDef="let row; columns: attendanceColumns;"></tr>
   </table>
   <mat-paginator #attendancePaginator [pageSizeOptions]="[5, 10, 20]"
                  showFirstLastButtons

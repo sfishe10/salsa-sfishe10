@@ -15,8 +15,8 @@ module.exports.getByMemberId = async (req, res) => {
     'JOIN MBEvent e ON ea.eventId = e.eventId ' +
     'JOIN Member mem ON ea.memberId = mem.memberId ' +
     'JOIN User u ON mem.email = u.email ' +
-    'JOIN Member sub ON ea.subId = sub.memberId ' +
-    'JOIN User sub_u ON sub.email = sub_u.email ' +
+    'LEFT JOIN Member sub ON ea.subId = sub.memberId ' +
+    'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
     'WHERE ea.memberId=? OR ea.subId=? ' +
     'ORDER BY e.date', [memberId, memberId], (err, results) => {
     if (err) {
@@ -30,7 +30,7 @@ module.exports.getByMemberId = async (req, res) => {
           attendanceStatus: row.attendance,
           eventId: row.eventId,
           eventTitle: row.title,
-          eventDate: row.date,
+          eventDate: convertDateToPST(row.date),
           memberId: row.memberId,
           memberFirstName: row.memFirst,
           memberLastName: row.memLast,
@@ -83,7 +83,7 @@ module.exports.getBySectionAndEventId = async (req, res) => {
             eventId: row.eventId,
             type: row.type,
             title: row.title,
-            date: row.date,
+            date: convertDateToPST(row.date),
             pepBand:
               row.eventPepBandId
                 ? {
@@ -150,4 +150,96 @@ module.exports.getBySectionAndEventId = async (req, res) => {
       res.send(attendances);
     }
   });
+};
+
+module.exports.getByTermId = async (req, res) => {
+  const termId = req.params.id;
+  const eventType = req.params.eventType;
+  db.execute('SELECT attendanceId, attendance, ' +
+    'e.*, mem.memberId, mem.rehearsalConflict, u.firstName as memFirst, u.lastName as memLast, ' +
+    'sub.memberId as subId, sub_u.firstName as subFirst, sub_u.lastName as subLast, s.sectionId, s.name as sectionName ' +
+    'FROM ' +
+    'EventAttendance ea ' +
+    'JOIN MBEvent e ON ea.eventId = e.eventId ' +
+    'JOIN Member mem ON ea.memberId = mem.memberId ' +
+    'JOIN User u ON mem.email = u.email ' +
+    'LEFT JOIN Member sub ON ea.subId = sub.memberId ' +
+    'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
+    'JOIN Section s ON mem.sectionId = s.sectionId ' +
+    'WHERE e.termId=? and e.type=? ' +
+    'ORDER BY sectionName, e.date, memLast',
+  [termId, eventType], (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.message);
+    } else {
+      const attendances = [];
+      results.forEach((row) => {
+        const attendance = {
+          attendanceId: row.attendanceId,
+          attendanceStatus: row.attendance,
+          eventId: row.eventId,
+          eventTitle: row.title,
+          eventDate: convertDateToPST(row.date),
+          memberId: row.memberId,
+          memberFirstName: row.memFirst,
+          memberLastName: row.memLast,
+          rehearsalConflict: row.rehearsalConflict,
+          subId: row.subId,
+          subFirstName: row.subFirst,
+          subLastName: row.subLast,
+          sectionId: row.sectionId,
+          sectionName: row.sectionName,
+        };
+        attendances.push(attendance);
+      });
+      res.send(attendances);
+    }
+  });
+};
+
+module.exports.getByTermIdAndPepBand = async (req, res) => {
+  const termId = req.params.termId;
+  const pepBandId = req.params.pepBandId;
+  db.execute('SELECT attendanceId, attendance, ' +
+    'e.*, mem.memberId, mem.rehearsalConflict, u.firstName as memFirst, u.lastName as memLast, ' +
+    'sub.memberId as subId, sub_u.firstName as subFirst, sub_u.lastName as subLast, s.sectionId, s.name as sectionName ' +
+    'FROM ' +
+    'EventAttendance ea ' +
+    'JOIN MBEvent e ON ea.eventId = e.eventId ' +
+    'JOIN Member mem ON ea.memberId = mem.memberId ' +
+    'JOIN User u ON mem.email = u.email ' +
+    'LEFT JOIN Member sub ON ea.subId = sub.memberId ' +
+    'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
+    'JOIN Section s ON mem.sectionId = s.sectionId ' +
+    'WHERE e.termId=? and e.pepBandId=? ' +
+    'ORDER BY sectionName, e.date, memLast',
+    [termId, pepBandId], (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        const attendances = [];
+        results.forEach((row) => {
+          const attendance = {
+            attendanceId: row.attendanceId,
+            attendanceStatus: row.attendance,
+            eventId: row.eventId,
+            eventTitle: row.title,
+            eventDate: convertDateToPST(row.date),
+            memberId: row.memberId,
+            memberFirstName: row.memFirst,
+            memberLastName: row.memLast,
+            rehearsalConflict: row.rehearsalConflict,
+            subId: row.subId,
+            subFirstName: row.subFirst,
+            subLastName: row.subLast,
+            sectionId: row.sectionId,
+            sectionName: row.sectionName,
+          };
+          attendances.push(attendance);
+        });
+        res.send(attendances);
+      }
+    });
 };

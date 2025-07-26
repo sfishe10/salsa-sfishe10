@@ -18,5 +18,7 @@ router.delete('/:id', attendance.admin.delete);
 
 router.get('/member/:id', attendance.selector.getByMemberId);
 router.get('/event/:eventId/section/:sectionId', attendance.selector.getBySectionAndEventId);
+router.get('/term/:id/eventType/:eventType', attendance.selector.getByTermId);
+router.get('/term/:termId/pepBand/:pepBandId', attendance.selector.getByTermIdAndPepBand);
 
 module.exports = router;

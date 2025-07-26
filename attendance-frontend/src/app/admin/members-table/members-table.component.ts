@@ -132,7 +132,6 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   onTermChange(newTermId: number) {
     this.adminService.getMembersByTermId(newTermId).subscribe(members => {
       this.members = members;
-      console.log(members);
       this.memberDataSource = new MatTableDataSource<Member>(this.members);
       this.memberDataSource.paginator = this.memberPaginator;
     })

@@ -27,6 +27,11 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
+      <div (click)="goToAttendance()" class="back-button"
+        style="display: flex; flex-direction: row; align-items: center; gap: 6px; padding-left: 10px; width: max-content;">
+        <h4 style="text-decoration: underline">View Attendance</h4>
+        <mat-icon>arrow_right_alt</mat-icon>
+      </div>
     </div>
   </mat-tab>
   <mat-tab label="Users">

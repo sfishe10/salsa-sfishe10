@@ -10,5 +10,5 @@
     <span *ngIf="member?.rehearsalConflict">{{member?.rehearsalConflict}}</span>
     <span *ngIf="!member?.rehearsalConflict">None</span>
   </span>
-  <app-attendance-table [memberId]="member ? member.memberId : null"></app-attendance-table>
+  <app-attendance-table [memberId]="this.memberId"></app-attendance-table>
 </div>

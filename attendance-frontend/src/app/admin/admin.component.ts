@@ -28,6 +28,8 @@ import {MatDivider} from '@angular/material/divider';
 import {User} from '../models/user';
 import {MatTableDataSource} from '@angular/material/table';
 import {Utilities} from '../utilities/utilities';
+import {MatIcon} from '@angular/material/icon';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-admin',
@@ -53,7 +55,8 @@ import {Utilities} from '../utilities/utilities';
     UsersTableComponent,
     MatAccordion,
     MatExpansionPanel,
-    MatExpansionPanelHeader
+    MatExpansionPanelHeader,
+    MatIcon
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -93,7 +96,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   @ViewChild(MembersTableComponent) membersTable!: MembersTableComponent;
 
   constructor(private adminService: AdminService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private router: Router) {
   }
 
   ngAfterViewInit() {
@@ -200,6 +204,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
         this.openSnackBar("Error adding User", "Ok", 3000);
       }
     })
+  }
+
+  goToAttendance() {
+    this.router.navigate(['/attendance/term', this.selectedTerm?.termId])
   }
 
   openSnackBar(message: string, action: string, duration: number) {

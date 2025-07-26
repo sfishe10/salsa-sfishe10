@@ -22,7 +22,7 @@ module.exports.getById = async (req, res) => {
         console.log(err);
         res.status(500).send(err.message);
       } else {
-        res.send(results);
+        res.send(results[0]);
       }
     });
 };

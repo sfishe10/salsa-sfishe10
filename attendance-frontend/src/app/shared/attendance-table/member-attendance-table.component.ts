@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {
   MatCell,
@@ -11,7 +11,6 @@ import {
 } from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {EventAttendanceMemberPage} from '../../models/event-attendance-member-page';
-import {MBEvent} from '../../models/mb-event';
 import {MemberService} from '../../services/member.service';
 
 @Component({
@@ -31,14 +30,16 @@ import {MemberService} from '../../services/member.service';
     MatTable,
     MatHeaderCellDef
   ],
-  templateUrl: './attendance-table.component.html',
-  styleUrl: './attendance-table.component.css'
+  templateUrl: './member-attendance-table.component.html',
+  styleUrl: './member-attendance-table.component.css'
 })
-export class AttendanceTableComponent implements OnInit, AfterViewInit {
+export class MemberAttendanceTableComponent implements OnInit {
 
-  @Input('memberId') memberId: number | null = null;
+  @Input('memberId') memberId?: number | null = null;
 
   @ViewChild('attendancePaginator') attendancePaginator: MatPaginator | null = null;
+
+  @ViewChild(MatTable) attendanceTable!: MatTable<EventAttendanceMemberPage>;
 
   attendances: EventAttendanceMemberPage[] = [];
   attendanceColumns: string[] = ['event', 'date', 'status', 'subbedBy'];
@@ -50,14 +51,10 @@ export class AttendanceTableComponent implements OnInit, AfterViewInit {
     if (this.memberId) {
       this.memberService.getMemberAttendances(this.memberId).subscribe(attendances => {
         this.attendances = attendances;
+        this.attendanceDataSource.data = this.attendances;
+        this.attendanceDataSource.paginator = this.attendancePaginator;
       })
     }
-
   }
-
-  ngAfterViewInit() {
-    this.attendanceDataSource.paginator = this.attendancePaginator;
-  }
-
 
 }

@@ -5,7 +5,7 @@ import {MemberService} from '../../services/member.service';
 import {MatIcon} from '@angular/material/icon';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
-import {AttendanceTableComponent} from '../../shared/attendance-table/attendance-table.component';
+import {MemberAttendanceTableComponent} from '../../shared/attendance-table/member-attendance-table.component';
 
 @Component({
   selector: 'app-member-page',
@@ -14,7 +14,7 @@ import {AttendanceTableComponent} from '../../shared/attendance-table/attendance
     MatIcon,
     FormsModule,
     NgIf,
-    AttendanceTableComponent
+    MemberAttendanceTableComponent
   ],
   templateUrl: './member-page.component.html',
   styleUrl: './member-page.component.css'
@@ -23,15 +23,17 @@ export class MemberPageComponent implements OnInit {
 
   member: Member | null = null;
 
+  memberId!: number
+
   constructor(private route: ActivatedRoute,
               private memberService: MemberService,
               private router: Router) {
   }
 
   ngOnInit() {
-    const memberId = Number(this.route.snapshot.paramMap.get('id'));
+    this.memberId = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.memberService.getMemberById(memberId).subscribe(member => {
+    this.memberService.getMemberById(this.memberId).subscribe(member => {
       this.member = member;
     })
   }

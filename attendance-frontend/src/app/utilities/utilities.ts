@@ -8,6 +8,17 @@ export class Utilities {
       case 'Arriving Late (both days)': return 'tuesday-conflict';
       case 'Leaving Early (both days)': return 'thursday-conflict';
       case 'Other': return 'other-conflict';
+      default: return 'no-conflict';
+    }
+  }
+
+  public static getAttendanceColor(attendance: string): string {
+    switch (attendance) {
+      case Constants.ATTENDANCE_PRESENT: return 'present';
+      case Constants.ATTENDANCE_PARTIAL_EXCUSED: return 'partial-excused';
+      case Constants.ATTENDANCE_PARTIAL_UNEXCUSED: return 'partial-unexcused';
+      case Constants.ATTENDANCE_ABSENT_EXCUSED: return 'absent-excused';
+      case Constants.ATTENDANCE_ABSENT_UNEXCUSED: return 'absent-unexcused';
       default: return '';
     }
   }

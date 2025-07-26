@@ -103,4 +103,10 @@ $client-theme: mat.define-light-theme((
   --other-conflict-color: purple;
   --tuesday-conflict-color: goldenrod;
   --thursday-conflict-color: darkgreen;
+  --no-conflict-color: black;
+  --present-color: lightgreen;
+  --partial-excused-color: lightyellow;
+  --partial-unexcused-color: lightsalmon;
+  --absent-excused-color: lightyellow;
+  --absent-unexcused-color: lightcoral;
 }

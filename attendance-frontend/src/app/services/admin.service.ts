@@ -5,6 +5,7 @@ import {Term} from '../models/term';
 import {MBEvent} from '../models/mb-event';
 import {Member} from '../models/member';
 import {User} from '../models/user';
+import {EventAttendanceTermPage} from '../models/event-attendance-term-page';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,11 @@ export class AdminService {
     return this.http.get<Term[]>(url);
   }
 
+  public getTermById(termId: number): Observable<Term> {
+    const url = this.baseUrl + `/terms/${termId}`;
+    return this.http.get<Term>(url);
+  }
+
   public getEventsByTermId(id: number): Observable<MBEvent[]> {
     const url = this.baseUrl + `/events/term/${id}`;
     return this.http.get<MBEvent[]>(url);
@@ -28,6 +34,16 @@ export class AdminService {
   public getMembersByTermId(id: number): Observable<Member[]> {
     const url = this.baseUrl + `/members/term/${id}`;
     return this.http.get<Member[]>(url);
+  }
+
+  public getAttendanceByTermId(id: number, eventType: string): Observable<EventAttendanceTermPage[]> {
+    const url = this.baseUrl + `/attendance/term/${id}/eventType/${eventType}`;
+    return this.http.get<EventAttendanceTermPage[]>(url);
+  }
+
+  public getAttendanceByTermIdAndPepBand(termId: number, pepBandId: string): Observable<EventAttendanceTermPage[]> {
+    const url = this.baseUrl + `/attendance/term/${termId}/pepBand/${pepBandId}`;
+    return this.http.get<EventAttendanceTermPage[]>(url);
   }
 
   public createEvent(event: MBEvent) {

@@ -18,7 +18,7 @@ export class MemberService {
   }
 
   public getMemberAttendances(memberId: number): Observable<EventAttendanceMemberPage[]> {
-    const url = this.baseUrl + `/attendance/${memberId}`;
+    const url = this.baseUrl + `/attendance/member/${memberId}`;
     return this.http.get<EventAttendanceMemberPage[]>(url);
   }
 }

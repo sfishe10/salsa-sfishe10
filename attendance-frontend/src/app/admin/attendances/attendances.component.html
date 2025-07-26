@@ -1,0 +1,23 @@
+<div (click)="goBackToAdmin()" class="back-button"
+     style="display: flex; flex-direction: row; align-items: center; width: max-content; max-height: 40px">
+  <mat-icon>arrow_left_alt</mat-icon>
+  <h4 style="text-decoration: underline">Back to Admin page</h4>
+</div>
+<mat-tab-group *ngIf="term">
+  <mat-tab label="Rehearsals">
+    <div style="padding: 10px">
+      <app-attendance-table [term]="term" [eventType]="EVENT_TYPE_REHEARSAL"></app-attendance-table>
+    </div>
+  </mat-tab>
+  <mat-tab label="Whole Band Events">
+    <div style="padding: 10px">
+      <app-attendance-table [term]="term" [eventType]="EVENT_TYPE_WHOLE_BAND_EVENT"></app-attendance-table>
+    </div>
+  </mat-tab>
+  <mat-tab label="Pep Events">
+    <div style="padding: 10px">
+      <app-attendance-table [term]="term" [eventType]="EVENT_TYPE_PEP_EVENT"></app-attendance-table>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
