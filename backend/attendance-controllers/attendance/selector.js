@@ -71,9 +71,6 @@ module.exports.getBySectionAndEventId = async (req, res) => {
       console.log(err);
       res.status(500).send(err.message);
     } else {
-      if (!results.length) {
-        return res.status(404).json({ message: 'Event not found' });
-      }
 
       const attendances = [];
       results.forEach((row) => {

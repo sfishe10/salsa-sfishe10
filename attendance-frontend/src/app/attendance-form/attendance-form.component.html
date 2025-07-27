@@ -1,11 +1,22 @@
-<div class="event-date">
-  <mat-icon class="calendar-icon">event</mat-icon>
-  <span>{{event?.date | date: 'EEEE, MMMM d h:mm a' }}</span>
+<div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 10px">
+  <div>
+    <div class="event-date">
+      <mat-icon class="calendar-icon">event</mat-icon>
+      <span>{{event?.date | date: 'EEEE, MMMM d h:mm a' }}</span>
+    </div>
+    <div class="event-title">
+      <span *ngIf="event?.pepBand?.bandId">{{event?.pepBand?.bandId}} Band: </span>
+      <span>{{event?.title}}</span>
+    </div>
+  </div>
+  <mat-form-field subscriptSizing="dynamic" *ngIf="sessionCacheService.isAdmin()">
+    <mat-label class="form-label">Select Section</mat-label>
+    <mat-select [(ngModel)]="selectedSection" (selectionChange)="onSectionChange($event.value)">
+      <mat-option *ngFor="let option of sectionOptions" [value]="option">{{option.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
-<div class="event-title">
-  <span *ngIf="event?.pepBand?.bandId">{{event?.pepBand?.bandId}} Band: </span>
-  <span>{{event?.title}}</span>
-</div>
+
 <div *ngIf="event?.type === REHEARSAL" class="rehearsal-conflict-legend">
   <div>
     <span style="color: var(--arriving-late-color)">{{Constants.REHEARSAL_CONFLICT_ARRIVING_LATE}}</span><br/>

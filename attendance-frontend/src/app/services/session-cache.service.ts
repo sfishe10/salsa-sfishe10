@@ -83,8 +83,4 @@ export class SessionCacheService {
     return this.get(Constants.STORAGE_KEY_IS_OFFICER);
   }
 
-  public getMySectionId() {
-    return this.get(Constants.STORAGE_KEY_ME).member.section.sectionId;
-  }
-
 }

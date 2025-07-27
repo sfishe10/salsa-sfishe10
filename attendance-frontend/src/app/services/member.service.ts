@@ -21,4 +21,9 @@ export class MemberService {
     const url = this.baseUrl + `/attendance/member/${memberId}`;
     return this.http.get<EventAttendanceMemberPage[]>(url);
   }
+
+  public getMembersBySectionId(sectionId: number): Observable<Member[]> {
+    const url = this.baseUrl + `/members/section/${sectionId}`;
+    return this.http.get<Member[]>(url);
+  }
 }

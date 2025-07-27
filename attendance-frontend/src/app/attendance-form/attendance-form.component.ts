@@ -2,11 +2,11 @@ import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {EventService} from '../services/event.service';
 import {DatePipe, NgForOf, NgIf, NgStyle} from '@angular/common';
-import {MatFormField, MatOption, MatSelect} from '@angular/material/select';
+import {MatFormField, MatLabel, MatOption, MatSelect} from '@angular/material/select';
 import {
   FormArray,
   FormBuilder,
-  FormGroup,
+  FormGroup, FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
 import {
@@ -26,6 +26,8 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {SessionCacheService} from '../services/session-cache.service';
 import {MsalBroadcastService} from '@azure/msal-angular';
 import {Member} from '../models/member';
+import {MemberService} from '../services/member.service';
+import {Section} from '../models/section';
 
 @Component({
   selector: 'app-attendance-form',
@@ -46,7 +48,9 @@ import {Member} from '../models/member';
     MatRowDef,
     MatButton,
     MatIcon,
-    NgStyle
+    NgStyle,
+    MatLabel,
+    FormsModule
   ],
   templateUrl: './attendance-form.component.html',
   styleUrl: './attendance-form.component.css'
@@ -55,6 +59,12 @@ export class AttendanceFormComponent implements OnInit {
 
   readonly PEP_EVENT: string = Constants.EVENT_TYPE_PEP_EVENT;
   readonly REHEARSAL: string = Constants.EVENT_TYPE_REHEARSAL;
+
+  public selectedSection: Section | null = null;
+
+  public sectionOptions: Section[] = [];
+
+  eventId: number | null = null;
 
   event: MBEvent | null = null;
 
@@ -79,7 +89,8 @@ export class AttendanceFormComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private fb: FormBuilder,
-              private sessionCacheService: SessionCacheService) {
+              public sessionCacheService: SessionCacheService,
+              private memberService: MemberService) {
     this.form = this.fb.group({
       attendances: this.fb.array([])
     });
@@ -90,18 +101,17 @@ export class AttendanceFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    const eventId = Number(this.route.snapshot.paramMap.get('id'));
+    this.eventId = Number(this.route.snapshot.paramMap.get('id'));
 
+    let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_ID);
     this.sectionMembers = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_MEMBERS);
 
-    this.eventService.getEvent(eventId).subscribe(event => {
-      console.log(event);
+    this.eventService.getEvent(this.eventId).subscribe(event => {
       this.event = event;
       this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.PEP_EVENT);
     })
 
-    let sectionId = this.sessionCacheService.getMySectionId();
-    this.eventService.getEventAttendance(eventId, sectionId).subscribe(attendances => {
+    this.eventService.getEventAttendance(this.eventId, sectionId).subscribe(attendances => {
       attendances.forEach(att => {
         this.eventAttendances.push(att);
         this.attendees.push(att.member);
@@ -110,12 +120,50 @@ export class AttendanceFormComponent implements OnInit {
         attendances: this.fb.array(attendances.map((att) =>
           this.fb.group({
             attendance: [att.attendance],
-            sub: [att.sub ? this.sectionMembers.find(m => m.memberId === att.sub?.memberId) : null]
+            sub: [att.sub]
           })
         ))
       });
 
     })
+
+    this.sectionOptions = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
+
+    this.selectedSection = this.sectionOptions
+      .find((section: Section) => section.sectionId == sectionId) ?? null;
+  }
+
+  onSectionChange(section: Section) {
+    let sectionId = section.sectionId;
+
+    this.memberService.getMembersBySectionId(sectionId).subscribe(members => {
+      this.sectionMembers = members;
+    })
+
+    if (!this.eventId) {
+      return;
+    }
+
+    this.eventService.getEventAttendance(this.eventId, sectionId).subscribe(attendances => {
+      this.eventAttendances = [];
+      this.attendees = [];
+
+      attendances.forEach(att => {
+        this.eventAttendances.push(att);
+        this.attendees.push(att.member);
+      });
+      this.form = this.fb.group({
+        attendances: this.fb.array(attendances.map((att) =>
+          this.fb.group({
+            attendance: [att.attendance],
+            sub: [att.sub]
+          })
+        ))
+      });
+
+    })
+
+
   }
 
   public onSubmit() {
