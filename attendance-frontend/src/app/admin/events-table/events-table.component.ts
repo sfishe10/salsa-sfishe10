@@ -149,7 +149,9 @@ export class EventsTableComponent implements OnInit, AfterViewInit {
       term: this.selectedTerm
     } as MBEvent;
 
-    this.adminService.createEvent(newEvent).subscribe(() => {
+    this.adminService.createEvent(newEvent).subscribe(response => {
+      console.log(response);
+      newEvent.eventId = response.eventId;
       this.events.push(newEvent);
       this.eventDataSource = new MatTableDataSource(this.events);
       this.eventDataSource.paginator = this.eventPaginator;
@@ -174,6 +176,7 @@ export class EventsTableComponent implements OnInit, AfterViewInit {
   openSnackBar(message: string, action: string, duration: number) {
     this._snackBar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});
   }
+
 
   readonly EVENT_TYPE_PEP_EVENT = Constants.EVENT_TYPE_PEP_EVENT
 }

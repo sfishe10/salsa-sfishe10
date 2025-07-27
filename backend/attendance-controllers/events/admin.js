@@ -1,7 +1,6 @@
 const db = require('../../config/db');
 
 module.exports.create = async (req, res) => {
-  console.log(req.body.event);
   const formattedDate = new Date(req.body.event.date).toISOString().slice(0, 19).replace('T', ' ');
   const pepBandId = req.body.event.pepBand ? req.body.event.pepBand.bandId : null;
   db.execute('CALL CreateEventAndAttendance(?, ?, ?, ?, ?)',
@@ -12,7 +11,9 @@ module.exports.create = async (req, res) => {
         console.log(err);
         res.status(500).send(err.message);
       } else {
-        res.send(result);
+        // Stored procs with SELECT return as nested arrays
+        const eventId = result[0][0].eventId;
+        res.send({ eventId });
       }
     });
 };

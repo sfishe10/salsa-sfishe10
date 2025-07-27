@@ -1,6 +1,8 @@
 <div>
-  <div style="margin-bottom: 10px;">
-    <mat-icon class="back-button" (click)="goBack()">arrow_back</mat-icon>
+  <div (click)="goBackToAdmin()" class="back-button"
+       style="display: flex; flex-direction: row; align-items: center; width: max-content; max-height: 40px">
+    <mat-icon>arrow_left_alt</mat-icon>
+    <h4 style="text-decoration: underline">Back to Admin page</h4>
   </div>
   <form #eventForm="ngForm" (ngSubmit)="saveEvent(eventForm)">
     <div style="display: flex; flex-direction: column">

@@ -1,5 +1,5 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {DatePipe, NgForOf, NgIf, NgStyle} from '@angular/common';
+import {Component, Input, OnInit} from '@angular/core';
+import {DatePipe, NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {
   MatCell,
   MatCellDef,
@@ -7,10 +7,9 @@ import {
   MatHeaderCell, MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
-  MatRow, MatRowDef, MatTable, MatTableDataSource
+  MatRow, MatRowDef, MatTable
 } from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
-import {EventAttendanceMemberPage} from '../../models/event-attendance-member-page';
 import {Term} from '../../models/term';
 import {AdminService} from '../../services/admin.service';
 import {EventAttendanceHeader} from '../../models/event-attendance-header';
@@ -22,7 +21,6 @@ import {MatSelect} from '@angular/material/select';
 import {PepBand} from '../../models/pep-band';
 import {FormsModule} from '@angular/forms';
 import {SessionCacheService} from '../../services/session-cache.service';
-import {Router} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 
 type MemberWithAttendance = {
@@ -49,7 +47,6 @@ type TableRow = SectionRow | MemberWithAttendance;
     MatHeaderCell,
     MatHeaderRow,
     MatHeaderRowDef,
-    MatPaginator,
     MatRow,
     MatRowDef,
     MatTable,
@@ -62,7 +59,7 @@ type TableRow = SectionRow | MemberWithAttendance;
     MatOption,
     MatSelect,
     FormsModule,
-    MatIcon
+    NgClass,
   ],
   templateUrl: './attendance-table.component.html',
   styleUrl: './attendance-table.component.css'

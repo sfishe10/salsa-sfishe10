@@ -86,8 +86,8 @@ export class EventPageComponent implements OnInit {
 
   }
 
-  goBack() {
-    this.router.navigate(['/admin']);
+  goBackToAdmin() {
+    this.router.navigate(['/admin'])
   }
 
   saveEvent(form: NgForm) {

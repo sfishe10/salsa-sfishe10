@@ -48,7 +48,7 @@ export class AdminService {
 
   public createEvent(event: MBEvent) {
     const url = this.baseUrl + '/events';
-    return this.http.post<MBEvent>(url, {event: event})
+    return this.http.post<any>(url, {event: event})
   }
 
   public updateEvent(event: MBEvent) {
