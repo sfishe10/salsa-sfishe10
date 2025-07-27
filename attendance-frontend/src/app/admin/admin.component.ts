@@ -3,7 +3,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {DatePipe, NgForOf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {Constants} from '../utilities/constants';
 import {
@@ -30,6 +30,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {Utilities} from '../utilities/utilities';
 import {MatIcon} from '@angular/material/icon';
 import {Router} from '@angular/router';
+import {SessionCacheService} from '../services/session-cache.service';
 
 @Component({
   selector: 'app-admin',
@@ -56,7 +57,8 @@ import {Router} from '@angular/router';
     MatAccordion,
     MatExpansionPanel,
     MatExpansionPanelHeader,
-    MatIcon
+    MatIcon,
+    NgIf
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -96,6 +98,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   @ViewChild(MembersTableComponent) membersTable!: MembersTableComponent;
 
   constructor(private adminService: AdminService,
+              public sessionCacheService: SessionCacheService,
               private dialog: MatDialog,
               private router: Router) {
   }

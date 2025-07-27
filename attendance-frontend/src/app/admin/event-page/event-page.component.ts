@@ -108,7 +108,7 @@ export class EventPageComponent implements OnInit {
       this.openSnackBar("Event updated!", "Ok", 3000);
     }, error => {
       console.log(error);
-      this.openSnackBar("Error creating event", "Ok", 3000);
+      this.openSnackBar("Error updating event", "Ok", 3000);
     })
   }
 
