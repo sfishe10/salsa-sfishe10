@@ -14,7 +14,7 @@ import {EventAttendanceMemberPage} from '../../models/event-attendance-member-pa
 import {MemberService} from '../../services/member.service';
 
 @Component({
-  selector: 'app-attendance-table',
+  selector: 'app-member-attendance-table',
   standalone: true,
   imports: [
     DatePipe,

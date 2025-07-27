@@ -7,8 +7,8 @@ import {RecentEventsComponent} from './recent-events/recent-events.component';
 import {AdminComponent} from './admin/admin.component';
 import {MemberPageComponent} from './admin/member-page/member-page.component';
 import {EventPageComponent} from './admin/event-page/event-page.component';
-import {AttendanceTableComponent} from './admin/attendance-table/attendance-table.component';
 import {AttendancesComponent} from './admin/attendances/attendances.component';
+import {UserPageComponent} from './admin/user-page/user-page.component';
 
 export const routes: Routes = [
   {
@@ -49,6 +49,11 @@ export const routes: Routes = [
   {
     path: 'member/:id',
     component: MemberPageComponent,
+    canActivate: [MsalGuard]
+  },
+  {
+    path: 'user/:id',
+    component: UserPageComponent,
     canActivate: [MsalGuard]
   },
   {

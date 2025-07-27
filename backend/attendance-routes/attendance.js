@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/', attendance.admin.create);
 router.post('/submitForm', attendance.admin.submitForm);
-router.post('/createEntries', attendance.admin.createEntries);
+// router.post('/createEntries', attendance.admin.createEntries);
 router.delete('/:id', attendance.admin.delete);
 
 /**

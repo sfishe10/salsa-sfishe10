@@ -16,7 +16,7 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getById = async (req, res) => {
   db.execute(
-    'SELECT m.*, u.firstName, u.lastName, u.email, u.role, s.name, p.displayName, t.startDate, t.endDate, t.termName ' +
+    'SELECT m.*, u.userId, u.firstName, u.lastName, u.email, u.role, s.name, p.displayName, t.startDate, t.endDate, t.termName ' +
     'FROM Member as m ' +
     'JOIN User AS u ON u.email = m.email ' +
     'JOIN Section as s ON m.sectionId = s.sectionId ' +
@@ -35,6 +35,7 @@ module.exports.getById = async (req, res) => {
         const member = {
           memberId: results[0].memberId,
           user: {
+            userId: results[0].userId,
             email: results[0].email,
             firstName: results[0].firstName,
             lastName: results[0].lastName,
@@ -82,6 +83,7 @@ module.exports.getSection = async (req, res) => {
           const member = {
             memberId: results[i].memberId,
             user: {
+              userId: results[i].userId,
               firstName: results[i].firstName,
               lastName: results[i].lastName,
               email: results[i].email,
@@ -106,7 +108,6 @@ module.exports.getSection = async (req, res) => {
           };
           members.push(member);
         }
-        console.log(members);
         res.send(members);
       }
     },
@@ -115,7 +116,7 @@ module.exports.getSection = async (req, res) => {
 
 module.exports.getByTermId = async (req, res) => {
   db.execute(
-    'SELECT Member.*, firstName, lastName, role, PepBand.displayName, Section.name, termName, startDate, endDate FROM Member ' +
+    'SELECT Member.*, User.*, PepBand.displayName, Section.name, termName, startDate, endDate FROM Member ' +
     'JOIN User ON Member.email = User.email ' +
     'LEFT JOIN PepBand on Member.pepBandId = PepBand.bandId ' +
     'JOIN Section on Member.sectionId = Section.sectionId ' +
@@ -132,6 +133,7 @@ module.exports.getByTermId = async (req, res) => {
           const member = {
             memberId: results[i].memberId,
             user: {
+              userId: results[i].userId,
               firstName: results[i].firstName,
               lastName: results[i].lastName,
               email: results[i].email,

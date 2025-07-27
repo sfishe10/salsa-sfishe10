@@ -49,9 +49,9 @@ module.exports.getBySectionAndEventId = async (req, res) => {
   db.execute('SELECT e.eventId, e.title, e.type, e.date, e.pepBandId AS eventPepBandId, p1.displayName as eventPepBandName, ' +
     'ea.*, ' +
     'm.pepBandId as memberPepBandId, p2.displayName as memberPepBandName, m.sectionId, m.rehearsalConflict, ' +
-    'u.firstName, u.lastName, u.email, u.role, ' +
+    'u.userId, u.firstName, u.lastName, u.email, u.role, ' +
     'sub.pepBandId as subPepBandId, p3.displayName as subPepBandName, sub.rehearsalConflict as subConflict, ' +
-    'sub_u.firstName as subFirst, sub_u.lastName as subLast, sub_u.email as subEmail, sub_u.role as subRole, ' +
+    'sub_u.userId as subUserId, sub_u.firstName as subFirst, sub_u.lastName as subLast, sub_u.email as subEmail, sub_u.role as subRole, ' +
     's.name as sectionName, ' +
     't.* ' +
     'FROM EventAttendance ea ' +
@@ -94,6 +94,7 @@ module.exports.getBySectionAndEventId = async (req, res) => {
           member: {
             memberId: row.memberId,
             user: {
+              userId: row.userId,
               email: row.email,
               firstName: row.firstName,
               lastName: row.lastName,
@@ -120,6 +121,7 @@ module.exports.getBySectionAndEventId = async (req, res) => {
           sub: {
             memberId: row.subId,
             user: {
+              userId: row.subUserId,
               email: row.subEmail,
               firstName: row.subFirst,
               lastName: row.subLast,

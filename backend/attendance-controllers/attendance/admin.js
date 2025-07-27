@@ -69,27 +69,27 @@ module.exports.submitForm = async (req, res) => {
   });
 };
 
-module.exports.createEntries = async (req, res) => {
-  const params = [];
-  let insertString = 'INSERT INTO EventAttendance (eventId, memberId, attendance, subId) VALUES ';
-  req.body.attendances.forEach((attendance) => {
-    insertString += '(?, ?, ?, ?), ';
-    params.push(attendance.eventId);
-    params.push(attendance.memberId);
-    params.push(attendance.attendance);
-    params.push(attendance.subId);
-  });
-  // remove last comma and space
-  insertString = insertString.slice(0, -2);
-  await db.execute(insertString, params, (err, results) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send(err.message);
-    } else {
-      res.send(results);
-    }
-  });
-};
+// module.exports.createEntries = async (req, res) => {
+//   const params = [];
+//   let insertString = 'INSERT INTO EventAttendance (eventId, memberId, attendance, subId) VALUES ';
+//   req.body.attendances.forEach((attendance) => {
+//     insertString += '(?, ?, ?, ?), ';
+//     params.push(attendance.eventId);
+//     params.push(attendance.memberId);
+//     params.push(attendance.attendance);
+//     params.push(attendance.subId);
+//   });
+//   // remove last comma and space
+//   insertString = insertString.slice(0, -2);
+//   await db.execute(insertString, params, (err, results) => {
+//     if (err) {
+//       console.log(err);
+//       res.status(500).send(err.message);
+//     } else {
+//       res.send(results);
+//     }
+//   });
+// };
 
 module.exports.delete = async (req, res) => {
   const attendanceId = req.params.id;

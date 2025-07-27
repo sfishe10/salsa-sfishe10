@@ -8,6 +8,7 @@ const router = express.Router();
  */
 
 router.post('/', users.admin.create);
+router.put('/', users.admin.update);
 
 /**
  * selectors

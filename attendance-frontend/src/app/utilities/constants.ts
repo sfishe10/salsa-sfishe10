@@ -39,4 +39,5 @@ export class Constants {
   static readonly STORAGE_KEY_SECTION_MEMBERS = 'SECTION_MEMBERS';
   static readonly STORAGE_KEY_SECTIONS = 'SECTIONS'
   static readonly STORAGE_KEY_PEP_BANDS = 'PEP_BANDS';
+  static readonly STORAGE_KEY_USER = 'USER';
 }

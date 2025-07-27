@@ -20,14 +20,14 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getById = async (req, res) => {
   db.execute(
-    'SELECT * FROM User where userId=? ORDER BY lastName',
+    'SELECT * FROM User where userId=?',
     [req.params.id],
     (err, results) => {
       if (err) {
         console.log(err);
         res.status(500).send(err.message);
       } else {
-        res.send(results);
+        res.send(results[0]);
       }
     },
   );

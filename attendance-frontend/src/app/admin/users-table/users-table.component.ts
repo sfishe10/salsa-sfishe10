@@ -23,6 +23,8 @@ import {MatSelect} from '@angular/material/select';
 import {NgForOf, NgIf} from '@angular/common';
 import {Utilities} from '../../utilities/utilities';
 import {Member} from '../../models/member';
+import {Router} from '@angular/router';
+import {Constants} from '../../utilities/constants';
 
 @Component({
   selector: 'app-users-table',
@@ -63,15 +65,18 @@ export class UsersTableComponent implements OnInit, AfterViewInit {
 
   @ViewChild('userPaginator') userPaginator: MatPaginator | null = null;
 
-  @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
+  @ViewChild('assignUserDialog') assignUserDialog!: TemplateRef<any>;
   userDialogRef!: MatDialogRef<any>;
 
   users: User[] = [];
   userColumns: string[] = [];
   userDataSource: MatTableDataSource<User> = new MatTableDataSource<User>(this.users);
 
+  userEmail: string = '';
+
   constructor(private adminService: AdminService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private router: Router) {
   }
 
   ngAfterViewInit() {
@@ -99,14 +104,18 @@ export class UsersTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openUserDialog() {
-    this.userDialogRef = this.dialog.open(this.addUserDialog);
-  }
+  // openUserDialog() {
+  //   this.userDialogRef = this.dialog.open(this.assignUserDialog);
+  // }
+  //
+  // onCancelDialog() {
+  //   this.dialog.closeAll();
+  // }
 
-  onCancelDialog() {
-    this.dialog.closeAll();
+  navigateToUser(userId: number) {
+    console.log(userId);
+    this.router.navigate(['/user', userId]);
   }
-
 
   openSnackBar(message: string, action: string, duration: number) {
     this._snackBar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});

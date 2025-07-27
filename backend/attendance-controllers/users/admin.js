@@ -22,3 +22,16 @@ module.exports.create = async (req, res) => {
         });
     });
 };
+
+module.exports.update = async (req, res) => {
+  const { user } = req.body;
+  db.execute('UPDATE User SET firstName=?, lastName=?, role=? WHERE email=?',
+    [user.firstName, user.lastName, user.role, user.email],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send(err.message);
+      }
+      return res.send(result);
+    });
+};
