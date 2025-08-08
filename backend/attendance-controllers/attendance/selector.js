@@ -212,9 +212,9 @@ module.exports.getByTermIdAndPepBand = async (req, res) => {
     'LEFT JOIN Member sub ON ea.subId = sub.memberId ' +
     'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
     'JOIN Section s ON mem.sectionId = s.sectionId ' +
-    'WHERE e.termId=? and e.pepBandId=? ' +
+    'WHERE e.termId=? and e.pepBandId=? and mem.pepBandId=? ' +
     'ORDER BY sectionName, e.date, memLast',
-    [termId, pepBandId], (err, results) => {
+    [termId, pepBandId, pepBandId], (err, results) => {
       if (err) {
         console.log(err);
         res.status(500).send(err.message);
