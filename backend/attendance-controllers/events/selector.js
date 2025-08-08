@@ -60,7 +60,7 @@ module.exports.getRecent = async (req, res) => {
           const newEvent = {
             eventId: row.eventId,
             title: row.title,
-            date: row.date,
+            date: convertDateToPST(row.date),
             type: row.type,
             term: {
               termId: row.termId,
@@ -99,7 +99,7 @@ module.exports.getUpcoming = async (req, res) => {
           const newEvent = {
             eventId: row.eventId,
             title: row.title,
-            date: row.date,
+            date: convertDateToPST(row.date),
             type: row.type,
             term: {
               termId: row.termId,

@@ -1,8 +1,8 @@
 const db = require('../../config/db');
 
 module.exports.create = async (req, res) => {
-  const params = [req.params.eventId];
-  await db.execute('INSERT INTO EventAttendance (eventId, memberId, attendance, subId) VALUES (?, ?, NULL, NULL)',
+  const params = [req.body.eventId, req.body.memberId];
+  await db.execute('INSERT INTO EventAttendance (eventId, memberId, attendance, subId, required) VALUES (?, ?, NULL, NULL, FALSE)',
     params,
     (err, result) => {
       if (err) {
@@ -10,7 +10,7 @@ module.exports.create = async (req, res) => {
         res.status(500).send(err.message);
       } else {
         // send back the auto-generated ID
-        res.send(result.insertId);
+        res.send({ attendanceId: result.insertId });
       }
     });
 };

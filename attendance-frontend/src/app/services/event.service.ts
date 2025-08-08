@@ -37,4 +37,14 @@ export class EventService {
     return this.http.get<EventAttendance[]>(url);
   }
 
+  public addAttendance(eventId: number, memberId: number | null): Observable<any> {
+    const url = this.baseUrl + `/attendance`;
+    return this.http.post<any>(url, {eventId, memberId})
+  }
+
+  public removeAttendance(attendanceId: number): Observable<any> {
+    const url = this.baseUrl + `/attendance/${attendanceId}`;
+    return this.http.delete<any>(url)
+  }
+
 }

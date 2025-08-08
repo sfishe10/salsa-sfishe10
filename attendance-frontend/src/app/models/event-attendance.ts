@@ -5,6 +5,7 @@ export interface EventAttendance {
   attendanceId: number;
   event: MBEvent;
   attendance: string;
-  member: Member;
+  member: Member | null;
   sub: Member | null;
+  required: boolean;
 }

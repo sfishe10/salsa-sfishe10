@@ -16,7 +16,7 @@ import {
   MatRow, MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {Constants} from '../utilities/constants';
 import {Utilities} from '../utilities/utilities';
@@ -50,7 +50,8 @@ import {Section} from '../models/section';
     MatIcon,
     NgStyle,
     MatLabel,
-    FormsModule
+    FormsModule,
+    MatIconButton
   ],
   templateUrl: './attendance-form.component.html',
   styleUrl: './attendance-form.component.css'
@@ -64,13 +65,11 @@ export class AttendanceFormComponent implements OnInit {
 
   public sectionOptions: Section[] = [];
 
-  eventId: number | null = null;
+  eventId!: number;
 
-  event: MBEvent | null = null;
+  event!: MBEvent;
 
   private _snackBar = inject(MatSnackBar);
-
-  attendees: Member[] = [];
 
   eventAttendances: EventAttendance[] = [];
 
@@ -78,7 +77,7 @@ export class AttendanceFormComponent implements OnInit {
 
   form: FormGroup;
 
-  columnsToDisplay = ['name', 'attendance'];
+  columnsToDisplay = ['name', 'attendance', 'delete'];
 
   sectionMembers: Member[] = [];
 
@@ -112,19 +111,22 @@ export class AttendanceFormComponent implements OnInit {
     })
 
     this.eventService.getEventAttendance(this.eventId, sectionId).subscribe(attendances => {
+      console.log(attendances)
       attendances.forEach(att => {
         this.eventAttendances.push(att);
-        this.attendees.push(att.member);
       });
       this.form = this.fb.group({
         attendances: this.fb.array(attendances.map((att) =>
           this.fb.group({
+            attendanceId: [att.attendanceId],
+            memberId: [att.member?.memberId],
             attendance: [att.attendance],
-            sub: [att.sub]
+            sub: [att.sub],
+            required: [att.required]
           })
         ))
       });
-
+      console.log(this.form);
     })
 
     this.sectionOptions = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
@@ -146,24 +148,22 @@ export class AttendanceFormComponent implements OnInit {
 
     this.eventService.getEventAttendance(this.eventId, sectionId).subscribe(attendances => {
       this.eventAttendances = [];
-      this.attendees = [];
 
       attendances.forEach(att => {
         this.eventAttendances.push(att);
-        this.attendees.push(att.member);
       });
       this.form = this.fb.group({
         attendances: this.fb.array(attendances.map((att) =>
           this.fb.group({
+            attendanceId: [att.attendanceId],
+            memberId: [att.member?.memberId],
             attendance: [att.attendance],
-            sub: [att.sub]
+            sub: [att.sub],
+            required: [att.required]
           })
         ))
       });
-
     })
-
-
   }
 
   public onSubmit() {
@@ -190,13 +190,21 @@ export class AttendanceFormComponent implements OnInit {
   private validateForm() {
     const formGroups = this.attendances.controls;
     let errors: number = 0;
-    for (let i = 0; i < this.attendees.length; i++) {
+    for (let i = 0; i < this.eventAttendances.length; i++) {
       const group = formGroups[i];
+      const memberId = group.get('memberId')?.value;
       const attendance = group.get('attendance')?.value;
       const sub = group.get('sub')?.value;
+      const required = group.get('required')?.value;
 
       if (!attendance) {
         group.get('attendance')?.setErrors(({required: true}));
+        this.showRequiredFieldError = true;
+        errors++;
+      }
+
+      if (!memberId) {
+        group.get('memberId')?.setErrors((({required: true})));
         this.showRequiredFieldError = true;
         errors++;
       }
@@ -207,8 +215,10 @@ export class AttendanceFormComponent implements OnInit {
         errors++;
       }
 
+      this.eventAttendances[i].member = this.sectionMembers.find(m => m.memberId === memberId) ?? null;
       this.eventAttendances[i].attendance = attendance;
       this.eventAttendances[i].sub = sub ?? null;
+      this.eventAttendances[i].required = required;
     }
     return errors;
   }
@@ -225,6 +235,56 @@ export class AttendanceFormComponent implements OnInit {
       let group = control as FormGroup;
       group.get('attendance')?.setValue('');
     })
+  }
+
+  public addAttendee() {
+    this.eventService.addAttendance(this.eventId, null).subscribe(response => {
+      const newAttendance = {
+        attendanceId: response.attendanceId,
+        event: this.event,
+        attendance: '',
+        member: null,
+        sub: null,
+        required: false
+      } as EventAttendance
+      this.eventAttendances.push(newAttendance);
+      this.eventAttendances = [...this.eventAttendances];
+      this.attendances.push(
+        this.fb.group({
+          attendanceId: [response.attendanceId],
+          memberId: [null],
+          attendance: [''],
+          sub: [null],
+          required: [false]
+        })
+      );
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error Adding Attendee", "Ok", 3000);
+    })
+  }
+
+  public removeAttendee(eventAttendance: EventAttendance) {
+    console.log(this.eventAttendances);
+    console.log(this.attendances);
+    let attendanceId = eventAttendance.attendanceId;
+    console.log(eventAttendance);
+    this.eventService.removeAttendance(attendanceId).subscribe(() => {
+      this.eventAttendances = this.eventAttendances.filter(a => a.attendanceId != attendanceId);
+      const index = this.attendances.controls.findIndex(ctrl => ctrl.get('attendanceId')?.value === attendanceId);
+      this.attendances.removeAt(index);
+
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error Removing Attendee", "Ok", 3000);
+    })
+  }
+
+  getAvailableMembers(i: number): Member[] {
+    let members = this.sectionMembers.filter(m =>
+      !this.eventAttendances.some(a => a.required && a.member?.memberId === m.memberId)
+    );
+    return members
   }
 
   openSnackBar(message: string, action: string, duration: number) {

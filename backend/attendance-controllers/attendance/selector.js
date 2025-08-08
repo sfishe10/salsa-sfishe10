@@ -65,13 +65,12 @@ module.exports.getBySectionAndEventId = async (req, res) => {
     'LEFT JOIN PepBand p3 on sub.pepBandId = p3.bandId ' +
     'LEFT JOIN Section s on m.sectionId = s.sectionId ' +
     'LEFT JOIN Term t on e.termId = t.termId ' +
-    'WHERE e.eventId=? AND m.sectionId=?', [req.params.eventId, req.params.sectionId],
+    'WHERE e.eventId=? AND (m.sectionId=? OR ea.memberId IS NULL)', [req.params.eventId, req.params.sectionId],
   (err, results) => {
     if (err) {
       console.log(err);
       res.status(500).send(err.message);
     } else {
-
       const attendances = [];
       results.forEach((row) => {
         const attendance = {
@@ -88,34 +87,35 @@ module.exports.getBySectionAndEventId = async (req, res) => {
                   displayName: row.eventPepBandName,
                 } : null,
           },
-          member: {
-            memberId: row.memberId,
-            user: {
-              userId: row.userId,
-              email: row.email,
-              firstName: row.firstName,
-              lastName: row.lastName,
-              role: row.role,
-            },
-            section: {
-              sectionId: row.sectionId,
-              displayName: row.memberPepBandName,
-            },
-            rehearsalConflict: row.rehearsalConflict,
-            pepBand:
-              row.memberPepBandId
-                ? {
-                  bandId: row.memberPepBandId,
-                  displayName: row.memberPepBandName,
-                } : null,
-            term: {
-              termId: row.termId,
-              termName: row.termName,
-              startDate: row.startDate,
-              endDate: row.endDate,
-            },
-          },
-          sub: {
+          member: row.memberId
+            ? {
+              memberId: row.memberId,
+              user: {
+                userId: row.userId,
+                email: row.email,
+                firstName: row.firstName,
+                lastName: row.lastName,
+                role: row.role,
+              },
+              section: {
+                sectionId: row.sectionId,
+                displayName: row.memberPepBandName,
+              },
+              rehearsalConflict: row.rehearsalConflict,
+              pepBand:
+                row.memberPepBandId
+                  ? {
+                    bandId: row.memberPepBandId,
+                    displayName: row.memberPepBandName,
+                  } : null,
+              term: {
+                termId: row.termId,
+                termName: row.termName,
+                startDate: row.startDate,
+                endDate: row.endDate,
+              },
+            } : null,
+          sub: row.subId ? {
             memberId: row.subId,
             user: {
               userId: row.subUserId,
@@ -141,8 +141,9 @@ module.exports.getBySectionAndEventId = async (req, res) => {
               startDate: row.startDate,
               endDate: row.endDate,
             },
-          },
+          } : null,
           attendance: row.attendance,
+          required: row.required,
         };
         attendances.push(attendance);
       });

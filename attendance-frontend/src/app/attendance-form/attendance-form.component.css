@@ -57,6 +57,12 @@ mat-option {
   align-items: center;
   justify-content: center;
   padding: 4px;
+}
+
+.delete-button-cell {
+  width: 40px;
+  text-align: center;
+  padding: 0;
   background-color: var(--mat-sidenav-content-background-color);
 }
 
