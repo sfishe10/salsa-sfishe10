@@ -35,6 +35,10 @@
   height: 1.5rem;
 }
 
+.member-row:hover {
+  filter: brightness(90%);
+}
+
 .attendance-col {
   white-space: nowrap;
   border-right: 1px solid lightgray;

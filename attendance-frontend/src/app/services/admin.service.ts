@@ -41,8 +41,8 @@ export class AdminService {
     return this.http.get<EventAttendanceTermPage[]>(url);
   }
 
-  public getAttendanceByTermIdAndPepBand(termId: number, pepBandId: string): Observable<EventAttendanceTermPage[]> {
-    const url = this.baseUrl + `/attendance/term/${termId}/pepBand/${pepBandId}`;
+  public getAttendanceByTermIdAndPepBand(termId: number, pepBandId: string, ignoreMemberPepBand: boolean): Observable<EventAttendanceTermPage[]> {
+    const url = this.baseUrl + `/attendance/term/${termId}/pepBand/${pepBandId}?ignoreMemberPepBand=${ignoreMemberPepBand}`;
     return this.http.get<EventAttendanceTermPage[]>(url);
   }
 

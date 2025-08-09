@@ -8,13 +8,15 @@
     <span style="color: var(--thursday-conflict-color)">{{Constants.REHEARSAL_CONFLICT_THURS}}</span><br/>
 </div>
 
-<div *ngIf="eventType === Constants.EVENT_TYPE_PEP_EVENT" style="margin-bottom: 20px;">
+<div *ngIf="eventType === Constants.EVENT_TYPE_PEP_EVENT"
+     style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 20px;">
   <mat-form-field subscriptSizing="dynamic">
     <mat-label class="form-label">Select a Pep Band</mat-label>
     <mat-select [(ngModel)]="selectedPepBand" (selectionChange)="onPepBandChange($event.value)">
       <mat-option *ngFor="let option of pepBandOptions" [value]="option">{{option.displayName}}</mat-option>
     </mat-select>
   </mat-form-field>
+  <p><mat-slide-toggle (change)="toggleIncludeOtherPepBandMembers($event)">Include attendees from other pep bands</mat-slide-toggle></p>
 </div>
 
 <div *ngIf="!dataSource || dataSource.length == 0">

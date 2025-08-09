@@ -201,6 +201,8 @@ module.exports.getByTermId = async (req, res) => {
 module.exports.getByTermIdAndPepBand = async (req, res) => {
   const termId = req.params.termId;
   const pepBandId = req.params.pepBandId;
+  const ignoreMemberPepBand = req.query.ignoreMemberPepBand === 'true';
+  const params = ignoreMemberPepBand ? [termId, pepBandId] : [termId, pepBandId, pepBandId];
   db.execute('SELECT attendanceId, attendance, ' +
     'e.*, mem.memberId, mem.rehearsalConflict, u.firstName as memFirst, u.lastName as memLast, ' +
     'sub.memberId as subId, sub_u.firstName as subFirst, sub_u.lastName as subLast, s.sectionId, s.name as sectionName ' +
@@ -212,9 +214,8 @@ module.exports.getByTermIdAndPepBand = async (req, res) => {
     'LEFT JOIN Member sub ON ea.subId = sub.memberId ' +
     'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
     'JOIN Section s ON mem.sectionId = s.sectionId ' +
-    'WHERE e.termId=? and e.pepBandId=? and mem.pepBandId=? ' +
-    'ORDER BY sectionName, e.date, memLast',
-    [termId, pepBandId, pepBandId], (err, results) => {
+    'WHERE e.termId=? and e.pepBandId=? ' + (ignoreMemberPepBand ? '' : 'and mem.pepBandId=? ') +
+    'ORDER BY sectionName, e.date, memLast', params, (err, results) => {
       if (err) {
         console.log(err);
         res.status(500).send(err.message);

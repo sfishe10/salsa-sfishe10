@@ -21,7 +21,8 @@ import {MatSelect} from '@angular/material/select';
 import {PepBand} from '../../models/pep-band';
 import {FormsModule} from '@angular/forms';
 import {SessionCacheService} from '../../services/session-cache.service';
-import {MatIcon} from '@angular/material/icon';
+import {MatSlideToggle, MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {EventAttendanceTermPage} from '../../models/event-attendance-term-page';
 
 type MemberWithAttendance = {
   isSection: false;
@@ -60,6 +61,7 @@ type TableRow = SectionRow | MemberWithAttendance;
     MatSelect,
     FormsModule,
     NgClass,
+    MatSlideToggle,
   ],
   templateUrl: './attendance-table.component.html',
   styleUrl: './attendance-table.component.css'
@@ -79,6 +81,8 @@ export class AttendanceTableComponent implements OnInit {
 
   selectedPepBand: PepBand | null = null;
 
+  ignoreMemberPepBand: boolean = false;
+
   isSectionRow = (index: number, row: TableRow): row is SectionRow => row.isSection;
   isMemberRow = (index: number, row: TableRow): row is MemberWithAttendance => !row.isSection;
 
@@ -96,64 +100,8 @@ export class AttendanceTableComponent implements OnInit {
     } else {
       let termId = this.term.termId;
 
-      const rows: TableRow[] = [];
-      const grouped = new Map<string, MemberWithAttendance[]>(); // sectionName -> members
-
       this.adminService.getAttendanceByTermId(termId, this.eventType).subscribe(attendances => {
-        this.events = [];
-        for (const record of attendances) {
-          const key = `${record.memberId}`;
-          const fullName = `${record.memberFirstName} ${record.memberLastName}`;
-          const sectionName = record.sectionName;
-
-          const attendanceEvent = {
-            eventId: record.eventId,
-            title: record.eventTitle,
-            date: record.eventDate
-          }
-          this.events.push(attendanceEvent);
-
-          if (!grouped.has(sectionName)) {
-            grouped.set(sectionName, []);
-          }
-
-          const sectionMembers = grouped.get(sectionName)!;
-          let memberRow = sectionMembers.find(m => m.memberId === record.memberId);
-
-          if (!memberRow) {
-            memberRow = {
-              isSection: false,
-              memberId: record.memberId,
-              fullName,
-              sectionName,
-              rehearsalConflict: record.rehearsalConflict,
-              attendanceMap: {}
-            };
-            sectionMembers.push(memberRow);
-          }
-
-          memberRow.attendanceMap[record.eventId] = record.attendanceStatus;
-        }
-
-        // remove duplicates in the events array (since each event has many attendance records)
-        this.events = Array.from(
-          new Map(this.events.map(e => [e.eventId, e])).values()
-        );
-
-        // Build rows: section header + member rows
-        for (const [sectionName, members] of grouped) {
-          rows.push({ isSection: true, sectionName });
-          rows.push(...members);
-        }
-
-        this.dataSource = rows;
-        this.displayedColumns = ['name', ...this.events.map(e => e.eventId.toString())];
-
-        console.table(rows.map(r => ({
-          isSection: r.isSection,
-          sectionName: (r as SectionRow).sectionName,
-          fullName: (r as MemberWithAttendance).fullName
-        })));
+        this.populateTable(attendances);
       })
     }
 
@@ -162,68 +110,83 @@ export class AttendanceTableComponent implements OnInit {
   onPepBandChange(pepBand: PepBand) {
     let termId = this.term.termId;
 
-    const rows: TableRow[] = [];
-    const grouped = new Map<string, MemberWithAttendance[]>(); // sectionName -> members
 
-    this.adminService.getAttendanceByTermIdAndPepBand(termId, pepBand.bandId).subscribe(attendances => {
-      this.events = [];
-      for (const record of attendances) {
-        const key = `${record.memberId}`;
-        const fullName = `${record.memberFirstName} ${record.memberLastName}`;
-        const sectionName = record.sectionName;
-
-        const attendanceEvent = {
-          eventId: record.eventId,
-          title: record.eventTitle,
-          date: record.eventDate
-        }
-        this.events.push(attendanceEvent);
-
-        if (!grouped.has(sectionName)) {
-          grouped.set(sectionName, []);
-        }
-
-        const sectionMembers = grouped.get(sectionName)!;
-        let memberRow = sectionMembers.find(m => m.memberId === record.memberId);
-
-        if (!memberRow) {
-          memberRow = {
-            isSection: false,
-            memberId: record.memberId,
-            fullName,
-            sectionName,
-            rehearsalConflict: record.rehearsalConflict,
-            attendanceMap: {}
-          };
-          sectionMembers.push(memberRow);
-        }
-
-        memberRow.attendanceMap[record.eventId] = record.attendanceStatus;
-      }
-
-      // remove duplicates in the events array (since each event has many attendance records)
-      this.events = Array.from(
-        new Map(this.events.map(e => [e.eventId, e])).values()
-      );
-
-      // Build rows: section header + member rows
-      for (const [sectionName, members] of grouped) {
-        rows.push({ isSection: true, sectionName });
-        rows.push(...members);
-      }
-
-      this.dataSource = rows;
-      this.displayedColumns = ['name', ...this.events.map(e => e.eventId.toString())];
-
-      console.table(rows.map(r => ({
-        isSection: r.isSection,
-        sectionName: (r as SectionRow).sectionName,
-        fullName: (r as MemberWithAttendance).fullName
-      })));
+    this.adminService.getAttendanceByTermIdAndPepBand(termId, pepBand.bandId, false).subscribe(attendances => {
+      this.populateTable(attendances);
     })
   }
 
+  toggleIncludeOtherPepBandMembers(event: MatSlideToggleChange) {
+    this.ignoreMemberPepBand = event.checked;
 
+    if (!this.selectedPepBand) {
+      return;
+    }
+
+    this.adminService.getAttendanceByTermIdAndPepBand(this.term.termId, this.selectedPepBand.bandId, this.ignoreMemberPepBand).subscribe(attendances => {
+      this.populateTable(attendances);
+    })
+  }
+
+  populateTable(attendances: EventAttendanceTermPage[]) {
+    const rows: TableRow[] = [];
+    const grouped = new Map<string, MemberWithAttendance[]>(); // sectionName -> members
+
+    this.events = [];
+    for (const record of attendances) {
+      const key = `${record.memberId}`;
+      const fullName = `${record.memberFirstName} ${record.memberLastName}`;
+      const sectionName = record.sectionName;
+
+      const attendanceEvent = {
+        eventId: record.eventId,
+        title: record.eventTitle,
+        date: record.eventDate
+      }
+      this.events.push(attendanceEvent);
+
+      if (!grouped.has(sectionName)) {
+        grouped.set(sectionName, []);
+      }
+
+      const sectionMembers = grouped.get(sectionName)!;
+      let memberRow = sectionMembers.find(m => m.memberId === record.memberId);
+
+      if (!memberRow) {
+        memberRow = {
+          isSection: false,
+          memberId: record.memberId,
+          fullName,
+          sectionName,
+          rehearsalConflict: record.rehearsalConflict,
+          attendanceMap: {}
+        };
+        sectionMembers.push(memberRow);
+      }
+
+      memberRow.attendanceMap[record.eventId] = record.attendanceStatus;
+    }
+
+    // remove duplicates in the events array (since each event has many attendance records)
+    this.events = Array.from(
+      new Map(this.events.map(e => [e.eventId, e])).values()
+    );
+
+    // Build rows: section header + member rows
+    for (const [sectionName, members] of grouped) {
+      rows.push({ isSection: true, sectionName });
+      rows.push(...members);
+    }
+
+    this.dataSource = rows;
+    this.displayedColumns = ['name', ...this.events.map(e => e.eventId.toString())];
+
+    console.table(rows.map(r => ({
+      isSection: r.isSection,
+      sectionName: (r as SectionRow).sectionName,
+      fullName: (r as MemberWithAttendance).fullName
+    })));
+  }
 
   protected readonly Constants = Constants;
   protected readonly Utilities = Utilities;
