@@ -24,10 +24,11 @@ import {MBEvent} from '../models/mb-event';
 import {EventAttendance} from '../models/event-attendance';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {SessionCacheService} from '../services/session-cache.service';
-import {MsalBroadcastService} from '@azure/msal-angular';
 import {Member} from '../models/member';
 import {MemberService} from '../services/member.service';
 import {Section} from '../models/section';
+import {AttendanceSelectComponent} from './attendance-select/attendance-select.component';
+import {MemberSelectComponent} from './member-select/member-select.component';
 
 @Component({
   selector: 'app-attendance-form',
@@ -51,7 +52,9 @@ import {Section} from '../models/section';
     NgStyle,
     MatLabel,
     FormsModule,
-    MatIconButton
+    MatIconButton,
+    AttendanceSelectComponent,
+    MemberSelectComponent
   ],
   templateUrl: './attendance-form.component.html',
   styleUrl: './attendance-form.component.css'
@@ -285,6 +288,10 @@ export class AttendanceFormComponent implements OnInit {
       !this.eventAttendances.some(a => a.required && a.member?.memberId === m.memberId)
     );
     return members
+  }
+
+  includeSubOption(): boolean {
+    return this.event.type === Constants.EVENT_TYPE_PEP_EVENT;
   }
 
   openSnackBar(message: string, action: string, duration: number) {

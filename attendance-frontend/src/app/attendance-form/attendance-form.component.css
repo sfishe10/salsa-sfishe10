@@ -55,8 +55,9 @@ mat-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 4px;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
 }
 
 .delete-button-cell {
@@ -94,6 +95,10 @@ mat-option {
 
 .mat-mdc-row {
   font-size: 1rem;
+}
+
+.mdc-data-table__cell {
+  padding-right: 0;
 }
 
 .error-message {

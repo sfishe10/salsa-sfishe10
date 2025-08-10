@@ -16,7 +16,7 @@
       <mat-option *ngFor="let option of pepBandOptions" [value]="option">{{option.displayName}}</mat-option>
     </mat-select>
   </mat-form-field>
-  <p><mat-slide-toggle (change)="toggleIncludeOtherPepBandMembers($event)">Include attendees from other pep bands</mat-slide-toggle></p>
+  <p><mat-slide-toggle (change)="toggleIncludeOtherPepBandMembers($event)">Include extra attendees</mat-slide-toggle></p>
 </div>
 
 <div *ngIf="!dataSource || dataSource.length == 0">

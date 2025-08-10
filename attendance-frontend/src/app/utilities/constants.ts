@@ -21,10 +21,12 @@ export class Constants {
   static readonly REHEARSAL_CONFLICT_OTHER = 'Other';
 
   static readonly ATTENDANCE_PRESENT = 'Present';
-  static readonly ATTENDANCE_ABSENT_UNEXCUSED = 'Absent Unexcused';
-  static readonly ATTENDANCE_ABSENT_EXCUSED = 'Absent Excused';
-  static readonly ATTENDANCE_PARTIAL_UNEXCUSED = 'Partial Unexcused';
-  static readonly ATTENDANCE_PARTIAL_EXCUSED = 'Partial Excused';
+  static readonly ATTENDANCE_ABSENT_UNEXCUSED = 'Absent - Unexcused';
+  static readonly ATTENDANCE_ABSENT_EXCUSED = 'Absent - Excused';
+  static readonly ATTENDANCE_LATE_UNEXCUSED = 'Arrived Late - Unexcused';
+  static readonly ATTENDANCE_LATE_EXCUSED = 'Arrived Late - Excused';
+  static readonly ATTENDANCE_LEFT_EARLY_UNEXCUSED = 'Left Early - Unexcused';
+  static readonly ATTENDANCE_LEFT_EARLY_EXCUSED = 'Left Early - Excused';
   static readonly ATTENDANCE_SUB = 'Sub';
 
   static readonly ROLE_ADMIN = 'Admin';

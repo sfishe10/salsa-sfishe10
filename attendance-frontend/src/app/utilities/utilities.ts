@@ -15,8 +15,10 @@ export class Utilities {
   public static getAttendanceColor(attendance: string): string {
     switch (attendance) {
       case Constants.ATTENDANCE_PRESENT: return 'present';
-      case Constants.ATTENDANCE_PARTIAL_EXCUSED: return 'partial-excused';
-      case Constants.ATTENDANCE_PARTIAL_UNEXCUSED: return 'partial-unexcused';
+      case Constants.ATTENDANCE_LATE_EXCUSED: return 'partial-excused';
+      case Constants.ATTENDANCE_LATE_UNEXCUSED: return 'partial-unexcused';
+      case Constants.ATTENDANCE_LEFT_EARLY_EXCUSED: return 'partial-excused';
+      case Constants.ATTENDANCE_LEFT_EARLY_UNEXCUSED: return 'partial-unexcused';
       case Constants.ATTENDANCE_ABSENT_EXCUSED: return 'absent-excused';
       case Constants.ATTENDANCE_ABSENT_UNEXCUSED: return 'absent-unexcused';
       default: return '';
@@ -39,8 +41,10 @@ export class Utilities {
       Constants.ATTENDANCE_PRESENT,
       Constants.ATTENDANCE_ABSENT_EXCUSED,
       Constants.ATTENDANCE_ABSENT_UNEXCUSED,
-      Constants.ATTENDANCE_PARTIAL_EXCUSED,
-      Constants.ATTENDANCE_PARTIAL_UNEXCUSED,
+      Constants.ATTENDANCE_LATE_EXCUSED,
+      Constants.ATTENDANCE_LATE_UNEXCUSED,
+      Constants.ATTENDANCE_LEFT_EARLY_EXCUSED,
+      Constants.ATTENDANCE_LEFT_EARLY_UNEXCUSED
     ]
     if (includeSub) {
       attendanceOptions.push(Constants.ATTENDANCE_SUB);

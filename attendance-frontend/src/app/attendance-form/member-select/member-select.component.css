@@ -1,0 +1,26 @@
+.dropdown-button {
+  width: 220px;
+  justify-content: start;
+  margin-bottom: 0;
+}
+
+.dropdown-menu {
+  background: white;
+  min-width: 220px;
+  padding: 5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  font-weight: lighter;
+}
+
+.option {
+  padding: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.option:hover {
+  background-color: #eee;
+}
