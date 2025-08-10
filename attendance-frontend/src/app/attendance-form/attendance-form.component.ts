@@ -88,6 +88,8 @@ export class AttendanceFormComponent implements OnInit {
 
   showSubError: boolean = false;
 
+  showDuplicateMemberError: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private fb: FormBuilder,
@@ -180,11 +182,13 @@ export class AttendanceFormComponent implements OnInit {
       this.eventService.submitAttendanceForm(this.eventAttendances).subscribe(() => {
         this.showRequiredFieldError = false;
         this.showSubError = false;
+        this.showDuplicateMemberError = false;
         this.openSnackBar("Form submitted!", "Ok", 3000);
       }, error => {
         console.log(error);
         this.showRequiredFieldError = false;
         this.showSubError = false;
+        this.showDuplicateMemberError = false;
         this.openSnackBar("Error submitting form", "Ok", 3000);
       })
     }
@@ -193,6 +197,7 @@ export class AttendanceFormComponent implements OnInit {
   private validateForm() {
     const formGroups = this.attendances.controls;
     let errors: number = 0;
+    let seenMemberIds: number[] = [];
     for (let i = 0; i < this.eventAttendances.length; i++) {
       const group = formGroups[i];
       const memberId = group.get('memberId')?.value;
@@ -207,7 +212,7 @@ export class AttendanceFormComponent implements OnInit {
       }
 
       if (!memberId) {
-        group.get('memberId')?.setErrors((({required: true})));
+        group.get('memberId')?.setErrors({required: true});
         this.showRequiredFieldError = true;
         errors++;
       }
@@ -217,6 +222,14 @@ export class AttendanceFormComponent implements OnInit {
         this.showSubError = true;
         errors++;
       }
+
+      if (seenMemberIds.includes(memberId)) {
+        group.get('memberId')?.setErrors({required: true});
+        this.showDuplicateMemberError = true;
+        errors++;
+      }
+
+      seenMemberIds.push(memberId);
 
       this.eventAttendances[i].member = this.sectionMembers.find(m => m.memberId === memberId) ?? null;
       this.eventAttendances[i].attendance = attendance;
@@ -291,7 +304,7 @@ export class AttendanceFormComponent implements OnInit {
   }
 
   includeSubOption(): boolean {
-    return this.event.type === Constants.EVENT_TYPE_PEP_EVENT;
+    return this.event?.type === Constants.EVENT_TYPE_PEP_EVENT;
   }
 
   openSnackBar(message: string, action: string, duration: number) {

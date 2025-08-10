@@ -96,5 +96,6 @@
 </div>
 
 <p *ngIf="showRequiredFieldError" class="error-message">*Fields cannot be blank*</p>
+<p *ngIf="showDuplicateMemberError" class="error-message">*Duplicate member*</p>
 <p *ngIf="showSubError" class="error-message">*Fields marked "Sub" must list a sub*</p>
 <button mat-flat-button (click)="onSubmit()" color="primary">Submit</button>
