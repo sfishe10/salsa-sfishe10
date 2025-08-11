@@ -29,7 +29,11 @@ module.exports.next = async (req, res) => {
           return;
         }
         const i = results2.findIndex((station) => station.sID === lastCompleted.sID);
-        res.jsonp(results2[i + 1]);
+        if (i + 1 >= results2.length) {
+          res.jsonp({ done: true });
+        } else {
+          res.jsonp(results2[i + 1]);
+        }
       });
   });
 };
