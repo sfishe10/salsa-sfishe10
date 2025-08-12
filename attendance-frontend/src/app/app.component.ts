@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, RouterLink, RouterOutlet} from '@angular/router';
 import {NgIf} from '@angular/common';
 import {MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalService} from '@azure/msal-angular';
 import {filter, Subject, take, takeUntil} from 'rxjs';
@@ -30,12 +30,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private readonly _destroying$ = new Subject<void>();
 
+  eventType: string = 'upcoming'; // default
+
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
-      private authService: MsalService,
-      private msalBroadcastService: MsalBroadcastService,
-      public sessionCacheService: SessionCacheService,
-      public router: Router) { };
+    private authService: MsalService,
+    private msalBroadcastService: MsalBroadcastService,
+    public sessionCacheService: SessionCacheService,
+    public router: Router,
+    private route: ActivatedRoute) { };
 
   ngOnInit() {
     this.msalBroadcastService.msalSubject$
@@ -67,6 +70,13 @@ export class AppComponent implements OnInit, OnDestroy {
           this.sessionCacheService.preload();
         }
       });
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.route.queryParams.subscribe(params => {
+          this.eventType = params['type'] || 'upcoming';
+        });
+      });
   }
 
   // // If the user is logged in, present the user with a "logged in" experience
@@ -86,6 +96,20 @@ export class AppComponent implements OnInit, OnDestroy {
   // Log the user out
   logout() {
     this.authService.logoutRedirect();
+  }
+
+  get pageTitle(): string {
+    if (this.router.url.startsWith('/events')) {
+      return this.eventType === 'upcoming' ? 'Upcoming Events' : 'Recent Events';
+    }
+    if (this.router.url === '/profile') return 'Profile';
+    if (this.router.url.includes('/attendance-form')) return 'Enter Attendance';
+    if (this.router.url.includes('/member')) return 'Member';
+    if (this.router.url.includes('/user')) return 'User';
+    if (this.router.url === '/event' || this.router.url.startsWith('/event/')) return 'Event';
+    if (this.router.url.includes('/attendance/term')) return 'Attendance';
+    if (this.router.url === '/admin') return 'Admin';
+    return '';
   }
 
   ngOnDestroy(): void {

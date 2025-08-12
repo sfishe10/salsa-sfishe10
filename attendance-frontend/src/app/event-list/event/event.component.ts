@@ -41,8 +41,12 @@ export class EventComponent {
   @Input()
   event: MBEvent | null = null;
 
+  @Input()
+  fromList: string = '';
+
   navigateToForm() {
-    this.router.navigate(['/attendance-form', this.event?.eventId]);
+    console.log(this.fromList);
+    this.router.navigate(['/attendance-form', this.event?.eventId], { queryParams: { fromList: this.fromList } });
   }
 
   protected readonly EVENT_TYPE_PEP_EVENT = Constants.EVENT_TYPE_PEP_EVENT;

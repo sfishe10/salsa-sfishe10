@@ -2,28 +2,22 @@ import { Routes } from '@angular/router';
 import {MsalGuard, MsalRedirectComponent} from '@azure/msal-angular';
 import {ProfileComponent} from './profile/profile.component';
 import {AttendanceFormComponent} from './attendance-form/attendance-form.component';
-import {UpcomingEventsComponent} from './upcoming-events/upcoming-events.component';
-import {RecentEventsComponent} from './recent-events/recent-events.component';
 import {AdminComponent} from './admin/admin.component';
 import {MemberPageComponent} from './admin/member-page/member-page.component';
 import {EventPageComponent} from './admin/event-page/event-page.component';
 import {AttendancesComponent} from './admin/attendances/attendances.component';
 import {UserPageComponent} from './admin/user-page/user-page.component';
+import {EventListComponent} from './event-list/event-list.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/upcoming-events',
+    redirectTo: '/events?type=upcoming',
     pathMatch: 'full',
   },
   {
-    path: 'upcoming-events',
-    component: UpcomingEventsComponent,
-    canActivate: [MsalGuard]
-  },
-  {
-    path: 'recent-events',
-    component: RecentEventsComponent,
+    path: 'events',
+    component: EventListComponent,
     canActivate: [MsalGuard]
   },
   {

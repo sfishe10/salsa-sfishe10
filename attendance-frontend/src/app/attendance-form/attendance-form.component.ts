@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {EventService} from '../services/event.service';
 import {DatePipe, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {MatFormField, MatLabel, MatOption, MatSelect} from '@angular/material/select';
@@ -90,7 +90,10 @@ export class AttendanceFormComponent implements OnInit {
 
   showDuplicateMemberError: boolean = false;
 
+  fromList: string = '';
+
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private eventService: EventService,
               private fb: FormBuilder,
               public sessionCacheService: SessionCacheService,
@@ -105,6 +108,10 @@ export class AttendanceFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.fromList = params['fromList'] || 'upcoming';
+    })
+
     this.eventId = Number(this.route.snapshot.paramMap.get('id'));
 
     let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_ID);
@@ -309,6 +316,10 @@ export class AttendanceFormComponent implements OnInit {
 
   openSnackBar(message: string, action: string, duration: number) {
     this._snackBar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});
+  }
+
+  goBack() {
+    this.router.navigate(['/events'], { queryParams: { type: this.fromList } })
   }
 
   protected readonly Utilities = Utilities;
