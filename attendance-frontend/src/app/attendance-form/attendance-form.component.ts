@@ -1,8 +1,8 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EventService} from '../services/event.service';
 import {DatePipe, NgForOf, NgIf, NgStyle} from '@angular/common';
-import {MatFormField, MatLabel, MatOption, MatSelect} from '@angular/material/select';
+import {MatFormField, MatLabel, MatOption, MatSelect, MatSuffix} from '@angular/material/select';
 import {
   FormArray,
   FormBuilder,
@@ -29,6 +29,9 @@ import {MemberService} from '../services/member.service';
 import {Section} from '../models/section';
 import {AttendanceSelectComponent} from './attendance-select/attendance-select.component';
 import {MemberSelectComponent} from './member-select/member-select.component';
+import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {MatInput} from '@angular/material/input';
 
 @Component({
   selector: 'app-attendance-form',
@@ -54,7 +57,9 @@ import {MemberSelectComponent} from './member-select/member-select.component';
     FormsModule,
     MatIconButton,
     AttendanceSelectComponent,
-    MemberSelectComponent
+    MemberSelectComponent,
+    MatDialogActions,
+    MatDialogTitle,
   ],
   templateUrl: './attendance-form.component.html',
   styleUrl: './attendance-form.component.css'
@@ -73,6 +78,12 @@ export class AttendanceFormComponent implements OnInit {
   event!: MBEvent;
 
   private _snackBar = inject(MatSnackBar);
+
+  @ViewChild('confirmSubmitDialog') confirmSubmitDialog!: TemplateRef<any>;
+  confirmSubmitDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('successDialog') successDialog!: TemplateRef<any>;
+  successDialogRef!: MatDialogRef<any>;
 
   eventAttendances: EventAttendance[] = [];
 
@@ -97,7 +108,8 @@ export class AttendanceFormComponent implements OnInit {
               private eventService: EventService,
               private fb: FormBuilder,
               public sessionCacheService: SessionCacheService,
-              private memberService: MemberService) {
+              private memberService: MemberService,
+              private dialog: MatDialog) {
     this.form = this.fb.group({
       attendances: this.fb.array([])
     });
@@ -123,7 +135,6 @@ export class AttendanceFormComponent implements OnInit {
     })
 
     this.eventService.getEventAttendance(this.eventId, sectionId).subscribe(attendances => {
-      console.log(attendances)
       attendances.forEach(att => {
         this.eventAttendances.push(att);
       });
@@ -131,14 +142,17 @@ export class AttendanceFormComponent implements OnInit {
         attendances: this.fb.array(attendances.map((att) =>
           this.fb.group({
             attendanceId: [att.attendanceId],
-            memberId: [att.member?.memberId],
+            member: [att.member],
             attendance: [att.attendance],
             sub: [att.sub],
             required: [att.required]
           })
         ))
       });
-      console.log(this.form);
+
+      this.form.valueChanges.subscribe(() => {
+        this.clearErrors();
+      });
     })
 
     this.sectionOptions = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
@@ -168,7 +182,7 @@ export class AttendanceFormComponent implements OnInit {
         attendances: this.fb.array(attendances.map((att) =>
           this.fb.group({
             attendanceId: [att.attendanceId],
-            memberId: [att.member?.memberId],
+            member: [att.member],
             attendance: [att.attendance],
             sub: [att.sub],
             required: [att.required]
@@ -179,35 +193,41 @@ export class AttendanceFormComponent implements OnInit {
   }
 
   public onSubmit() {
-    // clear old error messages
-    this.showRequiredFieldError = false;
-    this.showSubError = false;
 
+    this.cancelDialog();
+
+    this.eventService.submitAttendanceForm(this.eventAttendances).subscribe(() => {
+      this.openSuccessDialog();
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error submitting form", "Ok", 3000);
+    })
+  }
+
+  openConfirmationDialog() {
     let errors = this.validateForm();
 
     if (errors == 0) {
-      this.eventService.submitAttendanceForm(this.eventAttendances).subscribe(() => {
-        this.showRequiredFieldError = false;
-        this.showSubError = false;
-        this.showDuplicateMemberError = false;
-        this.openSnackBar("Form submitted!", "Ok", 3000);
-      }, error => {
-        console.log(error);
-        this.showRequiredFieldError = false;
-        this.showSubError = false;
-        this.showDuplicateMemberError = false;
-        this.openSnackBar("Error submitting form", "Ok", 3000);
-      })
+      this.confirmSubmitDialogRef = this.dialog.open(this.confirmSubmitDialog);
     }
   }
 
+  openSuccessDialog() {
+    this.successDialogRef = this.dialog.open(this.successDialog);
+  }
+
+  cancelDialog() {
+    this.dialog.closeAll();
+  }
+
   private validateForm() {
+    this.clearErrors()
     const formGroups = this.attendances.controls;
     let errors: number = 0;
     let seenMemberIds: number[] = [];
     for (let i = 0; i < this.eventAttendances.length; i++) {
       const group = formGroups[i];
-      const memberId = group.get('memberId')?.value;
+      const member = group.get('member')?.value;
       const attendance = group.get('attendance')?.value;
       const sub = group.get('sub')?.value;
       const required = group.get('required')?.value;
@@ -218,8 +238,8 @@ export class AttendanceFormComponent implements OnInit {
         errors++;
       }
 
-      if (!memberId) {
-        group.get('memberId')?.setErrors({required: true});
+      if (!member) {
+        group.get('member')?.setErrors({required: true});
         this.showRequiredFieldError = true;
         errors++;
       }
@@ -230,17 +250,20 @@ export class AttendanceFormComponent implements OnInit {
         errors++;
       }
 
-      if (seenMemberIds.includes(memberId)) {
-        group.get('memberId')?.setErrors({required: true});
+      if (seenMemberIds.includes(member?.memberId) || (attendance == Constants.ATTENDANCE_SUB && seenMemberIds.includes(sub?.memberId))) {
         this.showDuplicateMemberError = true;
         errors++;
       }
 
-      seenMemberIds.push(memberId);
+      seenMemberIds.push(member?.memberId);
 
-      this.eventAttendances[i].member = this.sectionMembers.find(m => m.memberId === memberId) ?? null;
+      if (attendance == Constants.ATTENDANCE_SUB) {
+        seenMemberIds.push(sub?.memberId);
+      }
+
+      this.eventAttendances[i].member = member;
       this.eventAttendances[i].attendance = attendance;
-      this.eventAttendances[i].sub = sub ?? null;
+      this.eventAttendances[i].sub = sub;
       this.eventAttendances[i].required = required;
     }
     return errors;
@@ -275,7 +298,7 @@ export class AttendanceFormComponent implements OnInit {
       this.attendances.push(
         this.fb.group({
           attendanceId: [response.attendanceId],
-          memberId: [null],
+          member: [null],
           attendance: [''],
           sub: [null],
           required: [false]
@@ -288,10 +311,7 @@ export class AttendanceFormComponent implements OnInit {
   }
 
   public removeAttendee(eventAttendance: EventAttendance) {
-    console.log(this.eventAttendances);
-    console.log(this.attendances);
     let attendanceId = eventAttendance.attendanceId;
-    console.log(eventAttendance);
     this.eventService.removeAttendance(attendanceId).subscribe(() => {
       this.eventAttendances = this.eventAttendances.filter(a => a.attendanceId != attendanceId);
       const index = this.attendances.controls.findIndex(ctrl => ctrl.get('attendanceId')?.value === attendanceId);
@@ -319,7 +339,15 @@ export class AttendanceFormComponent implements OnInit {
   }
 
   goBack() {
+    this.cancelDialog();
     this.router.navigate(['/events'], { queryParams: { type: this.fromList } })
+  }
+
+  clearErrors() {
+    this.showRequiredFieldError = false;
+    this.showSubError = false;
+    this.showDuplicateMemberError = false;
+
   }
 
   protected readonly Utilities = Utilities;

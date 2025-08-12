@@ -1,4 +1,4 @@
-import {Component, forwardRef, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, forwardRef, Input, ViewChild} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import {CdkOverlayOrigin, Overlay, OverlayModule} from '@angular/cdk/overlay';
 import {NgForOf, NgIf} from '@angular/common';
@@ -37,7 +37,7 @@ export class MemberSelectComponent implements ControlValueAccessor {
   isDropdownOpen = false;
   selectedOption: Member | null = null;
 
-  constructor(public overlay: Overlay) {}
+  constructor(public overlay: Overlay, private cdr: ChangeDetectorRef) {}
 
   private onChange = (value: Member | null) => {};
   private onTouched = () => {};
@@ -61,6 +61,7 @@ export class MemberSelectComponent implements ControlValueAccessor {
   // ControlValueAccessor methods
   writeValue(value: Member | null): void {
     this.selectedOption = value;
+    this.cdr.detectChanges()
   }
 
   registerOnChange(fn: any): void {

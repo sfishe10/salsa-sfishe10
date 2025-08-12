@@ -53,12 +53,7 @@
               </div>
 
               <div *ngIf="!attendances.at(i).get('required')?.value">
-                <mat-form-field subscriptSizing="dynamic" style="height: 45px" appearance="outline">
-                  <mat-select formControlName="memberId" placeholder="Member">
-                    <mat-option [value]="null">--</mat-option>
-                    <mat-option *ngFor="let member of getAvailableMembers(i)" [value]="member.memberId">{{member.user.firstName}} {{member.user.lastName}}</mat-option>
-                  </mat-select>
-                </mat-form-field>
+                <app-member-select formControlName="member" [memberOptions]="getAvailableMembers(i)" [forSub]="false"></app-member-select>
               </div>
 
             </td>
@@ -99,6 +94,22 @@
 <p *ngIf="showDuplicateMemberError" class="error-message">*Duplicate member*</p>
 <p *ngIf="showSubError" class="error-message">*Fields marked "Sub" must list a sub*</p>
 <div>
-  <button mat-flat-button (click)="onSubmit()" color="primary">Submit</button>&nbsp;
+  <button mat-flat-button (click)="openConfirmationDialog()" color="primary">Submit</button>&nbsp;
   <button mat-stroked-button (click)="goBack()">Go Back</button>
 </div>
+
+
+<ng-template #confirmSubmitDialog>
+  <h2 mat-dialog-title>Submit Form?</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancelDialog()">Cancel</button>
+    <button mat-button (click)="onSubmit()">Submit</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #successDialog>
+  <h2 mat-dialog-title>Form successfully submitted!</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="goBack()">Ok</button>
+  </mat-dialog-actions>
+</ng-template>
