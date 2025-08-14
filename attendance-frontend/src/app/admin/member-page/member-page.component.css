@@ -1,11 +1,15 @@
 .member-name {
-  display: flex;
-  align-items: center;
   font-family: Roboto, sans-serif;
   font-size: 1.4rem;
   margin-bottom: 8px;
 }
 
-.back-button:hover {
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button:hover {
   cursor: pointer;
 }

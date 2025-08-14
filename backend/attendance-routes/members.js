@@ -11,6 +11,7 @@ const router = express.Router();
  */
 
 router.post('/', members.admin.create);
+router.put('/:id', members.admin.update);
 router.post('/term/:id/uploadCsv', upload.single('file'), members.admin.uploadCsv);
 router.post('/term/:id/uploadPepBandsCsv', upload.single('file'), members.admin.uploadPepBandsCsv);
 

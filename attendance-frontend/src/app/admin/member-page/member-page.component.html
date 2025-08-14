@@ -1,14 +1,56 @@
-<div style="display: flex; flex-direction: column; gap: 20px; font-size: 1.2rem;">
-  <div class="member-name">
-    <mat-icon class="back-button" (click)="goBack()">arrow_back</mat-icon>
-    <span style="margin-left: 10px">{{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;</span>
-    <span style="color: dimgray">- {{member?.user?.email}}</span>
-  </div>
-  <span>{{member?.section?.name}}</span>
-  <span>Term: {{member?.term?.termName}}</span>
-  <span>Rehearsal Conflict:
-    <span *ngIf="member?.rehearsalConflict">{{member?.rehearsalConflict}}</span>
-    <span *ngIf="!member?.rehearsalConflict">None</span>
-  </span>
+<div>
+  <form #memberForm="ngForm" (ngSubmit)="save(memberForm)">
+    <div class="top-row">
+      <div class="member-name">
+        <mat-icon class="button" (click)="goBack()">arrow_back</mat-icon>
+        <span style="margin-left: 10px">{{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;</span>
+        <span style="color: dimgray">- {{member?.user?.email}}</span>
+      </div>
+      <button *ngIf="!editing" mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
+      <div *ngIf="editing">
+        <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
+        <button mat-flat-button type="submit" color="primary">Save Changes</button>
+      </div>
+    </div>
+
+    <div *ngIf="!editing" style="display: flex; flex-direction: column; gap: 20px; margin-top: 10px; margin-bottom: 10px; font-size: 1.2rem">
+      <span>Term: {{member?.term?.termName}}</span>
+      <span>Section: {{member?.section?.name}}</span>
+      <span>Pep Band: {{member?.pepBand?.displayName}}</span>
+      <span>Rehearsal Conflict:
+      <span *ngIf="member?.rehearsalConflict">{{member?.rehearsalConflict}}</span>
+      <span *ngIf="!member?.rehearsalConflict">None</span>
+    </span>
+    </div>
+
+    <div *ngIf="editing">
+
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 300px; margin-top: 10px; margin-bottom: 10px">
+        <span style="font-size: 1.2rem">Term: {{member?.term?.termName}}</span>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label class="form-label">Section</mat-label>
+          <mat-select id="section" name="section" [(ngModel)]="section">
+            <mat-option [value]="null">--</mat-option>
+            <mat-option *ngFor="let option of sectionOptions" [value]="option">{{option.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label class="form-label">Pep Band</mat-label>
+          <mat-select id="pepBand" name="pepBand" [(ngModel)]="pepBand">
+            <mat-option [value]="null">--</mat-option>
+            <mat-option *ngFor="let option of pepBandOptions" [value]="option">{{option.displayName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label class="form-label">Rehearsal Conflict</mat-label>
+          <mat-select id="rehearsalConflict" name="rehearsalConflict" [(ngModel)]="rehearsalConflict">
+            <mat-option [value]="null">--</mat-option>
+            <mat-option *ngFor="let option of rehearsalConflictOptions" [value]="option">{{option}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </form>
   <app-member-attendance-table [memberId]="this.memberId"></app-member-attendance-table>
 </div>

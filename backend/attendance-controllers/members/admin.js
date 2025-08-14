@@ -3,7 +3,7 @@ const csv = require('csv-parser');
 const db = require('../../config/db');
 
 module.exports.create = async (req, res) => {
-  const email = req.body.member.email;
+  const { email } = req.body.member;
   const pepBandId = req.body.member.pepBand ? req.body.member.pepBand.bandId : null;
   console.log(email);
   db.execute('SELECT * FROM User WHERE email=?', [email],
@@ -44,6 +44,69 @@ module.exports.create = async (req, res) => {
                 }
                 res.send(member);
               });
+            }
+          });
+      }
+    });
+};
+
+module.exports.update = async (req, res) => {
+  const { member } = req.body;
+  console.log(member);
+  const pepBandId = req.body.member.pepBand ? req.body.member.pepBand.bandId : null;
+
+  db.execute('SELECT pepBandId FROM Member WHERE memberId=?',
+    [member.memberId],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        const oldPepBandId = result[0].pepBandId;
+
+        db.execute('UPDATE Member SET sectionId=?, pepBandId=?, rehearsalConflict=? WHERE memberId=?',
+          [member.section.sectionId, pepBandId, member.rehearsalConflict, member.memberId],
+          (err2, result2) => {
+            if (err2) {
+              console.log(err2);
+              res.status(500).send(err2.message);
+            } else {
+              const newMemberData = {
+                memberId: member.memberId,
+                user: member.user,
+                section: member.section,
+                pepBand: member.pepBand,
+                rehearsalConflict: member.rehearsalConflict,
+                term: member.term,
+              };
+              if (oldPepBandId !== member.pepBand.bandId) {
+                // if the pep band has changed, delete any attendances that have not been submitted yet
+                // and create new attendances for the new pep band
+                db.execute('DELETE ea '
+                  + 'FROM EventAttendance ea '
+                  + 'JOIN MBEvent e ON ea.eventId = e.eventId '
+                  + 'WHERE ea.memberId=? AND ea.attendance IS NULL AND e.pepBandId=?',
+                [member.memberId, oldPepBandId],
+                (err3, result3) => {
+                  if (err3) {
+                    console.log(err3);
+                    res.status(500).send(err3.message);
+                  } else {
+                    db.execute('CALL ReassignRemainingPepEventsForMember(?, ?, ?)',
+                      [member.term.termId, member.memberId, member.pepBand.bandId],
+                      (err4, result4) => {
+                        if (err4) {
+                          console.log(err4);
+                          res.status(500).send(err4.message);
+                        } else {
+                          return res.send(newMemberData);
+                        }
+                      });
+                  }
+                });
+              } else {
+                res.send(newMemberData);
+              }
             }
           });
       }
@@ -98,9 +161,9 @@ module.exports.uploadCsv = async (req, res) => {
           insertString = 'INSERT IGNORE INTO Member (email, sectionId, termId, rehearsalConflict, pepBandId) VALUES ';
           params = [];
           parsedMembers.forEach((member) => {
-            insertString += '(?, ' +
-              '(SELECT sectionId FROM Section where Section.name = ?), ' +
-              '?, NULL, NULL), ';
+            insertString += '(?, '
+              + '(SELECT sectionId FROM Section where Section.name = ?), '
+              + '?, NULL, NULL), ';
             params.push(member.email);
             params.push(member.section);
             params.push(req.params.id);
@@ -137,7 +200,7 @@ module.exports.uploadPepBandsCsv = async (req, res) => {
     return res.status(400).json({ error: 'No file uploaded' });
   }
   const parsedMembers = [];
-  const emailsToSkip = req.body.emailsToSkip;
+  const { emailsToSkip } = req.body;
 
   // Convert buffer to string, remove BOM if present, then convert back to buffer
   const rawCsvString = req.file.buffer.toString('utf8').replace(/^\uFEFF/, '');

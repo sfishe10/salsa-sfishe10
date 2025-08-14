@@ -17,6 +17,11 @@ export class MemberService {
     return this.http.get<Member>(url);
   }
 
+  public updateMember(member: Member): Observable<Member> {
+    const url = this.baseUrl + `/members/${member.memberId}`;
+    return this.http.put<Member>(url, {member: member});
+  }
+
   public getMemberAttendances(memberId: number): Observable<EventAttendanceMemberPage[]> {
     const url = this.baseUrl + `/attendance/member/${memberId}`;
     return this.http.get<EventAttendanceMemberPage[]>(url);
