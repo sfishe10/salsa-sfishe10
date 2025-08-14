@@ -1,31 +1,41 @@
 <div>
-  <div (click)="goBackToAdmin()" class="back-button"
-       style="display: flex; flex-direction: row; align-items: center; width: max-content; max-height: 40px">
-    <mat-icon>arrow_left_alt</mat-icon>
-    <h4 style="text-decoration: underline">Back to Admin page</h4>
-  </div>
-  <div style="font-size: 1.4rem; margin-bottom: 10px; margin-left: 8px">
-    <span>{{user?.email}}</span>
-  </div>
-
-
   <form #userForm="ngForm" (ngSubmit)="updateUser(userForm)">
-    <div style="display: flex; flex-direction: column">
-      <mat-form-field style="max-width: 400px">
-        <mat-label class="form-label">First Name</mat-label>
-        <input matInput id="firstName" type="text" name="firstName" [(ngModel)]="firstName">
-      </mat-form-field>
-      <mat-form-field style="max-width: 400px">
-        <mat-label class="form-label">Last Name</mat-label>
-        <input matInput id="lastName" type="text" name="lastName" [(ngModel)]="lastName">
-      </mat-form-field>
-      <mat-form-field style="max-width: 400px">
-        <mat-label class="form-label">Role</mat-label>
-        <mat-select id="role" name="role" [(ngModel)]="role">
-          <mat-option *ngFor="let option of roleOptions" [value]="option">{{option}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <div class="top-row">
+      <div style="font-size: 1.4rem; display: flex; align-items: center">
+        <mat-icon class="button" (click)="goBackToAdmin()">arrow_back</mat-icon>
+        <span style="margin-left: 8px">{{user?.email}}</span>
+      </div>
+      <button *ngIf="!editing" mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
+      <div *ngIf="editing">
+        <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
+        <button mat-flat-button type="submit" color="primary">Save Changes</button>
+      </div>
     </div>
-    <button mat-flat-button color="primary" type="submit">Save Changes</button>
+
+    <div *ngIf="!editing" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; font-size: 1.2rem">
+      <span>First Name: {{user.firstName}}</span>
+      <span>Last Name: {{user.lastName}}</span>
+      <span>Role: {{user.role}}</span>
+    </div>
+
+
+    <div *ngIf="editing" style="margin-top: 20px">
+      <div style="display: flex; flex-direction: column">
+        <mat-form-field style="max-width: 400px">
+          <mat-label class="form-label">First Name</mat-label>
+          <input matInput id="firstName" type="text" name="firstName" [(ngModel)]="firstName">
+        </mat-form-field>
+        <mat-form-field style="max-width: 400px">
+          <mat-label class="form-label">Last Name</mat-label>
+          <input matInput id="lastName" type="text" name="lastName" [(ngModel)]="lastName">
+        </mat-form-field>
+        <mat-form-field style="max-width: 400px">
+          <mat-label class="form-label">Role</mat-label>
+          <mat-select id="role" name="role" [(ngModel)]="role">
+            <mat-option *ngFor="let option of roleOptions" [value]="option">{{option}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
   </form>
 </div>

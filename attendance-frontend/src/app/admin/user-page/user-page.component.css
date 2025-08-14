@@ -1,4 +1,4 @@
-.back-button:hover {
+.button:hover {
   cursor: pointer;
 }
 
@@ -6,4 +6,10 @@
   display: flex;
   align-items: center;
 
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

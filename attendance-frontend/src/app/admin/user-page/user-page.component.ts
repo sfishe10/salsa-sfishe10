@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../../models/user';
 import {UserService} from '../../services/user.service';
 import {MatIcon} from '@angular/material/icon';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
@@ -25,7 +25,8 @@ import {MatSnackBar} from '@angular/material/snack-bar';
     MatLabel,
     MatOption,
     MatSelect,
-    NgForOf
+    NgForOf,
+    NgIf
   ],
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css'
@@ -43,6 +44,8 @@ export class UserPageComponent implements OnInit {
 
   roleOptions: string[] = [];
 
+  editing: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private userService: UserService,
               private router: Router) {
@@ -53,19 +56,31 @@ export class UserPageComponent implements OnInit {
 
     this.userService.getUserById(this.userId).subscribe(user => {
       this.user = user;
-
-      this.firstName = user.firstName;
-      this.lastName = user.lastName;
-      this.role = user.role;
     })
 
     this.roleOptions = Utilities.getRoleOptions();
   }
 
+  edit() {
+    this.firstName = this.user.firstName;
+    this.lastName = this.user.lastName;
+    this.role = this.user.role;
+
+    this.editing = true;
+  }
+
+  cancel() {
+    this.editing = false;
+  }
+
   updateUser(form: NgForm) {
+    if (!this.user) {
+      return;
+    }
+
     const newUser = {
-      userId: this.user?.userId,
-      email: this.user?.email,
+      userId: this.user.userId,
+      email: this.user.email,
       firstName: form.value.firstName,
       lastName: form.value.lastName,
       role: form.value.role
@@ -74,6 +89,7 @@ export class UserPageComponent implements OnInit {
     this.userService.updateUser(newUser).subscribe(() => {
       this.user = newUser;
       this.openSnackBar("User updated!", "Ok", 3000);
+      this.editing = false;
     }, error => {
       console.log(error);
       this.openSnackBar("Error updating user", "Ok", 3000);

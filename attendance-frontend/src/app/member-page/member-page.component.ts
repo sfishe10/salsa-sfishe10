@@ -1,20 +1,20 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Member} from '../../models/member';
-import {MemberService} from '../../services/member.service';
+import {Member} from '../models/member';
+import {MemberService} from '../services/member.service';
 import {MatIcon} from '@angular/material/icon';
 import {FormsModule, NgForm} from '@angular/forms';
 import {NgForOf, NgIf} from '@angular/common';
-import {MemberAttendanceTableComponent} from '../../shared/attendance-table/member-attendance-table.component';
+import {MemberAttendanceTableComponent} from '../shared/attendance-table/member-attendance-table.component';
 import {MatButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
-import {Section} from '../../models/section';
-import {PepBand} from '../../models/pep-band';
-import {Constants} from '../../utilities/constants';
-import {SessionCacheService} from '../../services/session-cache.service';
-import {Utilities} from '../../utilities/utilities';
+import {Section} from '../models/section';
+import {PepBand} from '../models/pep-band';
+import {Constants} from '../utilities/constants';
+import {SessionCacheService} from '../services/session-cache.service';
+import {Utilities} from '../utilities/utilities';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
@@ -95,9 +95,7 @@ export class MemberPageComponent implements OnInit {
     this.memberService.updateMember(member).subscribe(updatedMember => {
       this.member = updatedMember;
       this.openSnackBar("Member updated!", "Ok", 3000);
-      setTimeout(() => {
-        this.editing = false;
-      })
+      this.editing = false;
     }, error => {
       console.log(error);
       this.openSnackBar("Error updating member", "Ok", 3000);

@@ -3,7 +3,7 @@ import {MsalGuard, MsalRedirectComponent} from '@azure/msal-angular';
 import {ProfileComponent} from './profile/profile.component';
 import {AttendanceFormComponent} from './attendance-form/attendance-form.component';
 import {AdminComponent} from './admin/admin.component';
-import {MemberPageComponent} from './admin/member-page/member-page.component';
+import {MemberPageComponent} from './member-page/member-page.component';
 import {EventPageComponent} from './admin/event-page/event-page.component';
 import {AttendancesComponent} from './admin/attendances/attendances.component';
 import {UserPageComponent} from './admin/user-page/user-page.component';
