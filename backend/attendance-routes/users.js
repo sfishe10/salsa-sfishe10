@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post('/', users.admin.create);
 router.put('/', users.admin.update);
+router.put('/assignRole', users.admin.assignRole);
 
 /**
  * selectors

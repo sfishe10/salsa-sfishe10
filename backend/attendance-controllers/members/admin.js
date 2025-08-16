@@ -118,6 +118,7 @@ module.exports.uploadCsv = async (req, res) => {
     return res.status(400).json({ error: 'No file uploaded' });
   }
   const parsedMembers = [];
+  const sections = new Map();
 
   // Convert buffer to string, remove BOM if present, then convert back to buffer
   const rawCsvString = req.file.buffer.toString('utf8').replace(/^\uFEFF/, '');
@@ -126,63 +127,91 @@ module.exports.uploadCsv = async (req, res) => {
   const bufferStream = new stream.PassThrough();
   bufferStream.end(cleanedBuffer);
   bufferStream.pipe(csv()).on('data', (row) => {
-    const lastName = row['Last Name']?.trim() ?? '';
-    const firstName = row['First Name']?.trim() ?? '';
+    const officialLastName = row['Official Last']?.trim() ?? '';
+    const officialFirstName = row['Official First']?.trim() ?? '';
+    const preferredLastName = row['Preferred Last']?.trim() ?? '';
+    const preferredFirstName = row['Preferred First']?.trim() ?? '';
     const email = row.Email?.trim() ?? '';
-    const section = row.Section?.trim() ?? '';
-    const member = {
-      lastName,
-      firstName,
-      email,
-      section,
-    };
-    parsedMembers.push(member);
+    const sectionName = row.Section?.trim() ?? '';
+    const sectionId = parseInt(row.Sort?.trim());
+
+    const lastName = preferredLastName === '0' ? officialLastName : preferredLastName;
+    const firstName = preferredFirstName === '0' ? officialFirstName : preferredFirstName;
+
+    if (email !== 'anonymous') {
+      const member = {
+        lastName,
+        firstName,
+        email,
+        sectionId,
+      };
+      parsedMembers.push(member);
+      sections.set(sectionId, sectionName);
+    }
   })
     .on('end', () => {
-      console.log('Parsed CSV:', parsedMembers);
-      // insert the users if they don't exist
-      let insertString = 'INSERT IGNORE INTO User (email, firstName, lastName, role) VALUES ';
-      let params = [];
-      parsedMembers.forEach((member) => {
-        insertString += '(?, ?, ?, ?), ';
-        params.push(member.email);
-        params.push(member.firstName);
-        params.push(member.lastName);
-        params.push('Member');
+      let insertSectionsString = 'INSERT IGNORE INTO Section (sectionId, name) VALUES ';
+      const sectionParams = [];
+      sections.forEach((name, id) => {
+        insertSectionsString += '(?, ?), ';
+        sectionParams.push(id);
+        sectionParams.push(name);
       });
       // remove last comma and space
-      insertString = insertString.slice(0, -2);
-      db.execute(insertString, params, (err) => {
-        if (err) {
-          console.log(err);
-          res.status(500).send(err.message);
+      insertSectionsString = insertSectionsString.slice(0, -2);
+      db.execute(insertSectionsString, sectionParams, (err2) => {
+        if (err2) {
+          console.log(err2);
+          res.status(500).send(err2.message);
         } else {
-          // now insert the members
-          insertString = 'INSERT IGNORE INTO Member (email, sectionId, termId, rehearsalConflict, pepBandId) VALUES ';
-          params = [];
+          // insert the users if they don't exist
+          let insertString = 'INSERT INTO User (email, firstName, lastName, role) VALUES ';
+          let params = [];
           parsedMembers.forEach((member) => {
-            insertString += '(?, '
-              + '(SELECT sectionId FROM Section where Section.name = ?), '
-              + '?, NULL, NULL), ';
+            insertString += '(?, ?, ?, ?), ';
             params.push(member.email);
-            params.push(member.section);
-            params.push(req.params.id);
+            params.push(member.firstName);
+            params.push(member.lastName);
+            params.push('Member');
           });
-
           // remove last comma and space
           insertString = insertString.slice(0, -2);
-          db.execute(insertString, params, (err2, result) => {
-            if (err2) {
-              console.log(err2);
-              res.status(500).send(err2.message);
+
+          insertString += ' ON DUPLICATE KEY UPDATE firstName = VALUES(firstName), ' +
+            'lastName = VALUES(lastName), role = VALUES(role)';
+          db.execute(insertString, params, (err3) => {
+            if (err3) {
+              console.log(err3);
+              res.status(500).send(err3.message);
             } else {
-              // in case events have already been created, create blank EventAttendance objects for each new member
-              db.execute('CALL AddAttendancesForNewMembers(?)', [req.params.id], (err3) => {
-                if (err3) {
-                  console.error(err3);
-                  return res.status(500).send(err3.message);
+              // now insert the members
+              insertString = 'INSERT INTO Member (email, sectionId, termId, rehearsalConflict, pepBandId) VALUES ';
+              params = [];
+              parsedMembers.forEach((member) => {
+                insertString += '(?, ?, ?, NULL, NULL), ';
+                params.push(member.email);
+                params.push(member.sectionId);
+                params.push(req.params.id);
+              });
+
+              // remove last comma and space
+              insertString = insertString.slice(0, -2);
+
+              insertString += ' ON DUPLICATE KEY UPDATE sectionId = VALUES(sectionId)';
+              db.execute(insertString, params, (err4, result) => {
+                if (err4) {
+                  console.log(err4);
+                  res.status(500).send(err4.message);
+                } else {
+                  // in case events have already been created, create blank EventAttendance objects for each new member
+                  db.execute('CALL AddAttendancesForNewMembers(?)', [req.params.id], (err5) => {
+                    if (err5) {
+                      console.error(err5);
+                      return res.status(500).send(err5.message);
+                    }
+                    res.send(result);
+                  });
                 }
-                res.send(result);
               });
             }
           });

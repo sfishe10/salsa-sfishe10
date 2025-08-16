@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EventService} from '../../services/event.service';
 import {MBEvent} from '../../models/mb-event';
@@ -18,6 +18,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {AdminService} from '../../services/admin.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatButton} from '@angular/material/button';
+import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-event-page',
@@ -36,7 +37,9 @@ import {MatButton} from '@angular/material/button';
     MatSelect,
     MatSuffix,
     NgForOf,
-    MatButton
+    MatButton,
+    MatDialogActions,
+    MatDialogTitle
   ],
   templateUrl: './event-page.component.html',
   styleUrl: './event-page.component.css'
@@ -48,6 +51,12 @@ export class EventPageComponent implements OnInit {
   private _snackBar = inject(MatSnackBar);
 
   @ViewChild('eventForm') eventForm!: NgForm;
+
+  @ViewChild('confirmDeleteDialog') confirmDeleteDialog!: TemplateRef<any>;
+  confirmDeleteDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('successDialog') successDialog!: TemplateRef<any>;
+  successDialogRef!: MatDialogRef<any>;
 
   eventTitle: string = "";
   eventType: string | null = null;
@@ -67,7 +76,8 @@ export class EventPageComponent implements OnInit {
               private eventService: EventService,
               private router: Router,
               private sessionCacheService: SessionCacheService,
-              private adminService: AdminService) {
+              private adminService: AdminService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -110,6 +120,36 @@ export class EventPageComponent implements OnInit {
       console.log(error);
       this.openSnackBar("Error updating event", "Ok", 3000);
     })
+  }
+
+  openConfirmationDialog() {
+    this.confirmDeleteDialogRef = this.dialog.open(this.confirmDeleteDialog);
+  }
+
+  openSuccessDialog() {
+    this.successDialogRef = this.dialog.open(this.successDialog);
+  }
+
+  cancelDialog() {
+    this.dialog.closeAll();
+  }
+
+  deleteEvent() {
+    if (!this.event) {
+      return;
+    }
+    this.cancelDialog();
+    this.adminService.deleteEvent(this.event.eventId).subscribe(() => {
+      this.openSuccessDialog();
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error deleting event", "Ok", 3000);
+    })
+  }
+
+  goBack() {
+    this.cancelDialog();
+    this.router.navigate(['/admin'])
   }
 
   separateDateAndTimeInputs(dateAndTime: Date) {

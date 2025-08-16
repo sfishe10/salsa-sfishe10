@@ -89,6 +89,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
   userDialogRef!: MatDialogRef<any>;
   @ViewChild('userForm') userForm!: NgForm;
 
+  @ViewChild('roleDialog') roleDialog!: TemplateRef<any>;
+  roleDialogRef!: MatDialogRef<any>;
+
   @ViewChildren(UsersTableComponent) userTables!: QueryList<UsersTableComponent>;
 
   userRoleOptions: string[] = Utilities.getRoleOptions();
@@ -184,6 +187,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.dialog.closeAll();
   }
 
+  openRoleDialog() {
+    this.roleDialogRef = this.dialog.open(this.roleDialog);
+  }
+
   submitUser(form: NgForm) {
     let newUser = {
       email: form.value.userEmail,
@@ -206,6 +213,20 @@ export class AdminComponent implements OnInit, AfterViewInit {
         console.log(error);
         this.openSnackBar("Error adding User", "Ok", 3000);
       }
+    })
+  }
+
+  updateUserRole(form: NgForm) {
+    this.adminService.updateRole(form.value.userEmail, form.value.userRole).subscribe(() => {
+      this.userTables.forEach(table => {
+        table.fetchUsers();
+      })
+      this.openSnackBar("User updated!", "Ok", 3000);
+      form.reset();
+      this.roleDialogRef.close();
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error assigning role", "Ok", 3000);
     })
   }
 

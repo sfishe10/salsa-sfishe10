@@ -65,7 +65,12 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion><br/>
-      <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>
+        <button mat-stroked-button (click)="openRoleDialog()">
+          Assign User to Role
+        </button>
+      </div>
     </div>
   </mat-tab>
 </mat-tab-group>
@@ -126,6 +131,29 @@
     <mat-dialog-actions align="end">
       <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
       <button mat-button type="submit">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #roleDialog>
+  <form #roleForm="ngForm" (ngSubmit)="updateUserRole(roleForm)">
+    <h2 mat-dialog-title>Assign role</h2>
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-label class="form-label">Email</mat-label>
+        <input matInput type="text" name="userEmail" [(ngModel)]="userEmail">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Role</mat-label>
+        <mat-select name="userRole" [(ngModel)]="userRole">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of userRoleOptions" [value]="option">{{option}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+    </mat-dialog-content><br/>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+      <button mat-button type="submit">Assign</button>
     </mat-dialog-actions>
   </form>
 </ng-template>

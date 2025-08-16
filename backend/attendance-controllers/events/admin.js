@@ -40,6 +40,19 @@ module.exports.updateEvent = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-  db.execute('DELETE FROM MBEvent WHERE eventId=?', [req.params.id]);
-  res.end();
+  db.execute('DELETE FROM EventAttendance WHERE eventId=?', [req.params.id], (err) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.message);
+    } else {
+      db.execute('DELETE FROM MBEvent WHERE eventId=?', [req.params.id], (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send(err.message);
+        } else {
+          res.send(result);
+        }
+      });
+    }
+  });
 };

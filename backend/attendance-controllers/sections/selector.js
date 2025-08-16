@@ -6,7 +6,7 @@ const db = require('../../config/db');
 
 module.exports.getAll = async (req, res) => {
   db.execute(
-    'SELECT * FROM Section ORDER BY name',
+    'SELECT * FROM Section ORDER BY sectionId',
     (err, results) => {
       if (err) {
         console.log(err);

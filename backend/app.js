@@ -76,9 +76,9 @@ app.get('/api/me',
           role: result[0].role,
         };
         db.execute('SELECT * FROM Member as m '
-          + 'JOIN Term AS t ON m.termId = t.termId '
-          + 'JOIN PepBand AS p ON m.pepBandId = p.bandId '
-          + 'JOIN Section AS s ON m.sectionId = s.sectionId '
+          + 'LEFT JOIN Term AS t ON m.termId = t.termId '
+          + 'LEFT JOIN PepBand AS p ON m.pepBandId = p.bandId '
+          + 'LEFT JOIN Section AS s ON m.sectionId = s.sectionId '
           + 'WHERE email = ? AND '
           + 't.startDate <= NOW() AND t.endDate >= NOW()', [email],
         (err2, result2) => {
@@ -106,6 +106,7 @@ app.get('/api/me',
             user,
             member,
           };
+          console.log(me);
           res.send(me);
         });
       });

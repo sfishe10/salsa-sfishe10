@@ -129,6 +129,8 @@ export class AttendanceFormComponent implements OnInit {
     let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_ID);
     this.sectionMembers = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_MEMBERS);
 
+    console.log(sectionId);
+
     this.eventService.getEvent(this.eventId).subscribe(event => {
       this.event = event;
       this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.PEP_EVENT);

@@ -27,6 +27,7 @@ export class SessionCacheService {
         // if the user is a member (i.e. attendance taker), fetch the members of their section
         if (response.member?.section.sectionId) {
           const sectionId = response.member.section.sectionId;
+          console.log(sectionId);
           this.set(Constants.STORAGE_KEY_SECTION_ID, sectionId);
           return this.http.get(`${this.baseUrl}/members/section/${sectionId}`);
         } else {

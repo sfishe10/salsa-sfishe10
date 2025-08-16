@@ -12,19 +12,15 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {User} from '../../models/user';
-import {FormsModule, NgForm} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {AdminService} from '../../services/admin.service';
-import {SessionCacheService} from '../../services/session-cache.service';
 import {MatButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {NgForOf, NgIf} from '@angular/common';
-import {Utilities} from '../../utilities/utilities';
-import {Member} from '../../models/member';
 import {Router} from '@angular/router';
-import {Constants} from '../../utilities/constants';
 
 @Component({
   selector: 'app-users-table',
@@ -43,16 +39,7 @@ import {Constants} from '../../utilities/constants';
     MatRowDef,
     FormsModule,
     NgIf,
-    MatButton,
-    MatDialogActions,
-    MatDialogContent,
-    MatDialogTitle,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatOption,
-    MatSelect,
-    NgForOf
+    MatButton
   ],
   templateUrl: './users-table.component.html',
   styleUrl: './users-table.component.css'
@@ -65,17 +52,11 @@ export class UsersTableComponent implements OnInit, AfterViewInit {
 
   @ViewChild('userPaginator') userPaginator: MatPaginator | null = null;
 
-  @ViewChild('assignUserDialog') assignUserDialog!: TemplateRef<any>;
-  userDialogRef!: MatDialogRef<any>;
-
   users: User[] = [];
   userColumns: string[] = [];
   userDataSource: MatTableDataSource<User> = new MatTableDataSource<User>(this.users);
 
-  userEmail: string = '';
-
   constructor(private adminService: AdminService,
-              private dialog: MatDialog,
               private router: Router) {
   }
 
@@ -104,13 +85,7 @@ export class UsersTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // openUserDialog() {
-  //   this.userDialogRef = this.dialog.open(this.assignUserDialog);
-  // }
-  //
-  // onCancelDialog() {
-  //   this.dialog.closeAll();
-  // }
+
 
   navigateToUser(userId: number) {
     console.log(userId);

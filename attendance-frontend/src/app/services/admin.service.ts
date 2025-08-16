@@ -56,6 +56,11 @@ export class AdminService {
     return this.http.put<MBEvent>(url, {event: event});
   }
 
+  public deleteEvent(eventId: number) {
+    const url = this.baseUrl + `/events/${eventId}`;
+    return this.http.delete(url);
+  }
+
   public createTerm(term: Term): Observable<Term> {
     const url = this.baseUrl + '/terms';
     return this.http.post<Term>(url, {term: term})
@@ -69,6 +74,11 @@ export class AdminService {
   public createUser(userInfo: any): Observable<User> {
     const url = this.baseUrl + '/users';
     return this.http.post<User>(url, {user: userInfo});
+  }
+
+  public updateRole(email: string, role: string) {
+    const url = this.baseUrl + '/users/assignRole';
+    return this.http.put(url, { email: email, role: role })
   }
 
   public getAllUsers(): Observable<User[]> {

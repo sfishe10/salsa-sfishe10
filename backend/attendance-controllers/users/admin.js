@@ -35,3 +35,17 @@ module.exports.update = async (req, res) => {
       return res.send(result);
     });
 };
+
+module.exports.assignRole = async (req, res) => {
+  const email = req.body.email;
+  const role = req.body.role;
+  db.execute('UPDATE User SET role=? WHERE email=?',
+    [role, email],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send(err.message);
+      }
+      return res.send(result);
+    });
+};

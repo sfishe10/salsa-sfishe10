@@ -36,6 +36,23 @@
                [(ngModel)]="eventTime">
       </mat-form-field>
     </div>
+    <button mat-flat-button color="warn" type="button" (click)="openConfirmationDialog()">Delete Event</button>&nbsp;
     <button mat-flat-button color="primary" type="submit">Save Changes</button>
   </form>
 </div>
+
+
+<ng-template #confirmDeleteDialog>
+  <h2 mat-dialog-title>Delete Event?</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancelDialog()">Cancel</button>
+    <button mat-button (click)="deleteEvent()">Delete</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #successDialog>
+  <h2 mat-dialog-title>Event successfully deleted!</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="goBack()">Ok</button>
+  </mat-dialog-actions>
+</ng-template>

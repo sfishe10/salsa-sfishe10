@@ -167,7 +167,7 @@ module.exports.getByTermId = async (req, res) => {
     'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
     'JOIN Section s ON mem.sectionId = s.sectionId ' +
     'WHERE e.termId=? and e.type=? ' +
-    'ORDER BY sectionName, e.date, memLast',
+    'ORDER BY sectionId, e.date, memLast',
   [termId, eventType], (err, results) => {
     if (err) {
       console.log(err);
@@ -215,7 +215,7 @@ module.exports.getByTermIdAndPepBand = async (req, res) => {
     'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
     'JOIN Section s ON mem.sectionId = s.sectionId ' +
     'WHERE e.termId=? and e.pepBandId=? ' + (ignoreMemberPepBand ? '' : 'and mem.pepBandId=? ') +
-    'ORDER BY sectionName, e.date, memLast', params, (err, results) => {
+    'ORDER BY sectionId, e.date, memLast', params, (err, results) => {
       if (err) {
         console.log(err);
         res.status(500).send(err.message);
