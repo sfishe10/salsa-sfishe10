@@ -38,7 +38,10 @@
     <button mat-stroked-button (click)="onUploadCsvClicked('addMembers')">Upload Members CSV</button>&nbsp;
     <button mat-flat-button color="primary" (click)="openMemberDialog()">Add Member</button>
   </div>
-  <button style="margin-left: auto" mat-stroked-button (click)="onUploadCsvClicked('assignPepBands')">Upload Pep Bands CSV</button>&nbsp;
+  <div style="margin-left: auto">
+    <button mat-stroked-button (click)="onUploadCsvClicked('assignPepBands')">Upload Pep Bands CSV</button>&nbsp;
+    <button mat-stroked-button (click)="onUploadCsvClicked('assignRehearsalConflicts')">Upload Rehearsal Conflicts CSV</button>&nbsp;
+  </div>
 </div>
 
 <ng-template #uploadCsvDialog>
@@ -97,7 +100,7 @@
   </form>
 </ng-template>
 
-<ng-template #pepBandUploadConfirmationDialog>
+<ng-template #missingEmailsConfirmationDialog>
   <h2 mat-dialog-title>The following emails are not associated with a member for this term:</h2>
   <mat-dialog-content>
     <ul>

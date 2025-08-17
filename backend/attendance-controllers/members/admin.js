@@ -1,6 +1,11 @@
 const stream = require('stream');
 const csv = require('csv-parser');
 const db = require('../../config/db');
+const { REHEARSAL_CONFLICT_ARRIVING_LATE,
+REHEARSAL_CONFLICT_LEAVING_EARLY,
+REHEARSAL_CONFLICT_OTHER,
+REHEARSAL_CONFLICT_THURS,
+REHEARSAL_CONFLICT_TUES} = require('../../utilities/constants');
 
 module.exports.create = async (req, res) => {
   const { email } = req.body.member;
@@ -294,6 +299,97 @@ module.exports.uploadPepBandsCsv = async (req, res) => {
               }
               res.send(result);
             });
+          }
+        });
+      });
+    })
+    .on('error', (error) => {
+      console.error('Error parsing CSV:', error);
+      return res.status(500).json({ error: 'Failed to parse CSV' });
+    });
+};
+
+module.exports.uploadRehearsalConflictsCsv = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  const parsedMembers = [];
+  const { emailsToSkip } = req.body;
+
+  // Convert buffer to string, remove BOM if present, then convert back to buffer
+  const rawCsvString = req.file.buffer.toString('utf8').replace(/^\uFEFF/, '');
+  const cleanedBuffer = Buffer.from(rawCsvString, 'utf8');
+
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(cleanedBuffer);
+  bufferStream.pipe(csv()).on('data', (row) => {
+    const email = row.Email2?.trim().toLowerCase() ?? '';
+    const tuesdayArriveLate = row['Tuesday Rehearsal']?.toLowerCase().includes('arriving late');
+    const tuesdayLeaveEarly = row['Tuesday Rehearsal']?.toLowerCase().includes('leaving early');
+    const thursdayArriveLate = row['Thursday Rehearsal']?.toLowerCase().includes('arriving late');
+    const thursdayLeaveEarly = row['Thursday Rehearsal']?.toLowerCase().includes('leaving early');
+
+    if (!(emailsToSkip.includes(email))
+        && !(!tuesdayArriveLate && !tuesdayLeaveEarly && !thursdayLeaveEarly && !thursdayArriveLate)) {
+      let rehearsalConflict = '';
+      if (tuesdayArriveLate && thursdayArriveLate && !tuesdayLeaveEarly && !thursdayLeaveEarly) {
+        rehearsalConflict = REHEARSAL_CONFLICT_ARRIVING_LATE;
+      } else if (tuesdayLeaveEarly && thursdayLeaveEarly && !tuesdayArriveLate && !thursdayArriveLate) {
+        rehearsalConflict = REHEARSAL_CONFLICT_LEAVING_EARLY;
+      } else if ((tuesdayLeaveEarly || tuesdayArriveLate) && !thursdayLeaveEarly && !thursdayArriveLate) {
+        rehearsalConflict = REHEARSAL_CONFLICT_TUES;
+      } else if ((thursdayLeaveEarly || thursdayArriveLate) && !tuesdayLeaveEarly && !tuesdayArriveLate) {
+        rehearsalConflict = REHEARSAL_CONFLICT_THURS;
+      } else {
+        rehearsalConflict = REHEARSAL_CONFLICT_OTHER;
+      }
+      const member = {
+        email,
+        rehearsalConflict,
+      };
+      parsedMembers.push(member);
+    }
+  })
+    .on('end', () => {
+      console.log('Parsed CSV:', parsedMembers);
+      // make sure all the emails belong to members in that term
+      const emails = parsedMembers.map((member) => member.email);
+      const placeholders = emails.map(() => 'SELECT ? AS email').join(' UNION ALL ');
+
+      const selectString = `SELECT input_emails.email FROM (${placeholders}) AS input_emails
+            LEFT JOIN Member ON input_emails.email = Member.email AND Member.termId = ?
+            WHERE Member.email IS NULL`;
+      const params = [...emails, req.params.id];
+      db.execute(selectString, params, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send(err.message);
+        }
+        if (results.length) {
+          // some emails from the csv file do not have members attached to them in this term
+          return res.status(422).send(results);
+        }
+        // now update the members
+        let rehearsalConflictClause = 'CASE email ';
+        let emailString = '';
+        const emailParams = [];
+        const rehearsalConflictParams = [];
+        parsedMembers.forEach((member) => {
+          rehearsalConflictClause += 'WHEN ? THEN ? ';
+          rehearsalConflictParams.push(member.email);
+          rehearsalConflictParams.push(member.rehearsalConflict);
+          emailString += '?, ';
+          emailParams.push(member.email);
+        });
+        rehearsalConflictClause += 'END ';
+        emailString = emailString.slice(0, -2);
+        const updateString = `UPDATE Member SET rehearsalConflict=${rehearsalConflictClause} WHERE email IN (${emailString})`;
+        db.execute(updateString, rehearsalConflictParams.concat(emailParams), (err2, result) => {
+          if (err2) {
+            console.log(err2);
+            res.status(500).send(err2.message);
+          } else {
+            res.send(result);
           }
         });
       });

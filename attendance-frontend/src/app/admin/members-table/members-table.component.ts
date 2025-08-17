@@ -74,8 +74,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   @ViewChild('uploadCsvDialog') uploadCsvDialog!: TemplateRef<any>;
   uploadCsvDialogRef!: MatDialogRef<any>;
 
-  @ViewChild('pepBandUploadConfirmationDialog') pepBandUploadConfirmationDialog!: TemplateRef<any>;
-  pepBandDialogRef!: MatDialogRef<any>;
+  @ViewChild('missingEmailsConfirmationDialog') missingEmailsConfirmationDialog!: TemplateRef<any>;
+  missingEmailsConfirmationDialogRef!: MatDialogRef<any>;
 
   sectionOptions: Section[] = [];
   pepBandOptions: PepBand[] = [];
@@ -215,7 +215,31 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
             err.error.forEach((emailObj: any) => {
               this.emailsMissingMembers.push(emailObj.email);
             })
-            this.pepBandDialogRef = this.dialog.open(this.pepBandUploadConfirmationDialog);
+            this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
+          } else {
+            console.error('Upload error:', err)
+            this.onCancelDialog();
+            this.openSnackBar('Error uploading CSV', 'OK', 3000);
+          }
+        },
+      });
+    } else if (this.uploadCsvType === 'assignRehearsalConflicts') {
+      formData.append('emailsToSkip', JSON.stringify(this.emailsMissingMembers));
+      this.adminService.uploadRehearsalConflictsCsv(formData, termId).subscribe({
+        next: (res: any) => {
+          this.emailsMissingMembers = [];
+          this.onTermChange(termId);
+          this.onCancelDialog();
+          this.openSnackBar('Rehearsal Conflicts Updated', 'OK', 3000);
+        },
+        error: (err: any) => {
+          if (err.status === 422) {
+            this.emailsMissingMembers = [];
+            console.log(err.error);
+            err.error.forEach((emailObj: any) => {
+              this.emailsMissingMembers.push(emailObj.email);
+            })
+            this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
           } else {
             console.error('Upload error:', err)
             this.onCancelDialog();
