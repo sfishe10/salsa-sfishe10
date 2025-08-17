@@ -99,6 +99,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
 
   uploadCsvType: string | null = null;
 
+  filterText: string = '';
+
   emailsMissingMembers: string[] = [];
 
   constructor(private adminService: AdminService,
@@ -262,6 +264,19 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
 
   navigateToMember(memberId: number) {
     this.router.navigate(['/member', memberId]);
+  }
+
+  updateMemberFilter() {
+    this.memberDataSource = new MatTableDataSource(
+      this.members.filter(member => member.user.email.includes(this.filterText))
+    );
+    this.memberDataSource.paginator = this.memberPaginator;
+  }
+
+  clearMemberfilter() {
+    this.filterText = '';
+    this.memberDataSource = new MatTableDataSource(this.members);
+    this.memberDataSource.paginator = this.memberPaginator;
   }
 
   openSnackBar(message: string, action: string, duration: number) {

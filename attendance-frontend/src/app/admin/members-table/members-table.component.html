@@ -1,3 +1,10 @@
+<div style="display: flex; flex-direction: row; align-items: center; padding-bottom: 20px">
+  <mat-form-field subscriptSizing="dynamic" style="margin-right: 10px">
+    <mat-label>Filter by email</mat-label>
+    <input matInput [(ngModel)]="filterText" (ngModelChange)="updateMemberFilter()">
+  </mat-form-field>
+  <button mat-flat-button color="primary" (click)="clearMemberfilter()">Clear</button>
+</div>
 <div class="mat-elevation-z4">
   <table mat-table [dataSource]="memberDataSource">
 
