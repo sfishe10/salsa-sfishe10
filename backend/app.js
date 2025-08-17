@@ -11,8 +11,9 @@ const userRoutes = require('./routes/users.js');
 const sectionRoutes = require('./routes/sections');
 const evaluationRoutes = require('./routes/evaluations');
 const eventRoutes = require('./routes/events');
+const attendanceRoutes = require('./routes/attendance');
 
-const attendanceRoutes = require('./attendance-routes/attendance');
+const angularAttendanceRoutes = require('./attendance-routes/attendance');
 const attendanceEventRoutes = require('./attendance-routes/events');
 const attendanceMemberRoutes = require('./attendance-routes/members');
 const attendanceTermRoutes = require('./attendance-routes/terms');
@@ -50,8 +51,9 @@ app.use('/api/user/', userRoutes);
 app.use('/api/section/', sectionRoutes);
 app.use('/api/evaluations/', evaluationRoutes);
 app.use('/api/event/', eventRoutes);
+app.use('/api/attendance/', attendanceRoutes);
 
-app.use('/api/mb-attendance/attendance/', attendanceRoutes);
+app.use('/api/mb-attendance/attendance/', angularAttendanceRoutes);
 app.use('/api/mb-attendance/events/', attendanceEventRoutes);
 app.use('/api/mb-attendance/members/', attendanceMemberRoutes);
 app.use('/api/mb-attendance/terms/', attendanceTermRoutes);

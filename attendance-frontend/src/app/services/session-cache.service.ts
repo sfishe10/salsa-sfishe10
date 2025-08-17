@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Constants} from '../utilities/constants';
-import {firstValueFrom, Observable, of, switchMap, tap} from 'rxjs';
+import {firstValueFrom, Observable, tap} from 'rxjs';
 import {Section} from '../models/section';
 import {PepBand} from '../models/pep-band';
 
