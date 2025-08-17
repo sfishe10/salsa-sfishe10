@@ -9,6 +9,29 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
+  "configurations": {
+    "development": {
+      "fileReplacements": [
+        {
+          "replace": "src/environments/environment.ts",
+          "with": "src/environments/environment.development.ts"
+        }
+      ],
+      "optimization": false,
+      "sourceMap": false,
+      "extractCss": true,
+      "namedChunks": false
+    },
+    "production": {
+      "optimization": true,
+      "outputHashing": "all",
+      "sourceMap": false,
+      "extractCss": true,
+      "namedChunks": false,
+      "aot": true,
+      "extractLicenses": true
+    }
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.2.0",

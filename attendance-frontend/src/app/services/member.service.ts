@@ -3,12 +3,13 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Member} from '../models/member';
 import {EventAttendanceMemberPage} from '../models/event-attendance-member-page';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MemberService {
-  baseUrl = "http://localhost:3001/api/mb-attendance";
+  baseUrl = environment.apiURL + '/mb-attendance';
 
   constructor(private http: HttpClient) {}
 

@@ -1,9 +1,8 @@
 const SERVER_ROOT = window.location.origin
 
-// DEFAULT ENVIRONMENT - PRODUCTION
-// these variables should be defined for the production context
+// ENVIRONMENT VARIABLES FOR DEVELOPMENT
 export const environment = {
-  production: true,
+  production: false,
 
   apiURL: "http://localhost:3001/api",
   config: {

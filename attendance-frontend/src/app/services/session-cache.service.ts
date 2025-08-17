@@ -4,12 +4,13 @@ import {Constants} from '../utilities/constants';
 import {firstValueFrom, Observable, tap} from 'rxjs';
 import {Section} from '../models/section';
 import {PepBand} from '../models/pep-band';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionCacheService {
-  baseUrl = "http://localhost:3001/api/mb-attendance";
+  baseUrl = environment.apiURL + '/mb-attendance';
 
   constructor(private http: HttpClient) {}
 

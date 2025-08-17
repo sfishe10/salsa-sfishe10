@@ -3,12 +3,13 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {MBEvent} from '../models/mb-event';
 import {EventAttendance} from '../models/event-attendance';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
-  baseUrl = "http://localhost:3001/api/mb-attendance";
+  baseUrl = environment.apiURL + '/mb-attendance';
 
   constructor(private http: HttpClient) {}
 

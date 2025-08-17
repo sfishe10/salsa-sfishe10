@@ -6,13 +6,14 @@ import {MBEvent} from '../models/mb-event';
 import {Member} from '../models/member';
 import {User} from '../models/user';
 import {EventAttendanceTermPage} from '../models/event-attendance-term-page';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
 
-  baseUrl = "http://localhost:3001/api/mb-attendance";
+  baseUrl = environment.apiURL + '/mb-attendance';
 
   constructor(private http: HttpClient) {}
 
