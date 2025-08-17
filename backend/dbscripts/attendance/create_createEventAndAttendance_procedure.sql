@@ -10,27 +10,31 @@ CREATE PROCEDURE CreateEventAndAttendance(
     IN eventTermId INT
 )
 BEGIN
-  DECLARE newEventId INT;
+	DECLARE eventIdLocal INT;
 
 -- Insert the event
 INSERT INTO MBEvent (type, title, date, pepBandId, termId)
 VALUES (eventType, eventTitle, eventDate, eventPepBandId, eventTermId);
 
 -- Get the new eventId
-SET newEventId = LAST_INSERT_ID();
+SET eventIdLocal = LAST_INSERT_ID();
 
 -- Create new EventAttendance entries
-  IF eventType = 'Event' THEN
-	INSERT INTO EventAttendance (eventId, memberId, attendance)
-SELECT newEventId, memberId, NULL
+  IF eventType = 'Pep Event' THEN
+	INSERT INTO EventAttendance (eventId, memberId, attendance, required)
+SELECT eventIdLocal, memberId, NULL, TRUE
 FROM Member
 WHERE pepBandId = eventPepBandId AND termId = eventTermId;
 ELSE
-	INSERT INTO EventAttendance (eventId, memberId, attendance)
-SELECT newEventId, memberId, NULL
+	INSERT INTO EventAttendance (eventId, memberId, attendance, required)
+SELECT eventIdLocal, memberId, NULL, TRUE
 FROM Member
 WHERE termId = eventTermId;
 END IF;
+
+  -- Return as a result set
+SELECT eventIdLocal AS eventId;
 END;
 //
 DELIMITER ;
+

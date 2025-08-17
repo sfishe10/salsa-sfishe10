@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS Term;
 
 CREATE TABLE Term (
-  termId INT PRIMARY KEY AUTO_INCREMENT,
-  termName VARCHAR(255) NOT NULL UNIQUE,
-  startDate DATE NOT NULL,
-  endDate DATE NOT NULL
+                      termId INT PRIMARY KEY AUTO_INCREMENT,
+                      termName VARCHAR(255) NOT NULL UNIQUE,
+                      startDate DATE NOT NULL,
+                      endDate DATE NOT NULL
 );
