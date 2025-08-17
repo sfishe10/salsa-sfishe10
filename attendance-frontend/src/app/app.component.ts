@@ -11,18 +11,14 @@ import {
   RedirectRequest
 } from '@azure/msal-browser';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
-import {MatToolbar} from '@angular/material/toolbar';
 import {Router} from '@angular/router';
-import {MatDivider} from '@angular/material/divider';
 import {SessionCacheService} from './services/session-cache.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgIf, RouterLink,
-    MatSidenavModule, MatIconButton, MatIcon, MatToolbar, MatDivider],
+  imports: [RouterOutlet,
+    MatSidenavModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -30,15 +26,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private readonly _destroying$ = new Subject<void>();
 
-  eventType: string = 'upcoming'; // default
-
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private authService: MsalService,
     private msalBroadcastService: MsalBroadcastService,
     public sessionCacheService: SessionCacheService,
-    public router: Router,
-    private route: ActivatedRoute) { };
+    public router: Router) { };
 
   ngOnInit() {
     this.msalBroadcastService.msalSubject$
@@ -65,17 +58,6 @@ export class AppComponent implements OnInit, OnDestroy {
             this.authService.instance.setActiveAccount(account);
           }
         }
-
-        if (account) {
-          this.sessionCacheService.preload();
-        }
-      });
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.route.queryParams.subscribe(params => {
-          this.eventType = params['type'] || 'upcoming';
-        });
       });
   }
 
@@ -98,24 +80,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authService.logoutRedirect();
   }
 
-  get pageTitle(): string {
-    if (this.router.url.startsWith('/events')) {
-      return this.eventType === 'upcoming' ? 'Upcoming Events' : 'Recent Events';
-    }
-    if (this.router.url === '/profile') return 'Profile';
-    if (this.router.url.includes('/attendance-form')) return 'Enter Attendance';
-    if (this.router.url.includes('/member')) return 'Member';
-    if (this.router.url.includes('/user')) return 'User';
-    if (this.router.url === '/event' || this.router.url.startsWith('/event/')) return 'Event';
-    if (this.router.url.includes('/attendance/term')) return 'Attendance';
-    if (this.router.url === '/admin') return 'Admin';
-    return '';
-  }
-
   ngOnDestroy(): void {
     this._destroying$.next();
     this._destroying$.complete();
   }
-
-
 }

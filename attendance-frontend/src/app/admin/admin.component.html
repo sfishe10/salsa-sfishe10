@@ -1,7 +1,7 @@
-<p *ngIf="!sessionCacheService.isAdmin()">You do not have access to view this page.</p>
+<p *ngIf="!(sessionCacheService.isAdmin() || sessionCacheService.isOfficer())">You do not have access to view this page.</p>
 
 
-<mat-tab-group *ngIf="sessionCacheService.isAdmin()">
+<mat-tab-group *ngIf="sessionCacheService.isAdmin() || sessionCacheService.isOfficer()">
   <mat-tab label="View Term">
     <div style="padding: 10px">
       <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between">

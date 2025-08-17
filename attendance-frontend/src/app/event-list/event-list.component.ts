@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {EventComponent} from './event/event.component';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {MBEvent} from '../models/mb-event';
 import {EventService} from '../services/event.service';
 import {ActivatedRoute} from '@angular/router';
@@ -10,7 +10,8 @@ import {ActivatedRoute} from '@angular/router';
   standalone: true,
   imports: [
     EventComponent,
-    NgForOf
+    NgForOf,
+    NgIf
   ],
   templateUrl: './event-list.component.html',
   styleUrl: './event-list.component.css'

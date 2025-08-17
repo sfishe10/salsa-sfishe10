@@ -38,6 +38,7 @@ export class Constants {
   static readonly STORAGE_KEY_ME = 'ME';
   static readonly STORAGE_KEY_IS_ADMIN = 'IS_ADMIN';
   static readonly STORAGE_KEY_IS_OFFICER = 'IS_OFFICER';
+  static readonly STORAGE_KEY_IS_ATTENDANCE_TAKER = 'IS_ATTENDANCE_TAKER';
   static readonly STORAGE_KEY_SECTION_MEMBERS = 'SECTION_MEMBERS';
   static readonly STORAGE_KEY_SECTION_ID = 'SECTION_ID';
   static readonly STORAGE_KEY_SECTIONS = 'SECTIONS'

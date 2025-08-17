@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Constants} from '../utilities/constants';
-import {Observable, of, switchMap, tap} from 'rxjs';
+import {firstValueFrom, Observable, of, switchMap, tap} from 'rxjs';
 import {Section} from '../models/section';
 import {PepBand} from '../models/pep-band';
 
@@ -13,41 +13,45 @@ export class SessionCacheService {
 
   constructor(private http: HttpClient) {}
 
-  public preload() {
-    this.http.get('http://localhost:3001/api/me').pipe(
-      tap((response: any) => {
-        // keep track of the logged-in user's role
-        this.set(Constants.STORAGE_KEY_ME, response);
-        const isAdmin = response.user.role === Constants.ROLE_ADMIN;
-        this.set(Constants.STORAGE_KEY_IS_ADMIN, isAdmin);
-        const isOfficer = response.user.role === Constants.ROLE_OFFICER;
-        this.set(Constants.STORAGE_KEY_IS_OFFICER, isOfficer);
-      }),
-      switchMap((response: any) => {
-        // if the user is a member (i.e. attendance taker), fetch the members of their section
-        if (response.member?.section.sectionId) {
-          const sectionId = response.member.section.sectionId;
-          console.log(sectionId);
-          this.set(Constants.STORAGE_KEY_SECTION_ID, sectionId);
-          return this.http.get(`${this.baseUrl}/members/section/${sectionId}`);
-        } else {
-          return of(null); // User has no member object, skip section fetch
-        }
-      })
-    ).subscribe(sectionMembers => {
-      if (sectionMembers) {
+  public async preload(): Promise<void> {
+    try {
+      // Fetch current user info
+      const response: any = await firstValueFrom(
+        this.http.get('http://localhost:3001/api/me').pipe(
+          tap((res: any) => {
+            this.set(Constants.STORAGE_KEY_ME, res);
+
+            const role = res.user.role;
+            this.set(Constants.STORAGE_KEY_IS_ADMIN, role === Constants.ROLE_ADMIN);
+            this.set(Constants.STORAGE_KEY_IS_OFFICER, role === Constants.ROLE_OFFICER);
+            this.set(Constants.STORAGE_KEY_IS_ATTENDANCE_TAKER, role === Constants.ROLE_ATTENDANCE_TAKER);
+          })
+        )
+      );
+
+      // If user is a member, fetch their section members
+      if (response.member?.section?.sectionId) {
+        const sectionId = response.member.section.sectionId;
+        this.set(Constants.STORAGE_KEY_SECTION_ID, sectionId);
+
+        const sectionMembers: any = await firstValueFrom(
+          this.http.get(`${this.baseUrl}/members/section/${sectionId}`)
+        );
         this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
       }
-    });
 
-    this.getSections().subscribe(sections => {
+      // Fetch sections and pep bands in parallel
+      const [sections, pepBands] = await Promise.all([
+        firstValueFrom(this.getSections()),
+        firstValueFrom(this.getPepBands())
+      ]);
+
       this.set(Constants.STORAGE_KEY_SECTIONS, sections);
-    })
-
-    this.getPepBands().subscribe(pepBands => {
       this.set(Constants.STORAGE_KEY_PEP_BANDS, pepBands);
-    })
 
+    } catch (err) {
+      console.error('Error preloading session cache:', err);
+    }
   }
 
   private getSections(): Observable<Section[]> {
@@ -83,6 +87,10 @@ export class SessionCacheService {
 
   public isOfficer() {
     return this.get(Constants.STORAGE_KEY_IS_OFFICER);
+  }
+
+  public isAttendanceTaker() {
+    return this.get(Constants.STORAGE_KEY_IS_ATTENDANCE_TAKER)
   }
 
 }
