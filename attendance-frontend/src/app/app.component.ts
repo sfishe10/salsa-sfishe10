@@ -13,6 +13,7 @@ import {
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {Router} from '@angular/router';
 import {SessionCacheService} from './services/session-cache.service';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',

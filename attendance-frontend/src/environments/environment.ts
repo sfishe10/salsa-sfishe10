@@ -5,6 +5,8 @@ const SERVER_ROOT = window.location.origin
 export const environment = {
   production: true,
 
+  reactAppUrl: 'https://807.band',
+
   apiURL: "http://localhost:3001/api",
   config: {
     auth: {
