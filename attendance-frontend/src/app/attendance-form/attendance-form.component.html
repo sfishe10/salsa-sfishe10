@@ -1,0 +1,115 @@
+<div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 10px">
+  <div>
+    <div class="event-date">
+      <mat-icon class="calendar-icon">event</mat-icon>
+      <span>{{event?.date | date: 'EEEE, MMMM d h:mm a' }}</span>
+    </div>
+    <div class="event-title">
+      <span *ngIf="event?.pepBand?.bandId">{{event?.pepBand?.bandId}} Band: </span>
+      <span>{{event?.title}}</span>
+    </div>
+  </div>
+  <mat-form-field subscriptSizing="dynamic" *ngIf="sessionCacheService.isAdmin()">
+    <mat-label class="form-label">Select Section</mat-label>
+    <mat-select [(ngModel)]="selectedSection" (selectionChange)="onSectionChange($event.value)">
+      <mat-option *ngFor="let option of sectionOptions" [value]="option">{{option.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div *ngIf="event?.type === REHEARSAL" class="rehearsal-conflict-legend">
+  <div>
+    <span style="color: var(--arriving-late-color)">{{Constants.REHEARSAL_CONFLICT_ARRIVING_LATE}}</span><br/>
+    <span style="color: var(--leaving-early-color)">{{Constants.REHEARSAL_CONFLICT_LEAVING_EARLY}}</span><br/>
+    <span style="color: var(--other-conflict-color)">{{Constants.REHEARSAL_CONFLICT_OTHER}}</span><br/>
+  </div>
+  <div style="text-align: right;">
+    <span style="color: var(--tuesday-conflict-color)">{{Constants.REHEARSAL_CONFLICT_TUES}}</span><br/>
+    <span style="color: var(--thursday-conflict-color)">{{Constants.REHEARSAL_CONFLICT_THURS}}</span><br/>
+  </div>
+</div>
+<div style="display: flex; justify-content: flex-end;">
+  <button mat-flat-button
+          (click)="clearForm()"
+          style="font-size: .8rem; height: auto; width: auto; padding-top: 6px; padding-bottom: 6px; margin-right: 4px;"
+          color="primary">Clear</button>
+  <button mat-flat-button
+          (click)="markAllPresent()"
+          style="font-size: .8rem; height: auto; width: auto; padding-top: 6px; padding-bottom: 6px"
+          color="primary">Mark All Present</button>
+</div>
+<div style="display: flex; flex-direction: column">
+  <div class="form-table" *ngIf="eventAttendances.length">
+    <form [formGroup]="form">
+      <div formArrayName="attendances">
+        <table mat-table [dataSource]="eventAttendances">
+
+          <ng-container matColumnDef="name">
+            <td mat-cell *matCellDef="let attendance; let i = index" class="name-cell" [formGroupName]="i">
+
+              <div *ngIf="attendances.at(i).get('required')?.value" [ngStyle]="event?.type === REHEARSAL ?
+                {'color': 'var(--' + Utilities.getConflictColor(attendance.member.rehearsalConflict) + '-color)'} : {'color': 'black'}">
+                {{attendance.member.user.firstName}} {{attendance.member.user.lastName}}
+              </div>
+
+              <div *ngIf="!attendances.at(i).get('required')?.value">
+                <app-member-select formControlName="member" [memberOptions]="getAvailableMembers(i)" [forSub]="false"></app-member-select>
+              </div>
+
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="attendance">
+            <td mat-cell *matCellDef="let attendance; let i = index" [formGroupName]="i"
+                style="background-color: var(--mat-sidenav-content-background-color);">
+              <div style="display: flex; flex-direction: row; justify-content: end;">
+                <div class="attendance-cell">
+                  <app-attendance-select formControlName="attendance" [includeSub]="includeSubOption()"></app-attendance-select>
+
+                  <app-member-select *ngIf="attendances.at(i).get('attendance')?.value === 'Sub'"
+                                     formControlName="sub" [memberOptions]="sectionMembers" [forSub]="true"></app-member-select>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="delete">
+            <td mat-cell *matCellDef="let attendance; let i = index" class="delete-button-cell">
+              <button mat-icon-button *ngIf="!attendances.at(i).get('required')?.value" (click)="removeAttendee(attendance)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-row *matRowDef="let attendance; columns: columnsToDisplay"></tr>
+        </table>
+      </div>
+    </form>
+  </div>
+  <button *ngIf="event?.type === Constants.EVENT_TYPE_PEP_EVENT" mat-flat-button (click)="addAttendee()"
+          style="margin-bottom: 20px; background-color: lightgray;">Add Attendee
+  </button>
+</div>
+
+<p *ngIf="showRequiredFieldError" class="error-message">*Fields cannot be blank*</p>
+<p *ngIf="showDuplicateMemberError" class="error-message">*Duplicate member*</p>
+<p *ngIf="showSubError" class="error-message">*Fields marked "Sub" must list a sub*</p>
+<div>
+  <button mat-flat-button (click)="openConfirmationDialog()" color="primary">Submit</button>&nbsp;
+  <button mat-stroked-button (click)="goBack()">Go Back</button>
+</div>
+
+
+<ng-template #confirmSubmitDialog>
+  <h2 mat-dialog-title>Submit Form?</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancelDialog()">Cancel</button>
+    <button mat-button (click)="onSubmit()">Submit</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #successDialog>
+  <h2 mat-dialog-title>Form successfully submitted!</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="goBack()">Ok</button>
+  </mat-dialog-actions>
+</ng-template>

@@ -1,0 +1,78 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5px 0 5px 0;
+}
+
+mat-card {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  align-items: flex-start;
+  border-radius: 14px;
+  align-self: center;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .4);
+}
+
+.event {
+  background-color: var(--primary-color);
+}
+
+.rehearsal {
+  background-color: var(--accent-color);
+}
+
+mat-card-header {
+  width: 100%;
+  font-size: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+mat-divider {
+  border-top-color: white;
+  width: 85%;
+  margin: 5px 16px 10px 16px;
+}
+
+mat-card-content {
+  font-weight: lighter;
+  font-size: 1rem;
+}
+
+mat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: end;
+}
+
+.event-header-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.material-symbols-outlined {
+  font-size: 36px;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 200,
+    'GRAD' 0,
+    'opsz' 24
+}
+
+.tag-arrow-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.title-arrow-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -1,0 +1,55 @@
+.event-row {
+  position: sticky;
+  top: 0;
+  z-index: 3; /* Should be higher than sticky columns */
+  box-shadow: 0px 2px 2px -1px rgba(0, 0, 0, 0.2);
+  height: 3rem;
+}
+
+.section-row {
+  background-color: var(--primary-color);
+  color: white;
+  height: 1.5rem;
+}
+
+/* Applied to any cell in a section row */
+.section-row-cell {
+  background-color: var(--primary-color);
+  color: white;
+  border: none !important;
+}
+
+.name-col {
+  white-space: nowrap;
+  border-right: 1px solid lightgray;
+  position: sticky;
+  left: 0;
+}
+
+.mat-header-cell.name-col {
+  position: sticky;
+  left: 0;
+}
+
+.member-row {
+  height: 1.5rem;
+}
+
+.member-row:hover {
+  filter: brightness(90%);
+}
+
+.attendance-col {
+  white-space: nowrap;
+  border-right: 1px solid lightgray;
+  min-width: 8rem;
+}
+
+
+.rehearsal-conflict-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: .9rem;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}

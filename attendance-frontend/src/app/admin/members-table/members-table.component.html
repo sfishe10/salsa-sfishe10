@@ -1,0 +1,122 @@
+<div style="display: flex; flex-direction: row; align-items: center; padding-bottom: 20px">
+  <mat-form-field subscriptSizing="dynamic" style="margin-right: 10px">
+    <mat-label>Filter by email</mat-label>
+    <input matInput [(ngModel)]="filterText" (ngModelChange)="updateMemberFilter()">
+  </mat-form-field>
+  <button mat-flat-button color="primary" (click)="clearMemberfilter()">Clear</button>
+</div>
+<div class="mat-elevation-z4">
+  <table mat-table [dataSource]="memberDataSource">
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let member"> {{member.user.email}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let member"> {{member.user.firstName}} {{member.user.lastName}} </td>
+    </ng-container>
+
+    <!-- Pep Band Column -->
+    <ng-container matColumnDef="pepBand">
+      <th mat-header-cell *matHeaderCellDef> Pep Band </th>
+      <td mat-cell *matCellDef="let member"> {{member.pepBand?.displayName}} </td>
+    </ng-container>
+
+    <!-- Section Column -->
+    <ng-container matColumnDef="section">
+      <th mat-header-cell *matHeaderCellDef> Section </th>
+      <td mat-cell *matCellDef="let member"> {{member.section?.name}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="memberColumns"></tr>
+    <tr (click)="navigateToMember(row.memberId)" class="clickable-row" mat-row *matRowDef="let row; columns: memberColumns;"></tr>
+  </table>
+  <mat-paginator #memberPaginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page">
+  </mat-paginator>
+</div><br/>
+<div style="display: flex; justify-content: space-between">
+  <div>
+    <button mat-stroked-button (click)="onUploadCsvClicked('addMembers')">Upload Members CSV</button>&nbsp;
+    <button mat-flat-button color="primary" (click)="openMemberDialog()">Add Member</button>
+  </div>
+  <div style="margin-left: auto">
+    <button mat-stroked-button (click)="onUploadCsvClicked('assignPepBands')">Upload Pep Bands CSV</button>&nbsp;
+    <button mat-stroked-button (click)="onUploadCsvClicked('assignRehearsalConflicts')">Upload Rehearsal Conflicts CSV</button>&nbsp;
+  </div>
+</div>
+
+<ng-template #uploadCsvDialog>
+  <h2 mat-dialog-title>Upload CSV File</h2>
+  <mat-dialog-content style="padding-bottom:0">
+    <div style="display:flex; align-items:center">
+      <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>
+      <button *ngIf="selectedFile"
+              mat-icon-button
+              aria-label="Remove file"
+              (click)="clearFile(fileInput)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #addMemberDialog>
+  <h2 mat-dialog-title>Add Member</h2>
+  <form #memberForm="ngForm" (ngSubmit)="submitMember(memberForm)">
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-label class="form-label">Email</mat-label>
+        <input matInput id="memberEmail" type="text" name="memberEmail" [(ngModel)]="memberEmail">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Pep Band</mat-label>
+        <mat-select id="memberPepBand" name="memberPepBand" [(ngModel)]="memberPepBand">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of pepBandOptions" [value]="option">{{option.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Section</mat-label>
+        <mat-select id="memberSection" name="memberSection" [(ngModel)]="memberSection">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of sectionOptions" [value]="option">{{option.name}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Rehearsal Conflict</mat-label>
+        <mat-select id="memberRehearsalConflict" name="memberRehearsalConflict" [(ngModel)]="memberRehearsalConflict">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of rehearsalConflictOptions" [value]="option">{{option}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+      <button mat-button type="submit">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #missingEmailsConfirmationDialog>
+  <h2 mat-dialog-title>The following emails are not associated with a member for this term:</h2>
+  <mat-dialog-content>
+    <ul>
+      <li *ngFor="let email of emailsMissingMembers">{{ email }}</li>
+    </ul>
+    <span style="color:black">Proceed and skip these emails?</span>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialogAndClearEmails()">Cancel</button>&nbsp;
+    <button mat-button (click)="uploadFile()">Proceed</button>
+  </mat-dialog-actions>
+</ng-template>

@@ -1,0 +1,161 @@
+<p *ngIf="!(sessionCacheService.isAdmin() || sessionCacheService.isOfficer())">You do not have access to view this page.</p>
+
+
+<mat-tab-group *ngIf="sessionCacheService.isAdmin() || sessionCacheService.isOfficer()">
+  <mat-tab label="View Term">
+    <div style="padding: 10px">
+      <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <mat-form-field subscriptSizing="dynamic">
+            <mat-label class="form-label">Select a term</mat-label>
+            <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
+              <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-flat-button color="primary" (click)="openTermDialog()">Create Term</button>
+        </div>
+        <p align="right">{{selectedTerm?.startDate | date: 'MMMM d, YYYY'}} - {{selectedTerm?.endDate | date: 'MMMM d, YYYY'}}</p>
+      </div>
+      <mat-accordion multi>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>Events</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-events-table [selectedTerm]="selectedTerm"></app-events-table>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>Members</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-members-table [selectedTerm]="selectedTerm"></app-members-table>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <div (click)="goToAttendance()" class="back-button"
+        style="display: flex; flex-direction: row; align-items: center; gap: 6px; padding-left: 10px; width: max-content;">
+        <h4 style="text-decoration: underline">View Attendance</h4>
+        <mat-icon>arrow_right_alt</mat-icon>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="Users">
+    <div style="padding: 10px">
+      <mat-accordion multi>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_ADMIN}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_ADMIN"></app-users-table>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_OFFICER}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_OFFICER"></app-users-table>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_ATTENDANCE_TAKER}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_ATTENDANCE_TAKER"></app-users-table>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_MEMBER}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_MEMBER"></app-users-table>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion><br/>
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>
+        <button mat-stroked-button (click)="openRoleDialog()">
+          Assign User to Role
+        </button>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+
+<ng-template #createTermDialog>
+  <h2 mat-dialog-title>Create Term</h2>
+  <form #termForm="ngForm" (ngSubmit)="submitTerm(termForm)">
+    <mat-dialog-content>
+        <mat-form-field>
+          <mat-label class="form-label">Name</mat-label>
+          <input matInput id="termName" type="text" name="termName" [(ngModel)]="termName">
+        </mat-form-field><br/>
+        <mat-form-field>
+          <mat-label class="form-label">Start Date</mat-label>
+          <input matInput [matDatepicker]="termStartPicker" name="termStartDate" [(ngModel)]="termStartDate">
+          <mat-datepicker-toggle matIconSuffix [for]="termStartPicker"></mat-datepicker-toggle>
+          <mat-datepicker #termStartPicker></mat-datepicker>
+        </mat-form-field><br/>
+        <mat-form-field>
+          <mat-label class="form-label">End Date</mat-label>
+          <input matInput [matDatepicker]="termEndPicker" name="termEndDate" [(ngModel)]="termEndDate">
+          <mat-datepicker-toggle matIconSuffix [for]="termEndPicker"></mat-datepicker-toggle>
+          <mat-datepicker #termEndPicker></mat-datepicker>
+        </mat-form-field><br/>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="cancelDialog()">Cancel</button>
+      <button mat-button type="submit">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #addUserDialog>
+  <h2 mat-dialog-title>Add User</h2>
+  <form #userForm="ngForm" (ngSubmit)="submitUser(userForm)">
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-label class="form-label">Email</mat-label>
+        <input matInput id="userEmail" type="text" name="userEmail" [(ngModel)]="userEmail">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">First Name</mat-label>
+        <input matInput id="userFirstName" type="text" name="userFirstName" [(ngModel)]="userFirstName">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Last Name</mat-label>
+        <input matInput id="userLastName" type="text" name="userLastName" [(ngModel)]="userLastName">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Role</mat-label>
+        <mat-select id="userRole" name="userRole" [(ngModel)]="userRole">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of userRoleOptions" [value]="option">{{option}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+      <button mat-button type="submit">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #roleDialog>
+  <form #roleForm="ngForm" (ngSubmit)="updateUserRole(roleForm)">
+    <h2 mat-dialog-title>Assign role</h2>
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-label class="form-label">Email</mat-label>
+        <input matInput type="text" name="userEmail" [(ngModel)]="userEmail">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Role</mat-label>
+        <mat-select name="userRole" [(ngModel)]="userRole">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of userRoleOptions" [value]="option">{{option}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+    </mat-dialog-content><br/>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+      <button mat-button type="submit">Assign</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+

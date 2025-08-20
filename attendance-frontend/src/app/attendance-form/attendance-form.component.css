@@ -1,0 +1,107 @@
+.pep-band {
+  font-family: Roboto, sans-serif;
+  font-size: 1.2rem;
+}
+
+.calendar-icon {
+  font-size: 1rem;
+  margin-right: 4px;
+  vertical-align: middle;
+  height: auto;
+  width: auto;
+}
+
+.event-title {
+  font-family: Roboto, sans-serif;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.event-date {
+  display: flex;
+  align-items: center;
+  font-family: Roboto, sans-serif;
+  font-size: 1rem;
+  color: dimgray;
+  margin-bottom: 6px;
+}
+
+.rehearsal-conflict-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: .9rem;
+}
+
+.form-table {
+  padding-bottom: 10px;
+}
+
+mat-divider {
+  border-top-color: var(--accent-color);
+  margin: 4px 0px 8px 0px;
+}
+
+mat-option {
+  font-size: 1rem;
+  min-height: 32px;
+}
+
+.name-cell {
+  background-color: var(--mat-sidenav-content-background-color);
+  padding: 0;
+}
+
+.attendance-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+}
+
+.delete-button-cell {
+  width: 40px;
+  text-align: center;
+  padding: 0;
+  background-color: var(--mat-sidenav-content-background-color);
+}
+
+/*stuff to make the dropdown fit correctly*/
+
+::ng-deep .mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {
+  min-height: auto !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+}
+
+::ng-deep .mdc-text-field--outlined {
+  overflow: hidden !important;
+  height: auto !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  flex: inherit !important;
+}
+
+.mat-mdc-form-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 180px;
+}
+
+.mat-mdc-row {
+  font-size: 1rem;
+}
+
+.mdc-data-table__cell {
+  padding-right: 0;
+}
+
+.error-message {
+  font-size: .9rem;
+  color: red;
+}

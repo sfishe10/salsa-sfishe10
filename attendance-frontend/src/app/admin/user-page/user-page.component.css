@@ -1,0 +1,15 @@
+.button:hover {
+  cursor: pointer;
+}
+
+.user-email {
+  display: flex;
+  align-items: center;
+
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

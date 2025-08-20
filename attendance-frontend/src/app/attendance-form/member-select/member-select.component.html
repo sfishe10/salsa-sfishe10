@@ -1,0 +1,39 @@
+<div>
+  <button mat-stroked-button [disabled]="false" (click)="toggleDropdown($event)" #dropdownTrigger="cdkOverlayOrigin" cdkOverlayOrigin
+          class="dropdown-button">
+    <span *ngIf="selectedOption">{{selectedOption?.user?.firstName}} {{selectedOption?.user?.lastName}}</span>
+    <span *ngIf="!selectedOption && forSub" style="color: gray">Subbed By</span>
+    <span *ngIf="!selectedOption && !forSub" style="color: gray">Select Member</span>
+
+    <mat-icon fontSet="material-icons">arrow_drop_down</mat-icon>
+  </button>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="dropdownTrigger"
+    [cdkConnectedOverlayOpen]="isDropdownOpen"
+    (backdropClick)="closeDropdown()"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+    [cdkConnectedOverlayFlexibleDimensions]="true"
+    [cdkConnectedOverlayPush]="true"
+    [cdkConnectedOverlayScrollStrategy]="overlay.scrollStrategies.reposition()"
+  >
+    <div
+      class="dropdown-menu"
+      role="listbox"
+      [attr.aria-activedescendant]="'option-{{selectedOption}}'">
+
+      <div *ngFor="let member of memberOptions"
+        class="option"
+        id="option-{{member.memberId}}"
+        role="option"
+        (click)="select(member)"
+      >
+        {{member.user.firstName}} {{member.user.lastName}}
+      </div>
+
+    </div>
+  </ng-template>
+</div>
+

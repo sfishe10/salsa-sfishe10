@@ -1,0 +1,12 @@
+.form-label {
+  font-size: .8rem;
+  color: gray;
+}
+
+table {
+  width: 100%;
+}
+
+.back-button:hover {
+  cursor: pointer;
+}

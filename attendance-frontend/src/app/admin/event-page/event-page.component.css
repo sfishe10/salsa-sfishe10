@@ -1,0 +1,9 @@
+.event-title {
+  font-family: Roboto, sans-serif;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.back-button:hover {
+  cursor: pointer;
+}
