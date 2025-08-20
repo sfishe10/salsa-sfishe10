@@ -4,6 +4,7 @@ const SERVER_ROOT = window.location.origin
 export const environment = {
   production: false,
 
+  reactAppUrl: 'http://localhost:3000',
   apiURL: "http://localhost:3001/api",
   config: {
     auth: {

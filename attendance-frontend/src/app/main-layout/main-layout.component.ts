@@ -10,6 +10,7 @@ import {filter, Subject, takeUntil} from 'rxjs';
 import {MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalService} from '@azure/msal-angular';
 import {SessionCacheService} from '../services/session-cache.service';
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus, RedirectRequest} from '@azure/msal-browser';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-main-layout',
@@ -30,6 +31,8 @@ import {AuthenticationResult, EventMessage, EventType, InteractionStatus, Redire
   styleUrl: './main-layout.component.css'
 })
 export class MainLayoutComponent implements OnInit{
+
+  reactUrl = environment.reactAppUrl;
 
   eventType: string = 'upcoming'; // default
 
