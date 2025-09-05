@@ -23,6 +23,7 @@ import {FormsModule} from '@angular/forms';
 import {SessionCacheService} from '../../services/session-cache.service';
 import {MatSlideToggle, MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {EventAttendanceTermPage} from '../../models/event-attendance-term-page';
+import {Router} from '@angular/router';
 
 type MemberWithAttendance = {
   isSection: false;
@@ -30,10 +31,15 @@ type MemberWithAttendance = {
   fullName: string;
   sectionName: string;
   rehearsalConflict: string;
-  attendanceMap: { [eventId: number]: string }; // eventId -> status
+  attendanceMap: { [eventId: number]: AttendanceCell }; // eventId -> status
 };
 
 type SectionRow = { isSection: true; sectionName: string };
+
+type AttendanceCell = {
+  id: number;       // attendanceId
+  status: string;   // attendanceStatus
+};
 
 type TableRow = SectionRow | MemberWithAttendance;
 
@@ -88,7 +94,8 @@ export class AttendanceTableComponent implements OnInit {
 
 
   constructor(private adminService: AdminService,
-              private sessionCacheService: SessionCacheService) {}
+              private sessionCacheService: SessionCacheService,
+              private router: Router) {}
 
   ngOnInit() {
 
@@ -164,7 +171,10 @@ export class AttendanceTableComponent implements OnInit {
         sectionMembers.push(memberRow);
       }
 
-      memberRow.attendanceMap[record.eventId] = record.attendanceStatus;
+      memberRow.attendanceMap[record.eventId] = {
+        id: record.attendanceId,
+        status: record.attendanceStatus
+      };
     }
 
     // remove duplicates in the events array (since each event has many attendance records)
@@ -186,6 +196,10 @@ export class AttendanceTableComponent implements OnInit {
       sectionName: (r as SectionRow).sectionName,
       fullName: (r as MemberWithAttendance).fullName
     })));
+  }
+
+  navigateToAttendance(attendanceId: number) {
+    this.router.navigate(['/attendance', attendanceId], {queryParams: {returnTo: 'attendance'}});
   }
 
   protected readonly Constants = Constants;

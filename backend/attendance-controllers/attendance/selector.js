@@ -1,9 +1,117 @@
 const db = require('../../config/db');
-const {convertDateToPST} = require("../../utilities/utilities");
+const { convertDateToPST } = require('../../utilities/utilities');
 
 /**
  * Attendance selectors
  */
+
+module.exports.getById = async (req, res) => {
+  const attendanceId = req.params.id;
+  db.execute('SELECT e.eventId, e.title, e.type, e.date, e.pepBandId AS eventPepBandId, p1.displayName as eventPepBandName, ' +
+    'ea.*, ' +
+    'm.pepBandId as memberPepBandId, p2.displayName as memberPepBandName, m.sectionId, m.rehearsalConflict, ' +
+    'u.userId, u.firstName, u.lastName, u.email, u.role, ' +
+    'sub.pepBandId as subPepBandId, p3.displayName as subPepBandName, sub.rehearsalConflict as subConflict, ' +
+    'sub_u.userId as subUserId, sub_u.firstName as subFirst, sub_u.lastName as subLast, sub_u.email as subEmail, sub_u.role as subRole, ' +
+    's.name as sectionName, ' +
+    't.* ' +
+    'FROM EventAttendance ea ' +
+    'JOIN MBEvent e ON e.eventId = ea.eventId ' +
+    'LEFT JOIN Member m ON ea.memberId = m.memberId ' +
+    'LEFT JOIN Member sub ON ea.subId = sub.memberId ' +
+    'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
+    'LEFT JOIN User u on m.email = u.email ' +
+    'LEFT JOIN PepBand p1 on e.pepBandId = p1.bandId ' +
+    'LEFT JOIN PepBand p2 on m.pepBandId = p2.bandId ' +
+    'LEFT JOIN PepBand p3 on sub.pepBandId = p3.bandId ' +
+    'LEFT JOIN Section s on m.sectionId = s.sectionId ' +
+    'LEFT JOIN Term t on e.termId = t.termId ' +
+    'WHERE ea.attendanceId=? ' +
+    'ORDER BY e.date', [attendanceId], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.message);
+    } else {
+      if (!result.length) {
+        return res.status(404).send('Attendance not found');
+      }
+      const attendance = {
+        attendanceId: result[0].attendanceId,
+        event: {
+          eventId: result[0].eventId,
+          type: result[0].type,
+          title: result[0].title,
+          date: convertDateToPST(result[0].date),
+          pepBand:
+            result[0].eventPepBandId
+              ? {
+                bandId: result[0].eventPepBandId,
+                displayName: result[0].eventPepBandName,
+              } : null,
+        },
+        member: result[0].memberId
+          ? {
+            memberId: result[0].memberId,
+            user: {
+              userId: result[0].userId,
+              email: result[0].email,
+              firstName: result[0].firstName,
+              lastName: result[0].lastName,
+              role: result[0].role,
+            },
+            section: {
+              sectionId: result[0].sectionId,
+              displayName: result[0].memberPepBandName,
+            },
+            rehearsalConflict: result[0].rehearsalConflict,
+            pepBand:
+              result[0].memberPepBandId
+                ? {
+                  bandId: result[0].memberPepBandId,
+                  displayName: result[0].memberPepBandName,
+                } : null,
+            term: {
+              termId: result[0].termId,
+              termName: result[0].termName,
+              startDate: result[0].startDate,
+              endDate: result[0].endDate,
+            },
+          } : null,
+        sub: result[0].subId ? {
+          memberId: result[0].subId,
+          user: {
+            userId: result[0].subUserId,
+            email: result[0].subEmail,
+            firstName: result[0].subFirst,
+            lastName: result[0].subLast,
+            role: result[0].subRole,
+          },
+          section: {
+            sectionId: result[0].sectionId,
+            displayName: result[0].memberPepBandName,
+          },
+          rehearsalConflict: result[0].subConflict,
+          pepBand:
+            result[0].subPepBandId
+              ? {
+                bandId: result[0].subPepBandId,
+                displayName: result[0].subPepBandName,
+              } : null,
+          term: {
+            termId: result[0].termId,
+            termName: result[0].termName,
+            startDate: result[0].startDate,
+            endDate: result[0].endDate,
+          },
+        } : null,
+        attendance: result[0].attendance,
+        required: result[0].required,
+        lastUpdated: result[0].lastUpdated,
+      };
+      res.send(attendance);
+    }
+  });
+};
 
 module.exports.getByMemberId = async (req, res) => {
   const memberId = req.params.id;

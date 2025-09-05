@@ -47,13 +47,14 @@
         <span style="font-weight: normal">{{ event.date | date:'M/d h:mm a' }}</span>
       </th>
       <td mat-cell *matCellDef="let row; let i = index"
-          class="attendance-col"
+          class="attendance-cell"
+          (click)="navigateToAttendance(row.attendanceMap[event.eventId].id)"
           [ngClass]="{ 'section-row-cell': isSectionRow(i, row) }"
           [ngStyle]="
-            !isSectionRow(i, row) && row.attendanceMap[event.eventId] ?
-            {'background-color': 'var(--' + Utilities.getAttendanceColor(row.attendanceMap[event.eventId]) + '-color)'} : null
+            !isSectionRow(i, row) && row.attendanceMap[event.eventId].status ?
+            {'background-color': 'var(--' + Utilities.getAttendanceColor(row.attendanceMap[event.eventId].status) + '-color)'} : null
           ">
-        {{ isSectionRow(i, row) ? '' : (row.attendanceMap[event.eventId] || '-') }}
+        {{ isSectionRow(i, row) ? '' : (row.attendanceMap[event.eventId].status || '-') }}
       </td>
     </ng-container>
 

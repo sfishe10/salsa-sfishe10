@@ -39,12 +39,15 @@
   filter: brightness(90%);
 }
 
-.attendance-col {
+.attendance-cell {
   white-space: nowrap;
   border-right: 1px solid lightgray;
   min-width: 8rem;
 }
 
+.attendance-cell:hover {
+  filter: brightness(90%);
+}
 
 .rehearsal-conflict-legend {
   display: flex;

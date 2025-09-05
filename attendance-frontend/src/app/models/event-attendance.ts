@@ -8,4 +8,5 @@ export interface EventAttendance {
   member: Member | null;
   sub: Member | null;
   required: boolean;
+  lastUpdated: Date;
 }

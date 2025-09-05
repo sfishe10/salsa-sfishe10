@@ -8,6 +8,7 @@ const router = express.Router();
  */
 
 router.post('/', attendance.admin.create);
+router.put('/:id', attendance.admin.update);
 router.post('/submitForm', attendance.admin.submitForm);
 // router.post('/createEntries', attendance.admin.createEntries);
 router.delete('/:id', attendance.admin.delete);
@@ -16,6 +17,7 @@ router.delete('/:id', attendance.admin.delete);
  * selectors
  */
 
+router.get('/:id', attendance.selector.getById);
 router.get('/member/:id', attendance.selector.getByMemberId);
 router.get('/event/:eventId/section/:sectionId', attendance.selector.getBySectionAndEventId);
 router.get('/term/:id/eventType/:eventType', attendance.selector.getByTermId);
