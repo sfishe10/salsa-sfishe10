@@ -43,7 +43,7 @@ export class MemberAttendanceTableComponent implements OnInit {
   @ViewChild(MatTable) attendanceTable!: MatTable<EventAttendanceMemberPage>;
 
   attendances: EventAttendanceMemberPage[] = [];
-  attendanceColumns: string[] = ['event', 'date', 'status', 'subbedBy'];
+  attendanceColumns: string[] = ['event', 'type', 'date', 'status', 'subbedBy'];
   attendanceDataSource: MatTableDataSource<EventAttendanceMemberPage> = new MatTableDataSource<EventAttendanceMemberPage>(this.attendances);
 
   constructor(private memberService: MemberService,

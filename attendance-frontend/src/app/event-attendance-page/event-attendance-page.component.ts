@@ -9,7 +9,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatIcon} from '@angular/material/icon';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
-import {MemberAttendanceTableComponent} from '../shared/attendance-table/member-attendance-table.component';
+import {MemberAttendanceTableComponent} from '../shared/member-attendance-table/member-attendance-table.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatInput} from '@angular/material/input';
 import {Utilities} from '../utilities/utilities';

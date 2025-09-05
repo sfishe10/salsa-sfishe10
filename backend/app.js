@@ -101,6 +101,12 @@ app.get('/api/me',
                 sectionId: result2[0].sectionId,
                 name: result2[0].name,
               },
+              term: {
+                termId: result2[0].termId,
+                termName: result2[0].termName,
+                startDate: result2[0].startDate,
+                endDate: result2[0].endDate,
+              },
               rehearsalConflict: result2[0].rehearsalConflict,
             };
           }

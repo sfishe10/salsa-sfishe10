@@ -7,6 +7,12 @@
       <td mat-cell *matCellDef="let attendance"> {{attendance.eventTitle}} </td>
     </ng-container>
 
+    <!-- Type Column -->
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef> Type </th>
+      <td mat-cell *matCellDef="let attendance"> {{attendance.eventType}} </td>
+    </ng-container>
+
     <!-- Date Column -->
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef> Date </th>

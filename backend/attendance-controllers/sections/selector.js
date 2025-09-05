@@ -10,9 +10,26 @@ module.exports.getAll = async (req, res) => {
     (err, results) => {
       if (err) {
         console.log(err);
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
       }
-      res.jsonp(results);
+      res.send(results);
+    },
+  );
+};
+
+module.exports.getById = async (req, res) => {
+  const sectionId = req.params.id;
+  db.execute(
+    'SELECT * FROM Section WHERE sectionId=?', [sectionId],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send(err.message);
+      }
+      if (!result.length) {
+        return res.status(404).send('Section not found');
+      }
+      return res.send(result[0]);
     },
   );
 };

@@ -37,13 +37,15 @@ export class AdminService {
     return this.http.get<Member[]>(url);
   }
 
-  public getAttendanceByTermId(id: number, eventType: string): Observable<EventAttendanceTermPage[]> {
-    const url = this.baseUrl + `/attendance/term/${id}/eventType/${eventType}`;
+  public getAttendanceByTermIdAndSection(termId: number, sectionId: number | null, eventType: string): Observable<EventAttendanceTermPage[]> {
+    const url = this.baseUrl + `/attendance/term/${termId}/section/${sectionId}/eventType/${eventType}`;
     return this.http.get<EventAttendanceTermPage[]>(url);
   }
 
-  public getAttendanceByTermIdAndPepBand(termId: number, pepBandId: string, ignoreMemberPepBand: boolean): Observable<EventAttendanceTermPage[]> {
-    const url = this.baseUrl + `/attendance/term/${termId}/pepBand/${pepBandId}?ignoreMemberPepBand=${ignoreMemberPepBand}`;
+  public getAttendanceByTermIdAndPepBandAndSection(termId: number, sectionId: number | null, pepBandId: string,
+                                                   ignoreMemberPepBand: boolean): Observable<EventAttendanceTermPage[]> {
+    const url = this.baseUrl +
+      `/attendance/term/${termId}/section/${sectionId}/pepBand/${pepBandId}?ignoreMemberPepBand=${ignoreMemberPepBand}`;
     return this.http.get<EventAttendanceTermPage[]>(url);
   }
 

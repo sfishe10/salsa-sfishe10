@@ -16,5 +16,6 @@ const router = express.Router();
  */
 
 router.get('/', sections.selector.getAll);
+router.get('/:id', sections.selector.getById);
 
 module.exports = router;

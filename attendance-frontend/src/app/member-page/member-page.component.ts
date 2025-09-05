@@ -5,7 +5,7 @@ import {MemberService} from '../services/member.service';
 import {MatIcon} from '@angular/material/icon';
 import {FormsModule, NgForm} from '@angular/forms';
 import {NgForOf, NgIf} from '@angular/common';
-import {MemberAttendanceTableComponent} from '../shared/attendance-table/member-attendance-table.component';
+import {MemberAttendanceTableComponent} from '../shared/member-attendance-table/member-attendance-table.component';
 import {MatButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
@@ -53,6 +53,8 @@ export class MemberPageComponent implements OnInit {
   rehearsalConflict: string | null = null;
   pepBand: PepBand | null = null;
 
+  returnToPage: string = 'section';
+
   constructor(private route: ActivatedRoute,
               private memberService: MemberService,
               private router: Router,
@@ -61,6 +63,8 @@ export class MemberPageComponent implements OnInit {
 
   ngOnInit() {
     this.memberId = Number(this.route.snapshot.paramMap.get('id'));
+
+    this.returnToPage = this.route.snapshot.queryParams['returnTo'];
 
     this.pepBandOptions = this.sessionCacheService.get(Constants.STORAGE_KEY_PEP_BANDS);
 
@@ -108,7 +112,11 @@ export class MemberPageComponent implements OnInit {
 
 
   goBack() {
-    this.router.navigate(['/admin']);
+    if (this.returnToPage == 'section') {
+      this.router.navigate(['/section', this.member?.section?.sectionId]);
+    } else if (this.returnToPage == 'admin') {
+      this.router.navigate(['/admin']);
+    }
   }
 
   openSnackBar(message: string, action: string, duration: number) {

@@ -25,3 +25,7 @@
 .main-container {
   padding: 16px;
 }
+
+a:hover {
+  cursor: pointer;
+}

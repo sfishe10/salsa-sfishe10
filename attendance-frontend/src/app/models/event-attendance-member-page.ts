@@ -3,6 +3,7 @@ export interface EventAttendanceMemberPage {
   attendanceStatus: string;
   eventId: number;
   eventTitle: string;
+  eventType: string;
   eventDate: Date;
   memberId: number;
   memberFirstName: string;

@@ -5,6 +5,7 @@
     <a routerLink="/events" [queryParams]="{ type: 'recent' }" (click)="sidenav.toggle()">Recent Events</a>
     <a [href]="reactUrl">Stations</a>
     <!--    <a routerLink="/profile" (click)="sidenav.toggle()">Profile</a>-->
+    <a *ngIf="sessionCacheService.isSectionLeader()" (click)="goToSection()">My Section</a>
     <a *ngIf="sessionCacheService.isAdmin()" routerLink="/admin" (click)="sidenav.toggle()">Admin</a>
   </mat-sidenav>
 

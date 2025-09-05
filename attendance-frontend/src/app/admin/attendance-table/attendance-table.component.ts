@@ -29,6 +29,7 @@ type MemberWithAttendance = {
   isSection: false;
   memberId: number;
   fullName: string;
+  subName: string;
   sectionName: string;
   rehearsalConflict: string;
   attendanceMap: { [eventId: number]: AttendanceCell }; // eventId -> status
@@ -78,6 +79,8 @@ export class AttendanceTableComponent implements OnInit {
 
   @Input('eventType') eventType!: string;
 
+  @Input('sectionId') sectionId: number | null = null;
+
   displayedColumns: string[] = ['name']; // add events later
   dataSource: TableRow[] = [];
 
@@ -107,7 +110,7 @@ export class AttendanceTableComponent implements OnInit {
     } else {
       let termId = this.term.termId;
 
-      this.adminService.getAttendanceByTermId(termId, this.eventType).subscribe(attendances => {
+      this.adminService.getAttendanceByTermIdAndSection(termId, this.sectionId, this.eventType).subscribe(attendances => {
         this.populateTable(attendances);
       })
     }
@@ -118,7 +121,7 @@ export class AttendanceTableComponent implements OnInit {
     let termId = this.term.termId;
 
 
-    this.adminService.getAttendanceByTermIdAndPepBand(termId, pepBand.bandId, false).subscribe(attendances => {
+    this.adminService.getAttendanceByTermIdAndPepBandAndSection(termId, this.sectionId, pepBand.bandId, false).subscribe(attendances => {
       this.populateTable(attendances);
     })
   }
@@ -130,7 +133,7 @@ export class AttendanceTableComponent implements OnInit {
       return;
     }
 
-    this.adminService.getAttendanceByTermIdAndPepBand(this.term.termId, this.selectedPepBand.bandId, this.ignoreMemberPepBand).subscribe(attendances => {
+    this.adminService.getAttendanceByTermIdAndPepBandAndSection(this.term.termId, this.sectionId, this.selectedPepBand.bandId, this.ignoreMemberPepBand).subscribe(attendances => {
       this.populateTable(attendances);
     })
   }
@@ -143,6 +146,7 @@ export class AttendanceTableComponent implements OnInit {
     for (const record of attendances) {
       const key = `${record.memberId}`;
       const fullName = `${record.memberFirstName} ${record.memberLastName}`;
+      const subName = `${record.subFirstName} ${record.subLastName}`
       const sectionName = record.sectionName;
 
       const attendanceEvent = {
@@ -164,6 +168,7 @@ export class AttendanceTableComponent implements OnInit {
           isSection: false,
           memberId: record.memberId,
           fullName,
+          subName,
           sectionName,
           rehearsalConflict: record.rehearsalConflict,
           attendanceMap: {}
@@ -184,7 +189,9 @@ export class AttendanceTableComponent implements OnInit {
 
     // Build rows: section header + member rows
     for (const [sectionName, members] of grouped) {
-      rows.push({ isSection: true, sectionName });
+      if (!this.sectionId) {
+        rows.push({ isSection: true, sectionName });
+      }
       rows.push(...members);
     }
 

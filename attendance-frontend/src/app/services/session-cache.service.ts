@@ -30,8 +30,8 @@ export class SessionCacheService {
         )
       );
 
-      // If user is a member, fetch their section members
-      if (response.member?.section?.sectionId) {
+      // If user is a member, fetch their section members and term
+      if (response.member) {
         const sectionId = response.member.section.sectionId;
         this.set(Constants.STORAGE_KEY_SECTION_ID, sectionId);
 
@@ -39,6 +39,9 @@ export class SessionCacheService {
           this.http.get(`${this.baseUrl}/members/section/${sectionId}`)
         );
         this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
+
+        const term = response.member.term;
+        this.set(Constants.STORAGE_KEY_TERM, term);
       }
 
       // Fetch sections and pep bands in parallel
@@ -83,15 +86,19 @@ export class SessionCacheService {
   }
 
   public isAdmin() {
-    return this.get(Constants.STORAGE_KEY_IS_ADMIN);
+    return this.get(Constants.STORAGE_KEY_ME).user.role === Constants.ROLE_ADMIN;
   }
 
   public isOfficer() {
-    return this.get(Constants.STORAGE_KEY_IS_OFFICER);
+    return this.get(Constants.STORAGE_KEY_ME).user.role === Constants.ROLE_OFFICER;
   }
 
   public isAttendanceTaker() {
-    return this.get(Constants.STORAGE_KEY_IS_ATTENDANCE_TAKER)
+    return this.get(Constants.STORAGE_KEY_ME).user.role === Constants.ROLE_ATTENDANCE_TAKER;
+  }
+
+  public isSectionLeader() {
+    return this.get(Constants.STORAGE_KEY_ME).user.role === Constants.ROLE_SECTION_LEADER;
   }
 
 }
