@@ -206,7 +206,8 @@ export class AttendanceTableComponent implements OnInit {
   }
 
   navigateToAttendance(attendanceId: number) {
-    this.router.navigate(['/attendance', attendanceId], {queryParams: {returnTo: 'attendance'}});
+    let returnTo = this.sectionId ? 'section' : 'attendance';
+    this.router.navigate(['/attendance', attendanceId], {queryParams: {returnTo: returnTo}});
   }
 
   protected readonly Constants = Constants;

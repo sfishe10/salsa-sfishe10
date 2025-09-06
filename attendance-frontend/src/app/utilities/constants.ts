@@ -23,8 +23,8 @@ export class Constants {
   static readonly ATTENDANCE_PRESENT = 'Present';
   static readonly ATTENDANCE_ABSENT_UNEXCUSED = 'Absent - Unexcused';
   static readonly ATTENDANCE_ABSENT_EXCUSED = 'Absent - Excused';
-  static readonly ATTENDANCE_LATE_UNEXCUSED = 'Arrived Late - Unexcused';
-  static readonly ATTENDANCE_LATE_EXCUSED = 'Arrived Late - Excused';
+  static readonly ATTENDANCE_LATE_UNEXCUSED = 'Late - Unexcused';
+  static readonly ATTENDANCE_LATE_EXCUSED = 'Late - Excused';
   static readonly ATTENDANCE_LEFT_EARLY_UNEXCUSED = 'Left Early - Unexcused';
   static readonly ATTENDANCE_LEFT_EARLY_EXCUSED = 'Left Early - Excused';
   static readonly ATTENDANCE_SUB = 'Sub';

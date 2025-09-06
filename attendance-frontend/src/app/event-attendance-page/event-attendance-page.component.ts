@@ -129,6 +129,8 @@ export class EventAttendancePageComponent implements OnInit {
       this.router.navigate(['/attendance/term', this.eventAttendance.member?.term?.termId]);
     } else if (this.returnToPage == 'member') {
       this.router.navigate(['/member', this.eventAttendance.member?.memberId]);
+    } else if (this.returnToPage == 'section') {
+      this.router.navigate(['/section', this.eventAttendance.member?.section?.sectionId]);
     }
 
   }
