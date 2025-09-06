@@ -53,6 +53,12 @@
           </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
+          <mat-expansion-panel-header>{{ROLE_SECTION_LEADER}}s</mat-expansion-panel-header>
+          <div style="padding-top:5px">
+            <app-users-table [role]="ROLE_SECTION_LEADER"></app-users-table>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
           <mat-expansion-panel-header>{{ROLE_ATTENDANCE_TAKER}}s</mat-expansion-panel-header>
           <div style="padding-top:5px">
             <app-users-table [role]="ROLE_ATTENDANCE_TAKER"></app-users-table>
@@ -65,15 +71,15 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion><br/>
-      <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>
+      <div style="display: flex; flex-direction: row; justify-content: start;">
+        <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>&nbsp;&nbsp;
         <button mat-stroked-button (click)="openRoleDialog()">
           Assign User to Role
         </button>
       </div>
     </div>
   </mat-tab>
-</mat-tab-group>
+</mat-tab-group >
 
 
 <ng-template #createTermDialog>

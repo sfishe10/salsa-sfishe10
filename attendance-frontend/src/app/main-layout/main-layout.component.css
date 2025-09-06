@@ -24,4 +24,10 @@
 
 .main-container {
   padding: 16px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+a:hover {
+  cursor: pointer;
 }

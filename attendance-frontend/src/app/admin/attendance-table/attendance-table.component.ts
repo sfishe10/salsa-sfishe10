@@ -23,17 +23,24 @@ import {FormsModule} from '@angular/forms';
 import {SessionCacheService} from '../../services/session-cache.service';
 import {MatSlideToggle, MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {EventAttendanceTermPage} from '../../models/event-attendance-term-page';
+import {Router} from '@angular/router';
 
 type MemberWithAttendance = {
   isSection: false;
   memberId: number;
   fullName: string;
+  subName: string;
   sectionName: string;
   rehearsalConflict: string;
-  attendanceMap: { [eventId: number]: string }; // eventId -> status
+  attendanceMap: { [eventId: number]: AttendanceCell }; // eventId -> status
 };
 
 type SectionRow = { isSection: true; sectionName: string };
+
+type AttendanceCell = {
+  id: number;       // attendanceId
+  status: string;   // attendanceStatus
+};
 
 type TableRow = SectionRow | MemberWithAttendance;
 
@@ -72,6 +79,8 @@ export class AttendanceTableComponent implements OnInit {
 
   @Input('eventType') eventType!: string;
 
+  @Input('sectionId') sectionId: number | null = null;
+
   displayedColumns: string[] = ['name']; // add events later
   dataSource: TableRow[] = [];
 
@@ -88,7 +97,8 @@ export class AttendanceTableComponent implements OnInit {
 
 
   constructor(private adminService: AdminService,
-              private sessionCacheService: SessionCacheService) {}
+              private sessionCacheService: SessionCacheService,
+              private router: Router) {}
 
   ngOnInit() {
 
@@ -100,7 +110,7 @@ export class AttendanceTableComponent implements OnInit {
     } else {
       let termId = this.term.termId;
 
-      this.adminService.getAttendanceByTermId(termId, this.eventType).subscribe(attendances => {
+      this.adminService.getAttendanceByTermIdAndSection(termId, this.sectionId, this.eventType).subscribe(attendances => {
         this.populateTable(attendances);
       })
     }
@@ -111,7 +121,7 @@ export class AttendanceTableComponent implements OnInit {
     let termId = this.term.termId;
 
 
-    this.adminService.getAttendanceByTermIdAndPepBand(termId, pepBand.bandId, false).subscribe(attendances => {
+    this.adminService.getAttendanceByTermIdAndPepBandAndSection(termId, this.sectionId, pepBand.bandId, false).subscribe(attendances => {
       this.populateTable(attendances);
     })
   }
@@ -123,7 +133,7 @@ export class AttendanceTableComponent implements OnInit {
       return;
     }
 
-    this.adminService.getAttendanceByTermIdAndPepBand(this.term.termId, this.selectedPepBand.bandId, this.ignoreMemberPepBand).subscribe(attendances => {
+    this.adminService.getAttendanceByTermIdAndPepBandAndSection(this.term.termId, this.sectionId, this.selectedPepBand.bandId, this.ignoreMemberPepBand).subscribe(attendances => {
       this.populateTable(attendances);
     })
   }
@@ -136,6 +146,7 @@ export class AttendanceTableComponent implements OnInit {
     for (const record of attendances) {
       const key = `${record.memberId}`;
       const fullName = `${record.memberFirstName} ${record.memberLastName}`;
+      const subName = `${record.subFirstName} ${record.subLastName}`
       const sectionName = record.sectionName;
 
       const attendanceEvent = {
@@ -157,6 +168,7 @@ export class AttendanceTableComponent implements OnInit {
           isSection: false,
           memberId: record.memberId,
           fullName,
+          subName,
           sectionName,
           rehearsalConflict: record.rehearsalConflict,
           attendanceMap: {}
@@ -164,7 +176,10 @@ export class AttendanceTableComponent implements OnInit {
         sectionMembers.push(memberRow);
       }
 
-      memberRow.attendanceMap[record.eventId] = record.attendanceStatus;
+      memberRow.attendanceMap[record.eventId] = {
+        id: record.attendanceId,
+        status: record.attendanceStatus
+      };
     }
 
     // remove duplicates in the events array (since each event has many attendance records)
@@ -174,7 +189,9 @@ export class AttendanceTableComponent implements OnInit {
 
     // Build rows: section header + member rows
     for (const [sectionName, members] of grouped) {
-      rows.push({ isSection: true, sectionName });
+      if (!this.sectionId) {
+        rows.push({ isSection: true, sectionName });
+      }
       rows.push(...members);
     }
 
@@ -186,6 +203,11 @@ export class AttendanceTableComponent implements OnInit {
       sectionName: (r as SectionRow).sectionName,
       fullName: (r as MemberWithAttendance).fullName
     })));
+  }
+
+  navigateToAttendance(attendanceId: number) {
+    let returnTo = this.sectionId ? 'section' : 'attendance';
+    this.router.navigate(['/attendance', attendanceId], {queryParams: {returnTo: returnTo}});
   }
 
   protected readonly Constants = Constants;

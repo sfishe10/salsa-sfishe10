@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatDivider} from "@angular/material/divider";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
@@ -11,6 +11,7 @@ import {MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalSer
 import {SessionCacheService} from '../services/session-cache.service';
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus, RedirectRequest} from '@azure/msal-browser';
 import {environment} from '../../environments/environment';
+import {Constants} from '../utilities/constants';
 
 @Component({
   selector: 'app-main-layout',
@@ -31,6 +32,8 @@ import {environment} from '../../environments/environment';
   styleUrl: './main-layout.component.css'
 })
 export class MainLayoutComponent implements OnInit{
+
+  @ViewChild('sidenav') sidenav: any;
 
   reactUrl = environment.reactAppUrl;
 
@@ -62,9 +65,16 @@ export class MainLayoutComponent implements OnInit{
     if (this.router.url === '/event' || this.router.url.startsWith('/event/')) return 'Event';
     if (this.router.url.includes('/attendance/term')) return 'Attendance';
     if (this.router.url === '/admin') return 'Admin';
+    if (this.router.url.includes('/attendance/')) return 'Attendance';
+    if (this.router.url.includes('/section/')) return 'View Section';
     return '';
   }
 
+  public goToSection() {
+    let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_ID);
 
+    this.sidenav.toggle();
+    this.router.navigate(['/section', sectionId]);
+  }
 
 }

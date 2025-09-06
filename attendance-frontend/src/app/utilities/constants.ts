@@ -23,14 +23,15 @@ export class Constants {
   static readonly ATTENDANCE_PRESENT = 'Present';
   static readonly ATTENDANCE_ABSENT_UNEXCUSED = 'Absent - Unexcused';
   static readonly ATTENDANCE_ABSENT_EXCUSED = 'Absent - Excused';
-  static readonly ATTENDANCE_LATE_UNEXCUSED = 'Arrived Late - Unexcused';
-  static readonly ATTENDANCE_LATE_EXCUSED = 'Arrived Late - Excused';
+  static readonly ATTENDANCE_LATE_UNEXCUSED = 'Late - Unexcused';
+  static readonly ATTENDANCE_LATE_EXCUSED = 'Late - Excused';
   static readonly ATTENDANCE_LEFT_EARLY_UNEXCUSED = 'Left Early - Unexcused';
   static readonly ATTENDANCE_LEFT_EARLY_EXCUSED = 'Left Early - Excused';
   static readonly ATTENDANCE_SUB = 'Sub';
 
   static readonly ROLE_ADMIN = 'Admin';
   static readonly ROLE_OFFICER = 'Officer';
+  static readonly ROLE_SECTION_LEADER = 'Section Leader';
   static readonly ROLE_ATTENDANCE_TAKER = 'Attendance Taker';
   static readonly ROLE_MEMBER = 'Member';
 
@@ -41,6 +42,7 @@ export class Constants {
   static readonly STORAGE_KEY_IS_ATTENDANCE_TAKER = 'IS_ATTENDANCE_TAKER';
   static readonly STORAGE_KEY_SECTION_MEMBERS = 'SECTION_MEMBERS';
   static readonly STORAGE_KEY_SECTION_ID = 'SECTION_ID';
+  static readonly STORAGE_KEY_TERM = 'TERM';
   static readonly STORAGE_KEY_SECTIONS = 'SECTIONS'
   static readonly STORAGE_KEY_PEP_BANDS = 'PEP_BANDS';
   static readonly STORAGE_KEY_USER = 'USER';

@@ -56,6 +56,7 @@ export class Utilities {
     let roleOptions = [
       Constants.ROLE_ADMIN,
       Constants.ROLE_OFFICER,
+      Constants.ROLE_SECTION_LEADER,
       Constants.ROLE_ATTENDANCE_TAKER,
       Constants.ROLE_MEMBER
     ]

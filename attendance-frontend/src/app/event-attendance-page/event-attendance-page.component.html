@@ -1,0 +1,39 @@
+<div>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="top-row">
+      <div class="member-name">
+        <mat-icon class="button" (click)="goBack()">arrow_back</mat-icon>
+        <span style="margin-left: 10px">{{eventAttendance?.member?.user?.firstName}} {{eventAttendance?.member?.user?.lastName}}&nbsp;</span>
+        <span style="color: dimgray">- {{eventAttendance?.member?.user?.email}}</span>
+      </div>
+      <button *ngIf="!editing" mat-flat-button type="button" color="primary"  (click)="edit()">Edit Attendance</button>
+      <div *ngIf="editing">
+        <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
+        <button mat-flat-button type="submit" color="primary">Save Changes</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 10px; margin-bottom: 10px;">
+      <span style="font-size: 1.2rem">Event: <b>{{eventAttendance?.event?.title}}</b></span>
+      <span style="font-size: 1.2rem">Last Updated: <b>{{eventAttendance?.lastUpdated | date: 'MM/dd/yy h:mm a'}}</b></span>
+      <span style="font-size: 1.2rem">Attendance Status:
+        <b *ngIf="!editing && eventAttendance?.attendance !== 'Sub'">{{eventAttendance?.attendance}}</b>
+        <b *ngIf="!editing && eventAttendance?.attendance === 'Sub'">
+          Subbed by {{eventAttendance?.sub?.user?.firstName}} {{eventAttendance?.sub?.user?.lastName}}
+        </b>
+        <app-attendance-select *ngIf="editing"
+                               formControlName="attendance"
+                               [includeSub]="includeSubOption()"
+                               style="display: inline-block; font-size: 1rem; margin-left: 5px"></app-attendance-select>
+
+        <app-member-select *ngIf="editing && form.get('attendance')?.value === 'Sub'"
+                           style="display: inline-block; font-size: 1rem; margin-left: 5px"
+                           formControlName="sub"
+                           [memberOptions]="sectionMembers"
+                           [forSub]="true"></app-member-select>
+      </span>
+    </div>
+  </form>
+</div>
+
+

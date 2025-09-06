@@ -11,6 +11,8 @@ import {EventListComponent} from './event-list/event-list.component';
 import {UnauthorizedComponent} from './unauthorized/unauthorized.component';
 import {AuthzGuard} from './authz.guard';
 import {MainLayoutComponent} from './main-layout/main-layout.component';
+import {EventAttendancePageComponent} from './event-attendance-page/event-attendance-page.component';
+import {SectionPageComponent} from './section-page/section-page.component';
 
 export const routes: Routes = [
   {
@@ -60,6 +62,16 @@ export const routes: Routes = [
       {
         path: 'event/:id',
         component: EventPageComponent,
+        canActivate: [AuthzGuard]
+      },
+      {
+        path: 'section/:id',
+        component: SectionPageComponent,
+        canActivate: [AuthzGuard]
+      },
+      {
+        path: 'attendance/:id',
+        component: EventAttendancePageComponent,
         canActivate: [AuthzGuard]
       },
       {

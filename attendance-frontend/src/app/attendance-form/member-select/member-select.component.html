@@ -1,5 +1,5 @@
 <div>
-  <button mat-stroked-button [disabled]="false" (click)="toggleDropdown($event)" #dropdownTrigger="cdkOverlayOrigin" cdkOverlayOrigin
+  <button type="button" mat-stroked-button [disabled]="false" (click)="toggleDropdown($event)" #dropdownTrigger="cdkOverlayOrigin" cdkOverlayOrigin
           class="dropdown-button">
     <span *ngIf="selectedOption">{{selectedOption?.user?.firstName}} {{selectedOption?.user?.lastName}}</span>
     <span *ngIf="!selectedOption && forSub" style="color: gray">Subbed By</span>

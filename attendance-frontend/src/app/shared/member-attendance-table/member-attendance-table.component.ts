@@ -12,6 +12,7 @@ import {
 import {MatPaginator} from '@angular/material/paginator';
 import {EventAttendanceMemberPage} from '../../models/event-attendance-member-page';
 import {MemberService} from '../../services/member.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-member-attendance-table',
@@ -42,10 +43,11 @@ export class MemberAttendanceTableComponent implements OnInit {
   @ViewChild(MatTable) attendanceTable!: MatTable<EventAttendanceMemberPage>;
 
   attendances: EventAttendanceMemberPage[] = [];
-  attendanceColumns: string[] = ['event', 'date', 'status', 'subbedBy'];
+  attendanceColumns: string[] = ['event', 'type', 'date', 'status', 'subbedBy'];
   attendanceDataSource: MatTableDataSource<EventAttendanceMemberPage> = new MatTableDataSource<EventAttendanceMemberPage>(this.attendances);
 
-  constructor(private memberService: MemberService) {}
+  constructor(private memberService: MemberService,
+              private router: Router) {}
 
   ngOnInit() {
     if (this.memberId) {
@@ -55,6 +57,10 @@ export class MemberAttendanceTableComponent implements OnInit {
         this.attendanceDataSource.paginator = this.attendancePaginator;
       })
     }
+  }
+
+  navigateToAttendance(attendanceId: number) {
+    this.router.navigate(['/attendance', attendanceId], {queryParams: {returnTo: 'member'}});
   }
 
 }

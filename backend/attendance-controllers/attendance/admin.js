@@ -17,14 +17,30 @@ module.exports.create = async (req, res) => {
 
 module.exports.update = async (req, res) => {
   const attendanceId = req.params.id;
-  await db.execute('UPDATE EventAttendance SET memberId=?, attendance=? WHERE attendanceId=?',
-    [req.body.memberId, req.body.attendance, attendanceId],
+  const params = [req.body.attendance.member.memberId, req.body.attendance.attendance];
+  if (req.body.attendance.attendance === 'Sub') {
+    params.push(req.body.attendance.sub.memberId);
+  } else {
+    params.push(null);
+  }
+  console.log(params);
+  await db.execute(`UPDATE EventAttendance SET memberId=?, attendance=?, subId=?  WHERE attendanceId=?`,
+    [...params, attendanceId],
     (err, results) => {
       if (err) {
         console.log(err);
         res.status(500).send(err.message);
       } else {
-        res.send(results);
+        db.execute('SELECT lastUpdated FROM EventAttendance WHERE attendanceId=?',
+          [attendanceId],
+          (err2, results2) => {
+            if (err2) {
+              console.log(err2);
+              res.status(500).send(err2.message);
+            } else {
+              res.send(results2[0].lastUpdated);
+            }
+          });
       }
     });
 };
