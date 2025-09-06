@@ -18,7 +18,9 @@ export class SessionCacheService {
     try {
       // Fetch current user info
       const response: any = await firstValueFrom(
-        this.http.get('http://localhost:3001/api/me').pipe(
+        this.http.get(`${environment.apiURL}/me`, {
+	  withCredentials: true
+	}).pipe(
           tap((res: any) => {
             this.set(Constants.STORAGE_KEY_ME, res);
 

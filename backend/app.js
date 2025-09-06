@@ -5,6 +5,7 @@ const fs = require('fs');
 const dotenv = require('dotenv');
 const passport = require('passport');
 const { BearerStrategy } = require('passport-azure-ad');
+
 const groupsRoutes = require('./routes/groups.js');
 const stationRoutes = require('./routes/stations.js');
 const userRoutes = require('./routes/users.js');
@@ -27,8 +28,39 @@ const db = require('./config/db');
 
 dotenv.config();
 
+app.disable('etag');
+
+app.use(cors({ origin: ['https://807.band', 'https://807.band:444', 'http://localhost:3000', 'http://localhost:4200'], credentials: true }));
+
+app.options('*', cors({
+  origin: ['https://807.band', 'https://807.band:444', 'http://localhost:3000', 'http://localhost:4200'],
+  credentials: true,
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    console.log(`Received OPTIONS request for ${req.originalUrl} from origin ${req.headers.origin}`);
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection:', reason);
+});
 
 passport.use(new BearerStrategy({
   // Passport will use this URL to fetch the token validation information from Azure AD
@@ -41,10 +73,13 @@ passport.use(new BearerStrategy({
   loggingLevel: process.env.LOGGING_LEVEL,
   scope: [process.env.SCOPE],
 },
-((token, done) => done(null, token, token))));
+(token, done) => {
+  console.log('Decoded token:', JSON.stringify(token, null, 2));
+  done(null, token, token);
+}));
 
-app.use(cors({ origin: ['https://807.band', 'http://localhost:3000', 'http://localhost:4200'], credentials: true }));
-app.use(passport.authenticate('oauth-bearer', { session: false }));
+app.use(passport.initialize());
+
 app.use('/api/groups/', groupsRoutes);
 app.use('/api/station/', stationRoutes);
 app.use('/api/user/', userRoutes);
@@ -54,16 +89,35 @@ app.use('/api/event/', eventRoutes);
 app.use('/api/attendance/', attendanceRoutes);
 
 app.use('/api/mb-attendance/attendance/', angularAttendanceRoutes);
-app.use('/api/mb-attendance/events/', attendanceEventRoutes);
-app.use('/api/mb-attendance/members/', attendanceMemberRoutes);
-app.use('/api/mb-attendance/terms/', attendanceTermRoutes);
-app.use('/api/mb-attendance/pepBands/', attendancePepBandRoutes);
-app.use('/api/mb-attendance/sections/', attendanceSectionRoutes);
-app.use('/api/mb-attendance/users/', attendanceUserRoutes);
+app.use('/api/mb-attendance/events/', passport.authenticate('oauth-bearer', { session: false }), attendanceEventRoutes);
+app.use('/api/mb-attendance/members/', passport.authenticate('oauth-bearer', { session: false }), attendanceMemberRoutes);
+app.use('/api/mb-attendance/terms/', passport.authenticate('oauth-bearer', { session: false }), attendanceTermRoutes);
+app.use('/api/mb-attendance/pepBands/', passport.authenticate('oauth-bearer', { session: false }), attendancePepBandRoutes);
+app.use('/api/mb-attendance/sections/', passport.authenticate('oauth-bearer', { session: false }), attendanceSectionRoutes);
+app.use('/api/mb-attendance/users/', passport.authenticate('oauth-bearer', { session: false }), attendanceUserRoutes);
 
-app.get('/api/me',
-  async (req, res) => {
-    const email = req.user.upn;
+app.options('/api/me', cors({
+  origin: ['https://807.band', 'https://807.band:444', 'http://localhost:3000', 'http://localhost:4200'],
+  credentials: true,
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  methods: ['GET', 'OPTIONS']
+}));
+
+app.use('/api/me', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  res.setHeader('ETag', Date.now().toString()); // force unique ETag
+  next();
+});
+
+app.get('/api/me', passport.authenticate('oauth-bearer', { session: false }), async (req, res) => {
+  try {
+    const email = req.user?.upn || req.user?.preferred_username || req.user?.unique_name || req.user?.email || req.query.email || null;
+    if (!email) {
+      return res.status(401).json({ message: 'Unauthorized: no email found' });
+    }
     db.execute('SELECT * FROM User WHERE email = ?', [email],
       (err, result) => {
         if (err) {
@@ -108,10 +162,15 @@ app.get('/api/me',
             user,
             member,
           };
-          console.log(me);
-          res.send(me);
+          console.log("Sending /api/me response:", me);
+	  res.json(me);
+	  //res.send(me);
         });
       });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error sad face' });
+    }
   });
 
 if (process.env.ENVIRONMENT === 'prod') {
