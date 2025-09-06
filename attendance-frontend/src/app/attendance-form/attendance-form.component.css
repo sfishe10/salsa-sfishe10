@@ -34,6 +34,13 @@
 
 .form-table {
   padding-bottom: 10px;
+  width: 100%;
+
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
 }
 
 mat-divider {
@@ -54,43 +61,70 @@ mat-option {
 .attendance-cell {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 8px;
+  /*padding: 8px;*/
+  width: 100%;
+  height: auto;
 }
 
 .delete-button-cell {
-  width: 40px;
   text-align: center;
   padding: 0;
   background-color: var(--mat-sidenav-content-background-color);
 }
 
+.page-container {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 /*stuff to make the dropdown fit correctly*/
 
-::ng-deep .mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {
-  min-height: auto !important;
-  padding-bottom: 0 !important;
-  padding-top: 0 !important;
+/*::ng-deep .mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {*/
+/*  min-height: auto !important;*/
+/*  padding-bottom: 0 !important;*/
+/*  padding-top: 0 !important;*/
+/*}*/
+
+/*::ng-deep .mdc-text-field--outlined {*/
+/*  overflow: hidden !important;*/
+/*  height: auto !important;*/
+/*  padding-top: 5px !important;*/
+/*  padding-bottom: 5px !important;*/
+/*}*/
+
+/*::ng-deep .mat-mdc-text-field-wrapper {*/
+/*  flex: inherit !important;*/
+/*}*/
+
+/*.mat-mdc-form-field {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  justify-content: center;*/
+/*}*/
+
+/*mat-form-field {*/
+/*  min-width: 0;*/
+/*  flex: 1;*/
+/*  width: 100%; !* on mobile *!*/
+/*}*/
+
+.mdc-data-table__cell, .mdc-data-table__header-cell {
+  padding-left: 0px;
+  padding-right: 0;
 }
 
-::ng-deep .mdc-text-field--outlined {
-  overflow: hidden !important;
-  height: auto !important;
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
+.mat-column-name {
+  width: 45%
 }
 
-::ng-deep .mat-mdc-text-field-wrapper {
-  flex: inherit !important;
+.mat-column-attendance {
+  width: 45%
 }
 
-.mat-mdc-form-field {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 180px;
+.mat-column-delete {
+  width: 10%
 }
 
 .mat-mdc-row {
