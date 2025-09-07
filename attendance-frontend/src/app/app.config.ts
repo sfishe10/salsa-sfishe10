@@ -28,8 +28,10 @@ export const msalConfig: Configuration = {
     navigateToLoginRequestUrl: true
   },
   cache: {
-    cacheLocation: environment.config.cache.cacheLocation,
-    storeAuthStateInCookie: isIE
+    //cacheLocation: environment.config.cache.cacheLocation,
+    //storeAuthStateInCookie: isIE
+    cacheLocation: 'localStorage',
+    storeAuthStateInCookie: true
   },
   system: {
     loggerOptions: {

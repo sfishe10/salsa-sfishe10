@@ -13,8 +13,13 @@ import {AuthzGuard} from './authz.guard';
 import {MainLayoutComponent} from './main-layout/main-layout.component';
 import {EventAttendancePageComponent} from './event-attendance-page/event-attendance-page.component';
 import {SectionPageComponent} from './section-page/section-page.component';
+import { AuthResponseComponent } from './utilities/auth-response.component';
 
 export const routes: Routes = [
+  {
+    path: 'auth-response',
+    component: AuthResponseComponent
+  },
   {
     path: '',
     component: MainLayoutComponent,
@@ -73,10 +78,6 @@ export const routes: Routes = [
         path: 'attendance/:id',
         component: EventAttendancePageComponent,
         canActivate: [AuthzGuard]
-      },
-      {
-        path: 'auth-response',
-        component: MsalRedirectComponent
       },
     ]
   },
