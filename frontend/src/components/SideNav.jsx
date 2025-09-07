@@ -7,23 +7,9 @@ const SideNav = ({ isAdmin, isEval }) => (
     <Link to="/" className={styles.parentPage}>
       Home
     </Link>
-    <Link to="/events" className={styles.parentPage}>
+    <a href={process.env.REACT_APP_ATTENDANCE_REDIRECT} className={styles.parentPage}>
       Events
-    </Link>
-    {isAdmin
-      && (
-        <>
-          <Link to="/events/create" className={styles.childPage}>
-            Create Event
-          </Link>
-          <Link to="/events/groups" className={styles.childPage}>
-            Groups
-          </Link>
-          <Link to="/events/attendance" className={styles.childPage}>
-            Attendance
-          </Link>
-        </>
-      )}
+    </a>
     <Link to="/stations" className={styles.parentPage}>
       Stations
     </Link>
