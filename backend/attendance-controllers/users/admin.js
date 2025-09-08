@@ -27,15 +27,24 @@ module.exports.create = async (req, res) => {
 
 module.exports.update = async (req, res) => {
   const { user } = req.body;
-  db.execute('UPDATE User SET firstName=?, lastName=?, role=? WHERE email=?',
-    [user.firstName, user.lastName, user.role, user.email],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send(err.message);
-      }
-      return res.send(result);
-    });
+  db.execute('SELECT * FROM User WHERE email=?', [user.email], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send(err.message);
+    }
+    if (result.length) {
+      return res.status(409).json({ message: 'Email already in use' });
+    }
+    db.execute('UPDATE User SET email=?, firstName=?, lastName=?, role=? WHERE userId=?',
+      [user.email, user.firstName, user.lastName, user.role, user.userId],
+      (err2, result2) => {
+        if (err2) {
+          console.log(err2);
+          return res.status(500).send(err2.message);
+        }
+        return res.send(result2);
+      });
+  });
 };
 
 module.exports.assignRole = async (req, res) => {

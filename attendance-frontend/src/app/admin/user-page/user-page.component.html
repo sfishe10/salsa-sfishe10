@@ -3,9 +3,8 @@
     <div class="top-row">
       <div style="font-size: 1.4rem; display: flex; align-items: center">
         <mat-icon class="button" (click)="goBackToAdmin()">arrow_back</mat-icon>
-        <span style="margin-left: 8px">{{user?.email}}</span>
       </div>
-      <button *ngIf="!editing" mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
+      <button *ngIf="!editing" mat-flat-button type="button" color="primary"  (click)="edit()">Edit User</button>
       <div *ngIf="editing">
         <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
         <button mat-flat-button type="submit" color="primary">Save Changes</button>
@@ -13,14 +12,19 @@
     </div>
 
     <div *ngIf="!editing" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; font-size: 1.2rem">
-      <span>First Name: {{user.firstName}}</span>
-      <span>Last Name: {{user.lastName}}</span>
-      <span>Role: {{user.role}}</span>
+      <span>Email: <b>{{user?.email}}</b></span>
+      <span>First Name: <b>{{user.firstName}}</b></span>
+      <span>Last Name: <b>{{user.lastName}}</b></span>
+      <span>Role: <b>{{user.role}}</b></span>
     </div>
 
 
     <div *ngIf="editing" style="margin-top: 20px">
       <div style="display: flex; flex-direction: column">
+        <mat-form-field style="max-width: 400px">
+          <mat-label class="form-label">Email</mat-label>
+          <input matInput id="email" type="text" name="email" [(ngModel)]="email">
+        </mat-form-field>
         <mat-form-field style="max-width: 400px">
           <mat-label class="form-label">First Name</mat-label>
           <input matInput id="firstName" type="text" name="firstName" [(ngModel)]="firstName">
