@@ -109,4 +109,9 @@ export class AdminService {
     return this.http.post<any>(url, formData);
   }
 
+  public uploadRolesCsv(formData: FormData): any {
+    const url = this.baseUrl + `/users/uploadRolesCsv`;
+    return this.http.post<any>(url, formData);
+  }
+
 }
