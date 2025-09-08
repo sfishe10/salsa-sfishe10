@@ -40,7 +40,7 @@
         [attr.aria-expanded]="openSubMenu === 'Absent'"
       >
         Absent
-        <span class="arrow" [class.open]="openSubMenu === 'Absent'">&#9654;</span>
+        <mat-icon class="arrow" [class.open]="openSubMenu === 'Absent'">arrow_right</mat-icon>
       </div>
       <div *ngIf="openSubMenu === 'Absent'" class="sub-options" role="group" aria-label="Absent options">
         <div
@@ -70,7 +70,7 @@
         [attr.aria-expanded]="openSubMenu === 'Late'"
       >
         Late
-        <span class="arrow" [class.open]="openSubMenu === 'Late'">&#9654;</span>
+        <mat-icon class="arrow" [class.open]="openSubMenu === 'Late'">arrow_right</mat-icon>
       </div>
       <div *ngIf="openSubMenu === 'Late'" class="sub-options" role="group" aria-label="Late options">
         <div
@@ -100,7 +100,7 @@
         [attr.aria-expanded]="openSubMenu === 'Left Early'"
       >
         Left Early
-        <span class="arrow" [class.open]="openSubMenu === 'Left Early'">&#9654;</span>
+        <mat-icon class="arrow" [class.open]="openSubMenu === 'Left Early'">arrow_right</mat-icon>
       </div>
       <div *ngIf="openSubMenu === 'Left Early'" class="sub-options" role="group" aria-label="Left Early options">
         <div

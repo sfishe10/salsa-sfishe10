@@ -136,7 +136,9 @@ module.exports.uploadCsv = async (req, res) => {
     const officialFirstName = row['Official First']?.trim() ?? '';
     const preferredLastName = row['Preferred Last']?.trim() ?? '';
     const preferredFirstName = row['Preferred First']?.trim() ?? '';
-    const email = row.Email?.trim() ?? '';
+    // for extended ed students without a CP email, use their preferred email for now -
+    // they will not be needing to log in, so it won't cause problems
+    const email = row.Email?.trim() !== 'anonymous' ? row.Email?.trim() : row['Preferred Email'].trim();
     const sectionName = row.Section?.trim() ?? '';
     const sectionId = parseInt(row.Sort?.trim());
 

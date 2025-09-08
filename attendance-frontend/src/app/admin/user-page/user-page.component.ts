@@ -41,6 +41,7 @@ export class UserPageComponent implements OnInit {
   firstName: string = '';
   lastName: string = '';
   role: string = '';
+  email: string = '';
 
   roleOptions: string[] = [];
 
@@ -65,6 +66,7 @@ export class UserPageComponent implements OnInit {
     this.firstName = this.user.firstName;
     this.lastName = this.user.lastName;
     this.role = this.user.role;
+    this.email = this.user.email;
 
     this.editing = true;
   }
@@ -80,7 +82,7 @@ export class UserPageComponent implements OnInit {
 
     const newUser = {
       userId: this.user.userId,
-      email: this.user.email,
+      email: form.value.email,
       firstName: form.value.firstName,
       lastName: form.value.lastName,
       role: form.value.role
@@ -91,8 +93,12 @@ export class UserPageComponent implements OnInit {
       this.openSnackBar("User updated!", "Ok", 3000);
       this.editing = false;
     }, error => {
-      console.log(error);
-      this.openSnackBar("Error updating user", "Ok", 3000);
+      if (error.status === 409) {
+        this.openSnackBar("Invalid email - already in use", "Ok", 3000);
+      } else {
+        console.log(error);
+        this.openSnackBar("Error updating User", "Ok", 3000);
+      }
     })
   }
 
