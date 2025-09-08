@@ -32,7 +32,7 @@ module.exports.update = async (req, res) => {
       console.log(err);
       return res.status(500).send(err.message);
     }
-    if (result.length) {
+    if (result.length && result[0].userId !== user.userId) {
       return res.status(409).json({ message: 'Email already in use' });
     }
     db.execute('UPDATE User SET email=?, firstName=?, lastName=?, role=? WHERE userId=?',
