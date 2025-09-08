@@ -1,5 +1,7 @@
-import React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import React, { useState } from 'react';
+import {
+  Row, Col, Modal, Button,
+} from 'react-bootstrap';
 import styles from '../styles/modules/MemberOverview.module.scss';
 
 const MemberOverview = ({ stations, users }) => (
@@ -76,6 +78,18 @@ const Members = ({ members }) => {
 };
 
 const Attempts = ({ attempts }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+
+  const handleShow = (title, content) => {
+    setModalTitle(title);
+    setModalContent(content);
+    setShowModal(true);
+  };
+
+  const handleClose = () => setShowModal(false);
+
   const stationIds = Array.from(new Set(attempts.map((a) => a.sID)));
 
   const stations = stationIds.map((stationId) => {
@@ -90,24 +104,62 @@ const Attempts = ({ attempts }) => {
       mark = '\u2713';
     } else if (baseAttempt.attempts > 0) {
       statusClass += styles.attempted;
-      mark = '\u2573'.repeat(baseAttempt.attempts);
+      mark = '\u2573';
     } else {
       statusClass += styles.no_attempts;
       mark = '\u20E0';
     }
 
     const moreInfo = attemptList
-      .map((a, i) => `Attempt ${i + 1}:\n  Evaluated by: ${a.evaluator}\n  Evaluated at: ${a.evalTime}`)
+      .map((a, i) => {
+        let formattedTime = a.evalTime;
+
+        if (a.evalTime) {
+          const date = new Date(a.evalTime);
+          const formatter = new Intl.DateTimeFormat('en-US', {
+            month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/Los_Angeles',
+          });
+
+          formattedTime = formatter.format(date);
+        }
+
+        const label = a.passed === 1 ? 'Passed' : `Attempt ${i + 1}`;
+
+        return `${label}:\n  Evaluated by: ${a.evaluator}\n  Evaluated at: ${formattedTime}`;
+      })
       .join('\n\n');
 
+    const title = `${baseAttempt.name} - Station ${baseAttempt.sID - 3}`;
     return (
-      <Col className={statusClass} title={moreInfo} key={`${baseAttempt.name}, sID ${baseAttempt.sID}`}>
+      <Col
+        className={statusClass}
+        key={`${baseAttempt.name}, sID ${baseAttempt.sID}`}
+        onClick={() => handleShow(title, moreInfo)}
+        style={{ cursor: 'pointer' }}
+      >
         {mark}
       </Col>
     );
   });
 
-  return <>{stations}</>;
+  return (
+    <>
+      {stations}
+      <Modal show={showModal} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{modalTitle}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <pre style={{ whiteSpace: 'pre-wrap' }}>{modalContent}</pre>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
 };
 
 export default MemberOverview;

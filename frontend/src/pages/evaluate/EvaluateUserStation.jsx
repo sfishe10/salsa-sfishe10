@@ -22,24 +22,38 @@ const EvaluateUserStation = ({ evaluator, evalStatus }) => {
     getUser(uID).then((res) => setUser(res));
     getStationData(sID).then((res) => setStation(res));
   }, [uID, sID]);
+
   useEffect(() => {
     if (!station) return;
     const sm = {};
     for (let i = 0; i < station.groups.length; i += 1) {
       for (let j = 0; j < station.groups[i].items.length; j += 1) {
-        sm[station.groups[i].items[j].itemID] = false;
+        const { itemID } = station.groups[i].items[j];
+        const savedMap = localStorage.getItem(`switchMap-${itemID}-${sID}-${uID}`);
+        if (savedMap) {
+          const parsed = JSON.parse(savedMap);
+          sm[itemID] = parsed[itemID];
+        } else {
+          sm[itemID] = false;
+        }
       }
     }
     setSwitchMap(sm);
-  }, [station]);
+  }, [station, sID, uID]);
+
+  useEffect(() => () => {
+    Object.keys(switchMap).forEach((itemID) => {
+      localStorage.removeItem(`switchMap-${itemID}-${sID}-${uID}`);
+    });
+  }, []);
+
   if (!user || !station) return 'loading. . .';
+
   if (!canEval(station.class, station.level, evalStatus)) { return null; }
   return (
     <>
-      { redirect ? (<Redirect push to={`/evaluate/${uID}`} />) : null}
-      <h1>
-        {user.name}
-      </h1>
+      {redirect ? (<Redirect push to={`/evaluate/${uID}`} />) : null}
+      <h1>{user.name}</h1>
       <EvaluationForm
         station={station}
         switchMap={switchMap}
@@ -69,7 +83,13 @@ const EvaluationForm = ({
           {group.items.map((item) => (
             <ListGroup.Item key={item.itemID}>
               <Form.Group controlId={item.itemID}>
-                <Form.Switch className={item.required ? 'required' : ''} onChange={changeSwitch(item.itemID, switchMap, setSwitchMap)} id={item.itemID} label={item.item} />
+                <Form.Switch
+                  className={item.required ? 'required' : ''}
+                  onChange={changeSwitch(item.itemID, switchMap, setSwitchMap, sID, uID)}
+                  id={item.itemID}
+                  label={item.item}
+                  checked={switchMap[item.itemID] || false}
+                />
               </Form.Group>
             </ListGroup.Item>
           ))}
@@ -82,10 +102,11 @@ const EvaluationForm = ({
     </Button>
   </Form>
 );
-const changeSwitch = (id, switchMap, setSwitchMap) => () => {
-  const sm = switchMap;
-  sm[id] = !sm[id];
+
+const changeSwitch = (id, switchMap, setSwitchMap, sID, uID) => () => {
+  const sm = { ...switchMap, [id]: !switchMap[id] };
   setSwitchMap(sm);
+  localStorage.setItem(`switchMap-${id}-${sID}-${uID}`, JSON.stringify(sm));
 };
 
 const onSubmitEvaluation = (
@@ -94,6 +115,12 @@ const onSubmitEvaluation = (
   setDisableButton(true);
   event.preventDefault();
   await submitEvaluation(uID, sID, evalID, switchMap, maxFailed);
+
+  Object.keys(switchMap).forEach((itemID) => {
+    localStorage.removeItem(`switchMap-${itemID}-${sID}-${uID}`);
+  });
+
   setRedirect(true);
 };
+
 export default EvaluateUserStation;
