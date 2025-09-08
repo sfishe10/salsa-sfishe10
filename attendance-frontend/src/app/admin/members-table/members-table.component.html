@@ -63,6 +63,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
+    <div *ngIf="showMissingTermError" style="color: red">Select or create a term to upload members.</div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>

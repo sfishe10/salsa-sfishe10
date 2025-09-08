@@ -4,7 +4,7 @@ import {MatInputModule} from '@angular/material/input';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {Constants} from '../utilities/constants';
 import {
   MatDatepickerModule
@@ -58,7 +58,8 @@ import {SessionCacheService} from '../services/session-cache.service';
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatIcon,
-    NgIf
+    NgIf,
+    MatIconButton
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -99,6 +100,16 @@ export class AdminComponent implements OnInit, AfterViewInit {
   @ViewChild(EventsTableComponent) eventsTable!: EventsTableComponent;
 
   @ViewChild(MembersTableComponent) membersTable!: MembersTableComponent;
+
+  @ViewChild('uploadCsvDialog') uploadCsvDialog!: TemplateRef<any>;
+  uploadCsvDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('missingEmailsConfirmationDialog') missingEmailsConfirmationDialog!: TemplateRef<any>;
+  missingEmailsConfirmationDialogRef!: MatDialogRef<any>;
+
+  selectedFile: File | null = null;
+
+  emailsMissingUsers: string[] = [];
 
   constructor(private adminService: AdminService,
               public sessionCacheService: SessionCacheService,
@@ -232,6 +243,54 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   goToAttendance() {
     this.router.navigate(['/attendance/term', this.selectedTerm?.termId])
+  }
+
+  onUploadCsvClicked() {
+    this.uploadCsvDialogRef = this.dialog.open(this.uploadCsvDialog);
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.selectedFile = input.files?.[0] ?? null;
+  }
+
+  clearFile(fileInput: HTMLInputElement) {
+    this.selectedFile = null;
+    fileInput.value = '';
+  }
+
+  uploadFile() {
+    if (!this.selectedFile) return;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+
+    formData.append('emailsToSkip', JSON.stringify(this.emailsMissingUsers));
+    this.adminService.uploadRolesCsv(formData).subscribe({
+      next: (res: any) => {
+        this.emailsMissingUsers = [];
+        this.onCancelDialog();
+        this.openSnackBar('Roles Assigned', 'OK', 3000);
+      },
+      error: (err: any) => {
+        if (err.status === 422) {
+          this.emailsMissingUsers = [];
+          err.error.forEach((emailObj: any) => {
+            this.emailsMissingUsers.push(emailObj.email);
+          })
+          this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
+        } else {
+          console.error('Upload error:', err)
+          this.onCancelDialog();
+          this.openSnackBar('Error uploading CSV', 'OK', 3000);
+        }
+      },
+    });
+  }
+
+  closeDialogAndClearEmails() {
+    this.emailsMissingUsers = [];
+    this.onCancelDialog();
   }
 
   openSnackBar(message: string, action: string, duration: number) {

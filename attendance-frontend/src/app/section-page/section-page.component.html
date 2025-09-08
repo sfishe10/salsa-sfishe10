@@ -7,8 +7,8 @@
     <mat-expansion-panel>
       <mat-expansion-panel-header>Member Stats</mat-expansion-panel-header>
       <div style="padding-top:5px">
-        <div class="mat-elevation-z4">
-          <table mat-table [dataSource]="memberStats">
+        <div class="mat-elevation-z4" style="overflow-x: scroll">
+          <table mat-table [dataSource]="memberStats" >
 
             <!-- Member Name Column -->
             <ng-container matColumnDef="member">

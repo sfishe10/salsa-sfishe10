@@ -103,6 +103,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
 
   emailsMissingMembers: string[] = [];
 
+  showMissingTermError: boolean = false;
+
   constructor(private adminService: AdminService,
               private dialog: MatDialog,
               private sessionCacheService: SessionCacheService,
@@ -183,9 +185,15 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    if (!this.selectedTerm) return;
+    let termId = this.selectedTerm?.termId;
 
-    let termId = this.selectedTerm.termId;
+    if (!termId) {
+      this.showMissingTermError = true;
+      return;
+    }
+
+    // clear error if it was displayed previously
+    this.showMissingTermError = false;
 
     if (this.uploadCsvType == 'addMembers') {
       this.adminService.uploadMemberCsv(formData, termId).subscribe({

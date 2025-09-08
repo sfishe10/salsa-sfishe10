@@ -71,10 +71,15 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion><br/>
-      <div style="display: flex; flex-direction: row; justify-content: start;">
-        <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>&nbsp;&nbsp;
-        <button mat-stroked-button (click)="openRoleDialog()">
-          Assign User to Role
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div>
+          <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>&nbsp;&nbsp;
+          <button mat-stroked-button (click)="openRoleDialog()">
+            Assign User to Role
+          </button>
+        </div>
+        <button mat-stroked-button (click)="onUploadCsvClicked()">
+          Upload Roles CSV
         </button>
       </div>
     </div>
@@ -164,4 +169,36 @@
   </form>
 </ng-template>
 
+<ng-template #uploadCsvDialog>
+  <h2 mat-dialog-title>Upload CSV File</h2>
+  <mat-dialog-content style="padding-bottom:0">
+    <div style="display:flex; align-items:center">
+      <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>
+      <button *ngIf="selectedFile"
+              mat-icon-button
+              aria-label="Remove file"
+              (click)="clearFile(fileInput)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #missingEmailsConfirmationDialog>
+  <h2 mat-dialog-title>The following emails are not associated with a user:</h2>
+  <mat-dialog-content>
+    <ul>
+      <li *ngFor="let email of emailsMissingUsers">{{ email }}</li>
+    </ul>
+    <span style="color:black">Proceed and skip these emails?</span>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialogAndClearEmails()">Cancel</button>&nbsp;
+    <button mat-button (click)="uploadFile()">Proceed</button>
+  </mat-dialog-actions>
+</ng-template>
 

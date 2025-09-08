@@ -234,12 +234,6 @@ export class AttendanceFormComponent implements OnInit {
       const sub = group.get('sub')?.value;
       const required = group.get('required')?.value;
 
-      if (!attendance) {
-        group.get('attendance')?.setErrors(({required: true}));
-        this.showRequiredFieldError = true;
-        errors++;
-      }
-
       if (!member) {
         group.get('member')?.setErrors({required: true});
         this.showRequiredFieldError = true;

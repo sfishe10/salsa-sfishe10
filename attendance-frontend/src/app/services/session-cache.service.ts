@@ -88,19 +88,19 @@ export class SessionCacheService {
   }
 
   public isAdmin() {
-    return this.get(Constants.STORAGE_KEY_ME).user.role === Constants.ROLE_ADMIN;
+    return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_ADMIN;
   }
 
   public isOfficer() {
-    return this.get(Constants.STORAGE_KEY_ME).user.role === Constants.ROLE_OFFICER;
+    return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_OFFICER;
   }
 
   public isAttendanceTaker() {
-    return this.get(Constants.STORAGE_KEY_ME).user.role === Constants.ROLE_ATTENDANCE_TAKER;
+    return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_ATTENDANCE_TAKER;
   }
 
   public isSectionLeader() {
-    return this.get(Constants.STORAGE_KEY_ME).user.role === Constants.ROLE_SECTION_LEADER;
+    return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_SECTION_LEADER;
   }
 
 }
