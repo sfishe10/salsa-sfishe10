@@ -49,7 +49,7 @@ module.exports.getRecent = async (req, res) => {
     'JOIN Term t on e.termId = t.termId ' +
     'LEFT JOIN PepBand p on e.pepBandId = p.bandId ' +
     'WHERE date < DATE_SUB(NOW(), interval 1 hour) AND t.startDate <= NOW() AND t.endDate >= NOW() ' +
-    'ORDER BY date',
+    'ORDER BY date desc',
     (err, results) => {
       if (err) {
         console.log(err);
