@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Member} from '../models/member';
 import {MemberService} from '../services/member.service';
@@ -16,6 +16,7 @@ import {Constants} from '../utilities/constants';
 import {SessionCacheService} from '../services/session-cache.service';
 import {Utilities} from '../utilities/utilities';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-member-page',
@@ -30,7 +31,9 @@ import {MatSnackBar} from '@angular/material/snack-bar';
     MatLabel,
     MatOption,
     MatSelect,
-    NgForOf
+    NgForOf,
+    MatDialogActions,
+    MatDialogTitle
   ],
   templateUrl: './member-page.component.html',
   styleUrl: './member-page.component.css'
@@ -55,10 +58,17 @@ export class MemberPageComponent implements OnInit {
 
   returnToPage: string = 'section';
 
+  @ViewChild('confirmDeleteDialog') confirmDeleteDialog!: TemplateRef<any>;
+  confirmDeleteDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('successDialog') successDialog!: TemplateRef<any>;
+  successDialogRef!: MatDialogRef<any>;
+
   constructor(private route: ActivatedRoute,
               private memberService: MemberService,
               private router: Router,
-              private sessionCacheService: SessionCacheService) {
+              public sessionCacheService: SessionCacheService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -110,8 +120,33 @@ export class MemberPageComponent implements OnInit {
     this.editing = false;
   }
 
+  openConfirmationDialog() {
+    this.confirmDeleteDialogRef = this.dialog.open(this.confirmDeleteDialog);
+  }
+
+  openSuccessDialog() {
+    this.successDialogRef = this.dialog.open(this.successDialog);
+  }
+
+  cancelDialog() {
+    this.dialog.closeAll();
+  }
+
+  deleteMember() {
+    if (!this.member) {
+      return;
+    }
+    this.cancelDialog();
+    this.memberService.deleteMember(this.member).subscribe(() => {
+      this.openSuccessDialog();
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error deleting member", "Ok", 3000);
+    })
+  }
 
   goBack() {
+    this.cancelDialog();
     if (this.returnToPage == 'section') {
       this.router.navigate(['/section', this.member?.section?.sectionId]);
     } else if (this.returnToPage == 'admin') {

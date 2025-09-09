@@ -120,6 +120,25 @@ module.exports.update = async (req, res) => {
     });
 };
 
+module.exports.delete = async (req, res) => {
+  db.execute('DELETE FROM EventAttendance WHERE memberId=?', [req.params.id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      }
+      db.execute('DELETE FROM Member WHERE memberId=?', [req.params.id],
+        (err2, result2) => {
+          if (err2) {
+            console.log(err2);
+            res.status(500).send(err2.message);
+          } else {
+            res.send(result2);
+          }
+        });
+    });
+};
+
 module.exports.uploadCsv = async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });

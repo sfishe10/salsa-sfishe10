@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader()">
   <form #memberForm="ngForm" (ngSubmit)="save(memberForm)">
     <div class="top-row">
       <div class="member-name">
@@ -6,7 +6,8 @@
         <span style="margin-left: 10px">{{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;</span>
         <span style="color: dimgray">- {{member?.user?.email}}</span>
       </div>
-      <button *ngIf="!editing" mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
+      <button *ngIf="!editing && sessionCacheService.isOfficer() || sessionCacheService.isAdmin()"
+              mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
       <div *ngIf="editing">
         <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
         <button mat-flat-button type="submit" color="primary">Save Changes</button>
@@ -48,9 +49,26 @@
             <mat-option *ngFor="let option of rehearsalConflictOptions" [value]="option">{{option}}</mat-option>
           </mat-select>
         </mat-form-field>
+        <button mat-flat-button color="warn" type="button" (click)="openConfirmationDialog()">Delete Member</button>
       </div>
 
     </div>
   </form>
   <app-member-attendance-table [memberId]="this.memberId"></app-member-attendance-table>
 </div>
+
+
+<ng-template #confirmDeleteDialog>
+  <h2 mat-dialog-title>Delete Member?</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancelDialog()">Cancel</button>
+    <button mat-button (click)="deleteMember()">Delete</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #successDialog>
+  <h2 mat-dialog-title>Member successfully deleted!</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="goBack()">Ok</button>
+  </mat-dialog-actions>
+</ng-template>
