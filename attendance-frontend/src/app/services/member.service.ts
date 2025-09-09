@@ -23,6 +23,11 @@ export class MemberService {
     return this.http.put<Member>(url, {member: member});
   }
 
+  public deleteMember(member: Member): Observable<any> {
+    const url = this.baseUrl + `/members/${member.memberId}`;
+    return this.http.delete<any>(url);
+  }
+
   public getMemberAttendances(memberId: number): Observable<EventAttendanceMemberPage[]> {
     const url = this.baseUrl + `/attendance/member/${memberId}`;
     return this.http.get<EventAttendanceMemberPage[]>(url);

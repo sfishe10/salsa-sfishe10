@@ -3,10 +3,10 @@ import {Constants} from './constants';
 export class Utilities {
   public static getConflictColor(conflict: string): string {
     switch (conflict) {
-      case 'Tuesday Conflict': return 'arriving-late';
-      case 'Thursday Conflict': return 'leaving-early';
-      case 'Arriving Late (both days)': return 'tuesday-conflict';
-      case 'Leaving Early (both days)': return 'thursday-conflict';
+      case 'Tuesday Conflict': return 'tuesday-conflict';
+      case 'Thursday Conflict': return 'thursday-conflict';
+      case 'Arriving Late (both days)': return 'arriving-late';
+      case 'Leaving Early (both days)': return 'leaving-early';
       case 'Other': return 'other-conflict';
       default: return 'no-conflict';
     }

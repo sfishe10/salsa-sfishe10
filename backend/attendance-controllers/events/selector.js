@@ -48,8 +48,8 @@ module.exports.getRecent = async (req, res) => {
     'FROM MBEvent e ' +
     'JOIN Term t on e.termId = t.termId ' +
     'LEFT JOIN PepBand p on e.pepBandId = p.bandId ' +
-    'WHERE date < DATE_ADD(NOW(), interval 1 hour) AND t.startDate <= NOW() AND t.endDate >= NOW() ' +
-    'ORDER BY date',
+    'WHERE date < DATE_SUB(NOW(), interval 1 hour) AND t.startDate <= NOW() AND t.endDate >= NOW() ' +
+    'ORDER BY date desc',
     (err, results) => {
       if (err) {
         console.log(err);
@@ -87,7 +87,7 @@ module.exports.getUpcoming = async (req, res) => {
     'FROM MBEvent e ' +
     'JOIN Term t on e.termId = t.termId ' +
     'LEFT JOIN PepBand p on e.pepBandId = p.bandId ' +
-    'WHERE date >= DATE_ADD(NOW(), interval 1 hour) AND t.startDate <= NOW() AND t.endDate >= NOW() ' +
+    'WHERE date >= DATE_SUB(NOW(), interval 1 hour) AND t.startDate <= NOW() AND t.endDate >= NOW() ' +
     'ORDER BY date',
     (err, results) => {
       if (err) {

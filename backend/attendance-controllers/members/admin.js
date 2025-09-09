@@ -84,7 +84,7 @@ module.exports.update = async (req, res) => {
                 rehearsalConflict: member.rehearsalConflict,
                 term: member.term,
               };
-              if (oldPepBandId !== member.pepBand.bandId) {
+              if (!member.pepBand || oldPepBandId !== member.pepBand?.bandId) {
                 // if the pep band has changed, delete any attendances that have not been submitted yet
                 // and create new attendances for the new pep band
                 db.execute('DELETE ea '
@@ -97,16 +97,18 @@ module.exports.update = async (req, res) => {
                     console.log(err3);
                     res.status(500).send(err3.message);
                   } else {
-                    db.execute('CALL ReassignRemainingPepEventsForMember(?, ?, ?)',
-                      [member.term.termId, member.memberId, member.pepBand.bandId],
-                      (err4, result4) => {
-                        if (err4) {
-                          console.log(err4);
-                          res.status(500).send(err4.message);
-                        } else {
-                          return res.send(newMemberData);
-                        }
-                      });
+                    if (member.pepBand) {
+                      db.execute('CALL ReassignRemainingPepEventsForMember(?, ?, ?)',
+                        [member.term.termId, member.memberId, member.pepBand.bandId],
+                        (err4, result4) => {
+                          if (err4) {
+                            console.log(err4);
+                            res.status(500).send(err4.message);
+                          } else {
+                            return res.send(newMemberData);
+                          }
+                        });
+                    }
                   }
                 });
               } else {
@@ -115,6 +117,25 @@ module.exports.update = async (req, res) => {
             }
           });
       }
+    });
+};
+
+module.exports.delete = async (req, res) => {
+  db.execute('DELETE FROM EventAttendance WHERE memberId=?', [req.params.id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      }
+      db.execute('DELETE FROM Member WHERE memberId=?', [req.params.id],
+        (err2, result2) => {
+          if (err2) {
+            console.log(err2);
+            res.status(500).send(err2.message);
+          } else {
+            res.send(result2);
+          }
+        });
     });
 };
 
