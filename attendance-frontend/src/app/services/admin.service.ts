@@ -69,6 +69,11 @@ export class AdminService {
     return this.http.post<Term>(url, {term: term})
   }
 
+  public updateTerm(term: Term): Observable<Term> {
+    const url = this.baseUrl + `/terms/${term.termId}`;
+    return this.http.put<Term>(url, {term: term})
+  }
+
   public createMember(memberInfo: any): Observable<Member> {
     const url = this.baseUrl + '/members';
     return this.http.post<Member>(url, {member: memberInfo});

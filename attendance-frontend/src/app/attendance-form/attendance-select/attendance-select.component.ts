@@ -53,7 +53,7 @@ export class AttendanceSelectComponent implements ControlValueAccessor {
     this.openSubMenu = this.openSubMenu === menu ? null : menu;
   }
 
-  select(option: string) {
+  select(option: string | null) {
     this.selectedOption = option;
     this.onChange(option);
     this.closeDropdown();

@@ -76,12 +76,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
   termStartDate: Date | null = null;
   termEndDate: Date | null = null;
 
+  editingTerm: boolean = false;
+
   userEmail: string = '';
   userFirstName: string = '';
   userLastName: string = '';
   userRole: string = '';
 
-  @ViewChild('createTermDialog') createTermDialog!: TemplateRef<any>;
+  @ViewChild('termDialog') termDialog!: TemplateRef<any>;
   termDialogRef!: MatDialogRef<any>;
 
   @ViewChild('termForm') termForm!: NgForm;
@@ -158,8 +160,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
 
-  openTermDialog() {
-    this.termDialogRef = this.dialog.open(this.createTermDialog);
+  openTermDialog(editing: boolean) {
+    this.editingTerm = editing;
+    if (editing) {
+      this.termName = this.selectedTerm?.termName ?? '';
+      this.termStartDate = this.selectedTerm?.startDate ? new Date(this.selectedTerm?.startDate) : null;
+      this.termEndDate = this.selectedTerm?.endDate ? new Date(this.selectedTerm?.endDate) : null;
+    }
+    this.termDialogRef = this.dialog.open(this.termDialog);
   }
 
   cancelDialog() {
@@ -171,20 +179,36 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   submitTerm(form: NgForm) {
     let newTerm = {
-      termId: -1, // will get assigned when the backend puts it in the database
+      termId: this.editingTerm ? this.selectedTerm?.termId : -1, // will get assigned when the backend puts it in the database
       termName: form.value.termName,
       startDate: form.value.termStartDate,
       endDate: form.value.termEndDate
     } as Term;
 
-    this.adminService.createTerm(newTerm).subscribe(() => {
-      this.terms.push(newTerm);
-      this.openSnackBar("Term created!", "Ok", 3000);
-      this.termDialogRef.close();
-    }, error => {
-      console.log(error);
-      this.openSnackBar("Error creating Term", "Ok", 3000);
-    })
+    if (this.editingTerm) {
+      this.adminService.updateTerm(newTerm).subscribe(() => {
+        if (this.selectedTerm) {
+          this.selectedTerm.termName = newTerm.termName;
+          this.selectedTerm.startDate = new Date(newTerm.startDate);
+          this.selectedTerm.endDate = new Date(newTerm.endDate);
+        }
+        this.openSnackBar("Term updated!", "Ok", 3000);
+        this.termDialogRef.close();
+      }, error => {
+        console.log(error);
+        this.openSnackBar("Error updating Term", "Ok", 3000);
+      })
+    }
+     else {
+      this.adminService.createTerm(newTerm).subscribe(() => {
+        this.terms.push(newTerm);
+        this.openSnackBar("Term created!", "Ok", 3000);
+        this.termDialogRef.close();
+      }, error => {
+        console.log(error);
+        this.openSnackBar("Error creating Term", "Ok", 3000);
+      })
+    }
   }
 
   openUserDialog() {
