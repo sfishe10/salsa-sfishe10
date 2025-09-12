@@ -18,7 +18,7 @@ module.exports.create = async (req, res) => {
 module.exports.update = async (req, res) => {
   const formattedStartDate = new Date(req.body.term.startDate).toISOString().slice(0, 19).replace('T', ' ');
   const formattedEndDate = new Date(req.body.term.endDate).toISOString().slice(0, 19).replace('T', ' ');
-  db.execute('UPDATE Term SET termName=?, termStartDate=?, termEndDate=? WHERE termId=?',
+  db.execute('UPDATE Term SET termName=?, startDate=?, endDate=? WHERE termId=?',
     [req.body.term.termName, formattedStartDate, formattedEndDate, req.body.term.termId],
     (err, result) => {
       if (err) {
