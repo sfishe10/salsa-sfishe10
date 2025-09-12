@@ -24,6 +24,15 @@
 
       <div
         class="option"
+        id="option-none"
+        role="option"
+        (click)="select(null)"
+      >
+        --
+      </div>
+
+      <div
+        class="option"
         id="option-present"
         role="option"
         (click)="select('Present')"
