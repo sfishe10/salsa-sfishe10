@@ -1,3 +1,8 @@
+<div *ngIf="membersLoaded && !members.length">
+  <div>
+    <span style="color: red; font-size: .9rem">*This term doesn't have any members yet! Start by uploading the supplemental form to add members.</span>
+  </div><br/>
+</div>
 <div style="display: flex; flex-direction: row; align-items: center; padding-bottom: 20px">
   <mat-form-field subscriptSizing="dynamic" style="margin-right: 10px">
     <mat-label>Filter by email</mat-label>
@@ -40,21 +45,29 @@
                  aria-label="Select page">
   </mat-paginator>
 </div><br/>
+
 <div style="display: flex; justify-content: space-between">
-  <div>
-    <button mat-stroked-button (click)="onUploadCsvClicked('addMembers')">Upload Members CSV</button>&nbsp;
-    <button mat-flat-button color="primary" (click)="openMemberDialog()">Add Member</button>
-  </div>
+  <button mat-flat-button color="primary" (click)="openMemberDialog()">Add Member</button>
   <div style="margin-left: auto">
-    <button mat-stroked-button (click)="onUploadCsvClicked('assignPepBands')">Upload Pep Bands CSV</button>&nbsp;
-    <button mat-stroked-button (click)="onUploadCsvClicked('assignRehearsalConflicts')">Upload Rehearsal Conflicts CSV</button>&nbsp;
+    <button mat-stroked-button (click)="onUploadCsvClicked()">Upload CSV...</button>&nbsp;
   </div>
 </div>
 
 <ng-template #uploadCsvDialog>
   <h2 mat-dialog-title>Upload CSV File</h2>
   <mat-dialog-content style="padding-bottom:0">
-    <div style="display:flex; align-items:center">
+    <mat-form-field subscriptSizing="dynamic" style="margin-bottom: 5px;">
+      <mat-label class="form-label">Select an option</mat-label>
+      <mat-select [(value)]="uploadCsvType">
+        <mat-option value="addMembers">Supplemental Form</mat-option>
+        <mat-option value="assignPepBands">Pep Bands</mat-option>
+        <mat-option value="assignRehearsalConflicts">Rehearsal Conflicts</mat-option>
+      </mat-select>
+    </mat-form-field><br/>
+    <a *ngIf="uploadCsvType === 'addMembers'"
+       href="/assets/files/pepBandTemplate.xls"
+       download="pepBandTemplate.xls" style="font-size: .9rem;">Download supplemental form template</a>
+    <div style="display:flex; align-items:center; margin-top: 10px;">
       <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>
       <button *ngIf="selectedFile"
               mat-icon-button

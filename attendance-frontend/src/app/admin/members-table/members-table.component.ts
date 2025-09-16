@@ -89,7 +89,7 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   memberSection: Section | null = null;
   memberRehearsalConflict: string | null = null;
 
-  @ViewChild('memberPaginator') memberPaginator: MatPaginator | null = null;
+  @ViewChild('memberPaginator') memberPaginator!: MatPaginator;
 
   @ViewChild('memberForm') memberForm!: NgForm;
 
@@ -105,6 +105,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
 
   showMissingTermError: boolean = false;
 
+  membersLoaded: boolean = false;
+
   constructor(private adminService: AdminService,
               private dialog: MatDialog,
               private sessionCacheService: SessionCacheService,
@@ -112,7 +114,6 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.memberDataSource.paginator = this.memberPaginator;
   }
 
   ngOnInit() {
@@ -130,14 +131,18 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
       this.memberForm?.reset();
     });
     this.selectedFile = null;
+    this.uploadCsvType = '';
     this.dialog.closeAll();
   }
 
   onTermChange(newTermId: number) {
+    this.membersLoaded = false;
+    this.uploadCsvType = '';
     this.adminService.getMembersByTermId(newTermId).subscribe(members => {
       this.members = members;
       this.memberDataSource = new MatTableDataSource<Member>(this.members);
       this.memberDataSource.paginator = this.memberPaginator;
+      this.membersLoaded = true;
     })
   }
 
@@ -169,8 +174,7 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
     })
   }
 
-  onUploadCsvClicked(uploadCsvType: string) {
-    this.uploadCsvType = uploadCsvType;
+  onUploadCsvClicked() {
     this.uploadCsvDialogRef = this.dialog.open(this.uploadCsvDialog);
   }
 
