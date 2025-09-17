@@ -6,11 +6,12 @@ CREATE PROCEDURE ReassignRemainingPepEventsForMember(
     IN pepBandId VARCHAR(1)
 )
 BEGIN
-  INSERT IGNORE INTO EventAttendance (eventId, memberId, attendance)
+  INSERT IGNORE INTO EventAttendance (eventId, memberId, attendance, required)
 SELECT
     e.eventId,
     memberId,
-    NULL
+    NULL,
+    TRUE
 FROM MBEvent e
 WHERE e.termId = termId AND e.pepBandId = pepBandId;
 END;

@@ -6,7 +6,7 @@
         <span style="margin-left: 10px">{{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;</span>
         <span style="color: dimgray">- {{member?.user?.email}}</span>
       </div>
-      <button *ngIf="!editing && sessionCacheService.isOfficer() || sessionCacheService.isAdmin()"
+      <button *ngIf="!editing && sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader()"
               mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
       <div *ngIf="editing">
         <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
@@ -49,7 +49,8 @@
             <mat-option *ngFor="let option of rehearsalConflictOptions" [value]="option">{{option}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <button mat-flat-button color="warn" type="button" (click)="openConfirmationDialog()">Delete Member</button>
+        <button *ngIf="sessionCacheService.isOfficer() || sessionCacheService.isAdmin()"
+                mat-flat-button color="warn" type="button" (click)="openConfirmationDialog()">Delete Member</button>
       </div>
 
     </div>
