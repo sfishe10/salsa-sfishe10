@@ -6,11 +6,14 @@
         <span>{{event?.date | date: 'EEEE, MMMM d h:mm a' }}</span>
       </div>
       <div class="event-title">
-        <span *ngIf="event?.pepBand?.bandId">{{event?.pepBand?.bandId}} Band: </span>
+        <span *ngIf="event?.pepBand?.bandId">{{event?.pepBand?.displayName}}: </span>
         <span>{{event?.title}}</span>
       </div>
     </div>
-    <mat-form-field subscriptSizing="dynamic" *ngIf="sessionCacheService.isAdmin() || sessionCacheService.isOfficer()">
+    <mat-form-field subscriptSizing="dynamic"
+                    *ngIf="sessionCacheService.isAdmin()
+                    || sessionCacheService.isOfficer()
+                    || sessionCacheService.isDrumlineAttendanceTaker()">
       <mat-label class="form-label">Select Section</mat-label>
       <mat-select [(ngModel)]="selectedSection" (selectionChange)="onSectionChange($event.value)">
         <mat-option *ngFor="let option of sectionOptions" [value]="option">{{option.name}}</mat-option>
@@ -86,6 +89,8 @@
         </div>
       </form>
     </div>
+<!--    spacer if there are no attendances-->
+    <div *ngIf="!eventAttendances.length" style="margin-top: 10px"></div>
     <button *ngIf="event?.type === Constants.EVENT_TYPE_PEP_EVENT" mat-flat-button (click)="addAttendee()"
             style="margin-bottom: 20px; background-color: lightgray;">Add Attendee
     </button>

@@ -35,11 +35,17 @@ export class Constants {
   static readonly ROLE_ATTENDANCE_TAKER = 'Attendance Taker';
   static readonly ROLE_MEMBER = 'Member';
 
+  static readonly SECTION_BASS_DRUM = 'Bass Drum';
+  static readonly SECTION_TENOR_DRUMS = 'Tenor Drums';
+  static readonly SECTION_SNARE_DRUM = 'Snare Drum';
+  static readonly SECTION_CYMBALS = 'Cymbals';
+
   // SESSION CACHE STORAGE KEYS
   static readonly STORAGE_KEY_ME = 'ME';
   static readonly STORAGE_KEY_IS_ADMIN = 'IS_ADMIN';
   static readonly STORAGE_KEY_IS_OFFICER = 'IS_OFFICER';
   static readonly STORAGE_KEY_IS_ATTENDANCE_TAKER = 'IS_ATTENDANCE_TAKER';
+  static readonly STORAGE_KEY_IS_DRUMLINE_ATTENDANCE_TAKER = 'IS_DRUMLINE_ATTENDANCE_TAKER';
   static readonly STORAGE_KEY_SECTION_MEMBERS = 'SECTION_MEMBERS';
   static readonly STORAGE_KEY_SECTION_ID = 'SECTION_ID';
   static readonly STORAGE_KEY_TERM = 'TERM';

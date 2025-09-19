@@ -1,4 +1,5 @@
 import {Constants} from './constants';
+import {Section} from '../models/section';
 
 export class Utilities {
   public static getConflictColor(conflict: string): string {
@@ -71,5 +72,13 @@ export class Utilities {
       case Constants.PEP_BAND_ID_VOLUNTEER: return Constants.PEP_BAND_LABEL_VOLUNTEER;
       default: return '';
     }
+  }
+
+  public static isDrumline(section: Section): boolean {
+    let sectionName: string = section.name;
+    return sectionName === Constants.SECTION_CYMBALS
+      || sectionName === Constants.SECTION_SNARE_DRUM
+      || sectionName === Constants.SECTION_TENOR_DRUMS
+      || sectionName === Constants.SECTION_BASS_DRUM;
   }
 }

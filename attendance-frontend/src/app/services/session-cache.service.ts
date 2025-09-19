@@ -5,6 +5,7 @@ import {firstValueFrom, Observable, tap} from 'rxjs';
 import {Section} from '../models/section';
 import {PepBand} from '../models/pep-band';
 import {environment} from '../../environments/environment';
+import {Utilities} from '../utilities/utilities';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,12 @@ export class SessionCacheService {
       if (response.member) {
         const sectionId = response.member.section.sectionId;
         this.set(Constants.STORAGE_KEY_SECTION_ID, sectionId);
+
+        this.set(Constants.STORAGE_KEY_IS_DRUMLINE_ATTENDANCE_TAKER,
+          (response.user.role === Constants.ROLE_SECTION_LEADER
+            || response.user.role === Constants.ROLE_ATTENDANCE_TAKER)
+          && Utilities.isDrumline(response.member.section))
+        console.log(this.isDrumlineAttendanceTaker());
 
         const sectionMembers: any = await firstValueFrom(
           this.http.get(`${this.baseUrl}/members/section/${sectionId}`)
@@ -101,6 +108,10 @@ export class SessionCacheService {
 
   public isSectionLeader() {
     return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_SECTION_LEADER;
+  }
+
+  public isDrumlineAttendanceTaker() {
+    return this.get(Constants.STORAGE_KEY_IS_DRUMLINE_ATTENDANCE_TAKER);
   }
 
 }
