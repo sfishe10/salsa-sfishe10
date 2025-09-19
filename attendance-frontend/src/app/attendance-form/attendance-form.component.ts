@@ -157,7 +157,9 @@ export class AttendanceFormComponent implements OnInit {
       });
     })
 
-    this.sectionOptions = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
+    this.sectionOptions = this.sessionCacheService.isDrumlineAttendanceTaker()
+      ? this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS).filter((section: Section) => Utilities.isDrumline(section))
+      : this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
 
     this.selectedSection = this.sectionOptions
       .find((section: Section) => section.sectionId == sectionId) ?? null;

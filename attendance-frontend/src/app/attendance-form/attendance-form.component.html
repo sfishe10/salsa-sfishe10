@@ -10,7 +10,10 @@
         <span>{{event?.title}}</span>
       </div>
     </div>
-    <mat-form-field subscriptSizing="dynamic" *ngIf="sessionCacheService.isAdmin() || sessionCacheService.isOfficer()">
+    <mat-form-field subscriptSizing="dynamic"
+                    *ngIf="sessionCacheService.isAdmin()
+                    || sessionCacheService.isOfficer()
+                    || sessionCacheService.isDrumlineAttendanceTaker()">
       <mat-label class="form-label">Select Section</mat-label>
       <mat-select [(ngModel)]="selectedSection" (selectionChange)="onSectionChange($event.value)">
         <mat-option *ngFor="let option of sectionOptions" [value]="option">{{option.name}}</mat-option>
