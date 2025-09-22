@@ -45,8 +45,11 @@ export class EventComponent {
   fromList: string = '';
 
   navigateToForm() {
-    console.log(this.fromList);
-    this.router.navigate(['/attendance-form', this.event?.eventId], { queryParams: { fromList: this.fromList } });
+    if (this.fromList === 'volunteer') {
+      this.router.navigate(['/volunteer-signup-page', this.event?.eventId]);
+    } else {
+      this.router.navigate(['/attendance-form', this.event?.eventId], { queryParams: { fromList: this.fromList } });
+    }
   }
 
   protected readonly EVENT_TYPE_PEP_EVENT = Constants.EVENT_TYPE_PEP_EVENT;

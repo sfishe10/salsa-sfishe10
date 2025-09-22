@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {MBEvent} from '../models/mb-event';
 import {EventAttendance} from '../models/event-attendance';
 import {environment} from '../../environments/environment';
+import {VolunteerRosterMemberCount} from '../models/volunteer-roster-member-count';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,19 @@ export class EventService {
     return this.http.get<MBEvent[]>(url);
   }
 
+  public getVolunteerEvents(): Observable<MBEvent[]> {
+    const url = this.baseUrl + '/events/volunteer';
+    return this.http.get<MBEvent[]>(url);
+  }
+
   public getEvent(id: number): Observable<MBEvent> {
     const url = this.baseUrl + `/events/${id}`
     return this.http.get<MBEvent>(url);
+  }
+
+  public getEventVolunteerRosterMemberCounts(id: number): Observable<VolunteerRosterMemberCount[]> {
+    const url = this.baseUrl + `/events/${id}/rosterMemberCounts`
+    return this.http.get<VolunteerRosterMemberCount[]>(url);
   }
 
   public submitAttendanceForm(attendances: EventAttendance[]) {

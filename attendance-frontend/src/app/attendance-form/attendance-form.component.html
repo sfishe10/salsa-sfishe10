@@ -89,8 +89,9 @@
         </div>
       </form>
     </div>
-<!--    spacer if there are no attendances-->
-    <div *ngIf="!eventAttendances.length" style="margin-top: 10px"></div>
+    <div *ngIf="!eventAttendances.length" style="margin-top: 10px; margin-bottom: 10px;">
+      <span>No members have been assigned to this event.</span>
+    </div>
     <button *ngIf="event?.type === Constants.EVENT_TYPE_PEP_EVENT" mat-flat-button (click)="addAttendee()"
             style="margin-bottom: 20px; background-color: lightgray;">Add Attendee
     </button>

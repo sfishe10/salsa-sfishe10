@@ -19,6 +19,7 @@ import {AdminService} from '../../services/admin.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatButton} from '@angular/material/button';
 import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
+import {VolunteerRosterMemberCount} from '../../models/volunteer-roster-member-count';
 
 @Component({
   selector: 'app-event-page',
@@ -72,6 +73,8 @@ export class EventPageComponent implements OnInit {
 
   pepBandOptions: PepBand[] = [];
 
+  volunteerRosterMemberCounts: VolunteerRosterMemberCount[] = [];
+
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private router: Router,
@@ -94,6 +97,10 @@ export class EventPageComponent implements OnInit {
       this.separateDateAndTimeInputs(new Date(event.date));
     })
 
+    this.eventService.getEventVolunteerRosterMemberCounts(eventId).subscribe(counts => {
+      this.volunteerRosterMemberCounts = counts;
+      console.log(counts);
+    })
   }
 
   goBackToAdmin() {
