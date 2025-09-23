@@ -40,7 +40,8 @@ import {VolunteerRosterMemberCount} from '../../models/volunteer-roster-member-c
     NgForOf,
     MatButton,
     MatDialogActions,
-    MatDialogTitle
+    MatDialogTitle,
+    DatePipe
   ],
   templateUrl: './event-page.component.html',
   styleUrl: './event-page.component.css'
@@ -74,11 +75,12 @@ export class EventPageComponent implements OnInit {
   pepBandOptions: PepBand[] = [];
 
   volunteerRosterMemberCounts: VolunteerRosterMemberCount[] = [];
+  editing: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private router: Router,
-              private sessionCacheService: SessionCacheService,
+              public sessionCacheService: SessionCacheService,
               private adminService: AdminService,
               private dialog: MatDialog) {
   }
@@ -123,6 +125,7 @@ export class EventPageComponent implements OnInit {
       this.event = newEvent;
       this.separateDateAndTimeInputs(newEvent.date);
       this.openSnackBar("Event updated!", "Ok", 3000);
+      this.editing = false;
     }, error => {
       console.log(error);
       this.openSnackBar("Error updating event", "Ok", 3000);
@@ -157,6 +160,19 @@ export class EventPageComponent implements OnInit {
   goBack() {
     this.cancelDialog();
     this.router.navigate(['/admin'])
+  }
+
+  edit() {
+    this.eventTitle = this.event?.title ?? "";
+    this.eventType = this.event?.type ?? null;
+    this.eventDate = this.event?.date ? new Date(this.event?.date) : null;
+    this.eventPepBand = this.pepBandOptions.find(b => b.bandId == this.event?.pepBand?.bandId) ?? null;
+
+    this.editing = true;
+  }
+
+  cancel() {
+    this.editing = false;
   }
 
   separateDateAndTimeInputs(dateAndTime: Date) {
