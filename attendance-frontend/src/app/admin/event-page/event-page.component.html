@@ -51,7 +51,31 @@
                [(ngModel)]="eventTime">
       </mat-form-field>
     </div>
-    <button *ngIf="editing" mat-flat-button color="warn" type="button" (click)="openConfirmationDialog()">Delete Event</button>&nbsp;
+    <div *ngIf="event?.type === EVENT_TYPE_PEP_EVENT && event?.pepBand?.bandId === 'V'">
+      <mat-divider></mat-divider>
+      <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+        <h3>Required number of members:</h3>
+        <div style="display: flex; flex-direction: row; align-items: center;">
+          <span>Allow extra attendees?</span>
+          <mat-checkbox [disabled]="!editing" name="extraAttendeesAllowed" [(ngModel)]="extraAttendeesAllowed"></mat-checkbox>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 20px; margin-left: 20px">
+        <div *ngFor="let count of volunteerRosterMemberCounts">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; max-width: 300px">
+            <span>{{count.section.name}}:</span>
+            <span *ngIf="!editing && count.numMembersNeeded" style="width: 100px; align-content: start">{{count.numMembersNeeded}}</span>
+            <input *ngIf="editing" matInput type="number" [(ngModel)]="count.numMembersNeeded" [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <button *ngIf="editing"
+            style="margin-top: 10px;"
+            mat-flat-button
+            color="warn"
+            type="button"
+            (click)="openConfirmationDialog()">Delete Event</button>&nbsp;
   </form>
 </div>
 

@@ -20,6 +20,8 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatButton} from '@angular/material/button';
 import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {VolunteerRosterMemberCount} from '../../models/volunteer-roster-member-count';
+import {MatDivider} from '@angular/material/divider';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-event-page',
@@ -41,7 +43,9 @@ import {VolunteerRosterMemberCount} from '../../models/volunteer-roster-member-c
     MatButton,
     MatDialogActions,
     MatDialogTitle,
-    DatePipe
+    DatePipe,
+    MatDivider,
+    MatCheckbox
   ],
   templateUrl: './event-page.component.html',
   styleUrl: './event-page.component.css'
@@ -65,6 +69,7 @@ export class EventPageComponent implements OnInit {
   eventPepBand: PepBand | null = null;
   eventDate: Date | null = null;
   eventTime: string = '';
+  extraAttendeesAllowed: boolean = true;
 
   eventTypeOptions: string[] = [
     Constants.EVENT_TYPE_WHOLE_BAND_EVENT,
@@ -96,12 +101,12 @@ export class EventPageComponent implements OnInit {
       this.eventTitle = event.title;
       this.eventType = event.type;
       this.eventPepBand = this.pepBandOptions.find(band => band.bandId === event.pepBand?.bandId) ?? null;
+      this.extraAttendeesAllowed = event.extraAttendeesAllowed ?? true;
       this.separateDateAndTimeInputs(new Date(event.date));
     })
 
     this.eventService.getEventVolunteerRosterMemberCounts(eventId).subscribe(counts => {
       this.volunteerRosterMemberCounts = counts;
-      console.log(counts);
     })
   }
 
@@ -118,10 +123,11 @@ export class EventPageComponent implements OnInit {
       title: form.value.eventTitle,
       date: form.value.eventDate,
       pepBand: form.value.eventPepBand ?? null,
+      extraAttendeesAllowed: form.value.extraAttendeesAllowed ?? null,
       term: this.event?.term
     } as MBEvent;
 
-    this.adminService.updateEvent(newEvent).subscribe(() => {
+    this.adminService.updateEvent(newEvent, this.volunteerRosterMemberCounts).subscribe(() => {
       this.event = newEvent;
       this.separateDateAndTimeInputs(newEvent.date);
       this.openSnackBar("Event updated!", "Ok", 3000);

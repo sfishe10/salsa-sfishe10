@@ -7,5 +7,6 @@ export interface MBEvent {
   title: string;
   date: Date;
   pepBand: PepBand | null;
+  extraAttendeesAllowed?: boolean;
   term: Term;
 }

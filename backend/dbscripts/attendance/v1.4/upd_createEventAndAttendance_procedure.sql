@@ -13,8 +13,8 @@ BEGIN
 	DECLARE eventIdLocal INT;
 
 -- Insert the event
-INSERT INTO MBEvent (type, title, date, pepBandId, termId)
-VALUES (eventType, eventTitle, eventDate, eventPepBandId, eventTermId);
+INSERT INTO MBEvent (type, title, date, pepBandId, termId, extraAttendeesAllowed)
+VALUES (eventType, eventTitle, eventDate, eventPepBandId, eventTermId, true);
 
 -- Get the new eventId
 SET eventIdLocal = LAST_INSERT_ID();
