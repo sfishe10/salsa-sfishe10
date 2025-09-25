@@ -1,8 +1,8 @@
 const db = require('../../config/db');
 
 module.exports.create = async (req, res) => {
-  const params = [req.body.eventId, req.body.memberId];
-  await db.execute('INSERT INTO EventAttendance (eventId, memberId, attendance, subId, required) VALUES (?, ?, NULL, NULL, FALSE)',
+  const params = [req.body.eventId, req.body.sectionId];
+  await db.execute('INSERT INTO EventAttendance (eventId, memberId, attendance, subId, required, sectionId) VALUES (?, NULL, NULL, NULL, FALSE, ?)',
     params,
     (err, result) => {
       if (err) {
