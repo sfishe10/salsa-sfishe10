@@ -12,6 +12,7 @@ import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {Utilities} from '../../utilities/utilities';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-user-page',
@@ -49,7 +50,8 @@ export class UserPageComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private userService: UserService,
-              private router: Router) {
+              private router: Router,
+              private location: Location) {
   }
 
   ngOnInit() {
@@ -102,8 +104,8 @@ export class UserPageComponent implements OnInit {
     })
   }
 
-  goBackToAdmin() {
-    this.router.navigate(['/admin'])
+  goBack() {
+    this.location.back();
   }
 
   openSnackBar(message: string, action: string, duration: number) {

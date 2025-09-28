@@ -40,6 +40,10 @@ export class EventListComponent implements OnInit {
         this.eventService.getRecentEvents().subscribe(events => {
           this.eventList = events;
         })
+      } else if (this.listType === 'volunteer') {
+        this.eventService.getVolunteerEvents().subscribe(events => {
+          this.eventList = events;
+        })
       }
     })
   }

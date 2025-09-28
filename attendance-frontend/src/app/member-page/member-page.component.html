@@ -3,8 +3,9 @@
     <div class="top-row">
       <div class="member-name">
         <mat-icon class="button" (click)="goBack()">arrow_back</mat-icon>
-        <span style="margin-left: 10px">{{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;</span>
-        <span style="color: dimgray">- {{member?.user?.email}}</span>
+        <a [routerLink]="['/user', this.member?.user?.userId]" style="margin-left: 10px; color: inherit; text-decoration: none;">
+          {{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;
+          <span style="color: dimgray">- {{member?.user?.email}}</span></a>
       </div>
       <button *ngIf="!editing && sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader()"
               mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
@@ -19,9 +20,9 @@
       <span>Section: <b>{{member?.section?.name}}</b></span>
       <span>Pep Band: <b>{{member?.pepBand?.displayName}}</b></span>
       <span>Rehearsal Conflict:
-      <span *ngIf="member?.rehearsalConflict"><b>{{member?.rehearsalConflict}}</b></span>
-      <span *ngIf="!member?.rehearsalConflict"><b>None</b></span>
-    </span>
+        <span *ngIf="member?.rehearsalConflict"><b>{{member?.rehearsalConflict}}</b></span>
+        <span *ngIf="!member?.rehearsalConflict"><b>None</b></span>
+      </span>
     </div>
 
     <div *ngIf="editing">

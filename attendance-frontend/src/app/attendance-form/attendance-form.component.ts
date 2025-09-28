@@ -282,14 +282,15 @@ export class AttendanceFormComponent implements OnInit {
   }
 
   public addAttendee() {
-    this.eventService.addAttendance(this.eventId, null).subscribe(response => {
+    this.eventService.addAttendance(this.eventId, this.selectedSection?.sectionId ?? null).subscribe(response => {
       const newAttendance = {
         attendanceId: response.attendanceId,
         event: this.event,
         attendance: '',
         member: null,
         sub: null,
-        required: false
+        required: false,
+        sectionId: this.selectedSection?.sectionId
       } as EventAttendance
       this.eventAttendances.push(newAttendance);
       this.eventAttendances = [...this.eventAttendances];

@@ -7,6 +7,7 @@ import {Member} from '../models/member';
 import {User} from '../models/user';
 import {EventAttendanceTermPage} from '../models/event-attendance-term-page';
 import {environment} from '../../environments/environment';
+import {VolunteerRosterMemberCount} from '../models/volunteer-roster-member-count';
 
 @Injectable({
   providedIn: 'root'
@@ -54,9 +55,9 @@ export class AdminService {
     return this.http.post<any>(url, {event: event})
   }
 
-  public updateEvent(event: MBEvent) {
+  public updateEvent(event: MBEvent, volunteerRosterMemberCounts: VolunteerRosterMemberCount[]) {
     const url = this.baseUrl + `/events/${event.eventId}`;
-    return this.http.put<MBEvent>(url, {event: event});
+    return this.http.put<MBEvent>(url, {event, volunteerRosterMemberCounts});
   }
 
   public deleteEvent(eventId: number) {

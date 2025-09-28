@@ -174,7 +174,7 @@ module.exports.getBySectionAndEventId = async (req, res) => {
     'LEFT JOIN PepBand p3 on sub.pepBandId = p3.bandId ' +
     'LEFT JOIN Section s on m.sectionId = s.sectionId ' +
     'LEFT JOIN Term t on e.termId = t.termId ' +
-    'WHERE e.eventId=? AND (m.sectionId=? OR ea.memberId IS NULL)', [req.params.eventId, req.params.sectionId],
+    'WHERE e.eventId=? AND ea.sectionId=?', [req.params.eventId, req.params.sectionId],
   (err, results) => {
     if (err) {
       console.log(err);

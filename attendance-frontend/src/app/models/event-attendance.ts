@@ -9,4 +9,5 @@ export interface EventAttendance {
   sub: Member | null;
   required: boolean;
   lastUpdated: Date;
+  sectionId: number;
 }

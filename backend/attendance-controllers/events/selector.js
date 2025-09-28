@@ -194,3 +194,51 @@ module.exports.getByTermId = async (req, res) => {
     },
   );
 };
+
+module.exports.getRosterMemberCounts = async (req, res) => {
+  db.execute(
+    'SELECT v.*, e.*, t.*, p.displayName, s.* ' +
+    'FROM VolunteerRosterMemberCount v ' +
+    'JOIN MBEvent e on v.eventId = e.eventId ' +
+    'JOIN Term t on e.termId = t.termId ' +
+    'JOIN Section s on v.sectionId = s.sectionId ' +
+    'LEFT JOIN PepBand p on e.pepBandId = p.bandId ' +
+    'WHERE e.eventId=?', [req.params.id],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+      } else {
+        const event = {
+          eventId: results[0].eventId,
+          title: results[0].title,
+          date: convertDateToPST(results[0].date),
+          type: results[0].type,
+          term: {
+            termId: results[0].termId,
+            termName: results[0].termName,
+            startDate: results[0].startDate,
+            endDate: results[0].endDate,
+          },
+          pepBand: {
+            bandId: results[0].pepBandId,
+            displayName: results[0].displayName,
+          },
+        };
+        const counts = [];
+        results.forEach((row) => {
+          const memberCount = {
+            event,
+            section: {
+              sectionId: row.sectionId,
+              name: row.name,
+            },
+            numMembersNeeded: row.numMembersNeeded,
+          };
+          counts.push(memberCount);
+        });
+        res.send(counts);
+      }
+    },
+  );
+};

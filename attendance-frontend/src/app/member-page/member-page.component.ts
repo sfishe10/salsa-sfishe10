@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {Member} from '../models/member';
 import {MemberService} from '../services/member.service';
 import {MatIcon} from '@angular/material/icon';
@@ -33,7 +33,8 @@ import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angula
     MatSelect,
     NgForOf,
     MatDialogActions,
-    MatDialogTitle
+    MatDialogTitle,
+    RouterLink
   ],
   templateUrl: './member-page.component.html',
   styleUrl: './member-page.component.css'
@@ -74,7 +75,7 @@ export class MemberPageComponent implements OnInit {
   ngOnInit() {
     this.memberId = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.returnToPage = this.route.snapshot.queryParams['returnTo'];
+    this.returnToPage = this.route.snapshot.queryParams['returnTo'] ?? 'section';
 
     this.pepBandOptions = this.sessionCacheService.get(Constants.STORAGE_KEY_PEP_BANDS);
 
