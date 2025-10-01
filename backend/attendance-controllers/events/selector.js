@@ -7,7 +7,7 @@ const { convertDateToPST } = require('../../utilities/utilities');
 
 module.exports.getAll = async (req, res) => {
   db.execute(
-    'SELECT eventId, type, title, date, t.*, p.*, ' +
+    'SELECT e.*, t.*, p.*, ' +
     'FROM MBEvent e ' +
     'LEFT JOIN PepBand p on e.pepBandId = p.bandId ' +
     'JOIN Term t on e.termId = t.termId ' +
@@ -34,6 +34,7 @@ module.exports.getAll = async (req, res) => {
               bandId: row.bandId,
               displayName: row.displayName,
             },
+            extraAttendeesAllowed: row.extraAttendeesAllowed,
           });
         });
         res.send(events);
@@ -72,6 +73,7 @@ module.exports.getRecent = async (req, res) => {
               bandId: row.pepBandId,
               displayName: row.displayName,
             },
+            extraAttendeesAllowed: row.extraAttendeesAllowed,
           };
           events.push(newEvent);
         });
@@ -111,6 +113,7 @@ module.exports.getUpcoming = async (req, res) => {
               bandId: row.pepBandId,
               displayName: row.displayName,
             },
+            extraAttendeesAllowed: row.extraAttendeesAllowed,
           };
           events.push(newEvent);
         });
@@ -151,6 +154,7 @@ module.exports.getById = async (req, res) => {
           startDate: results[0].startDate,
           endDate: results[0].endDate,
         },
+        extraAttendeesAllowed: results[0].extraAttendeesAllowed,
       };
       res.send(event);
     }
@@ -159,7 +163,7 @@ module.exports.getById = async (req, res) => {
 
 module.exports.getByTermId = async (req, res) => {
   db.execute(
-    'SELECT eventId, type, title, date, t.*, p.* ' +
+    'SELECT e.*, t.*, p.* ' +
     'FROM MBEvent e ' +
     'LEFT JOIN PepBand p on e.pepBandId = p.bandId ' +
     'LEFT JOIN Term t on e.termId = t.termId ' +
@@ -187,8 +191,10 @@ module.exports.getByTermId = async (req, res) => {
               bandId: row.bandId,
               displayName: row.displayName,
             },
+            extraAttendeesAllowed: row.extraAttendeesAllowed,
           });
         });
+        console.log(events);
         res.send(events);
       }
     },
@@ -224,6 +230,7 @@ module.exports.getRosterMemberCounts = async (req, res) => {
             bandId: results[0].pepBandId,
             displayName: results[0].displayName,
           },
+          extraAttendeesAllowed: results[0].extraAttendeesAllowed,
         };
         const counts = [];
         results.forEach((row) => {
