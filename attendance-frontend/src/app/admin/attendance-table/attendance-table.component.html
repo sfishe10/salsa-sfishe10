@@ -51,8 +51,8 @@
           (click)="navigateToAttendance(row.attendanceMap[event.eventId].id)"
           [ngClass]="{ 'section-row-cell': isSectionRow(i, row) }"
           [ngStyle]="
-            !isSectionRow(i, row) && row.attendanceMap[event.eventId].status ?
-            {'background-color': 'var(--' + Utilities.getAttendanceColor(row.attendanceMap[event.eventId].status) + '-color)'} : null
+            !isSectionRow(i, row) && row.attendanceMap[event.eventId]?.status ?
+            {'background-color': 'var(--' + Utilities.getAttendanceColor(row.attendanceMap[event.eventId]?.status) + '-color)'} : null
           ">
         <span *ngIf="!isSectionRow(i, row)">
           <span *ngIf="!row.attendanceMap[event.eventId]?.status">-</span>
