@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {DatePipe, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
 import {Constants} from '../utilities/constants';
@@ -24,6 +24,11 @@ import {MatAccordion, MatExpansionPanel, MatExpansionPanelHeader} from '@angular
 import {EventsTableComponent} from '../admin/events-table/events-table.component';
 import {AttendanceTableComponent} from "../admin/attendance-table/attendance-table.component";
 import {Term} from '../models/term';
+import {Utilities} from '../utilities/utilities';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatOption} from '@angular/material/core';
+import {MatSelect} from '@angular/material/select';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-section-page',
@@ -48,7 +53,13 @@ import {Term} from '../models/term';
     EventsTableComponent,
     MatExpansionPanel,
     MatExpansionPanelHeader,
-    AttendanceTableComponent
+    AttendanceTableComponent,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    NgForOf,
+    FormsModule
   ],
   templateUrl: './section-page.component.html',
   styleUrl: './section-page.component.css'
@@ -57,16 +68,20 @@ export class SectionPageComponent implements OnInit {
 
   sectionId: number | null = null;
 
-  section: Section | null = null;
+  public selectedSection: Section | null = null;
+
+  sectionName: string = '';
 
   term!: Term;
+
+  public sectionOptions: Section[] = [];
 
   memberStats: MemberStats[] = [];
   statsColumns: string[] = ['member', 'numRehearsals', 'numWholeBandEvents', 'numPepEvents', 'numVolunteerEvents', 'numSubEvents'];
 
   constructor (private router: Router,
                private route: ActivatedRoute,
-               private sessionCacheService: SessionCacheService,
+               public sessionCacheService: SessionCacheService,
                private attendanceService: AttendanceService,
                private sectionService: SectionService) {
   }
@@ -77,7 +92,12 @@ export class SectionPageComponent implements OnInit {
     this.term = this.sessionCacheService.get(Constants.STORAGE_KEY_TERM);
 
     this.sectionService.getSectionById(this.sectionId).subscribe(section => {
-      this.section = section;
+      this.sectionOptions = Utilities.isDrumline(section)
+        ? this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS).filter((section: Section) => Utilities.isDrumline(section))
+        : this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
+
+      this.selectedSection = this.sectionOptions
+        .find((s: Section) => s.sectionId == section.sectionId) ?? null;
     })
 
     this.attendanceService.getMemberStatsBySectionId(this.sectionId).subscribe(memberStats => {
@@ -87,6 +107,15 @@ export class SectionPageComponent implements OnInit {
 
   navigateToMember(memberId: number) {
     this.router.navigate(['/member', memberId], {queryParams: {returnTo: 'section'}});
+  }
+
+  onSectionChange(section: Section) {
+    this.selectedSection = this.sectionOptions
+      .find((s: Section) => s.sectionId == section.sectionId) ?? null;
+
+    this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
+      this.memberStats = memberStats;
+    })
   }
 
   protected readonly EVENT_TYPE_REHEARSAL = Constants.EVENT_TYPE_REHEARSAL;

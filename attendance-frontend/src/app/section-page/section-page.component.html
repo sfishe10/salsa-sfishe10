@@ -1,6 +1,18 @@
 <div>
   <div class="section-name">
-    <span style="margin-left: 10px"><b>{{section?.name}}</b></span>
+    <span *ngIf="!(sessionCacheService.isAdmin()
+                    || sessionCacheService.isOfficer()
+                    || sessionCacheService.isDrumlineAttendanceTaker())"
+          style="margin-left: 10px; font-size: 1.4rem;"><b>{{sectionName}}</b></span>
+    <mat-form-field subscriptSizing="dynamic"
+                    *ngIf="sessionCacheService.isAdmin()
+                    || sessionCacheService.isOfficer()
+                    || sessionCacheService.isDrumlineAttendanceTaker()">
+      <mat-label class="form-label">Select Section</mat-label>
+      <mat-select [(ngModel)]="selectedSection" (selectionChange)="onSectionChange($event.value)">
+        <mat-option *ngFor="let option of sectionOptions" [value]="option">{{option.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <mat-accordion multi>

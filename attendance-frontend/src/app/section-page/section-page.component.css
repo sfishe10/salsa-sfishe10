@@ -1,8 +1,13 @@
 .section-name {
   font-family: Roboto, sans-serif;
-  font-size: 1.4rem;
+
   margin-bottom: 20px;
   margin-top: 10px;
+}
+
+.form-label {
+  font-size: .8rem;
+  color: gray;
 }
 
 .clickable-row {
