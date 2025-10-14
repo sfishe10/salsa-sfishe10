@@ -110,12 +110,14 @@ export class SectionPageComponent implements OnInit {
   }
 
   onSectionChange(section: Section) {
-    this.selectedSection = this.sectionOptions
-      .find((s: Section) => s.sectionId == section.sectionId) ?? null;
+    // this.selectedSection = this.sectionOptions
+    //   .find((s: Section) => s.sectionId == section.sectionId) ?? null;
+    //
+    // this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
+    //   this.memberStats = memberStats;
+    // })
 
-    this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
-      this.memberStats = memberStats;
-    })
+    this.router.navigate(['/section', section.sectionId])
   }
 
   protected readonly EVENT_TYPE_REHEARSAL = Constants.EVENT_TYPE_REHEARSAL;
