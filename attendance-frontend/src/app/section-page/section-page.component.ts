@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
@@ -79,6 +79,8 @@ export class SectionPageComponent implements OnInit {
   memberStats: MemberStats[] = [];
   statsColumns: string[] = ['member', 'numRehearsals', 'numWholeBandEvents', 'numPepEvents', 'numVolunteerEvents', 'numSubEvents'];
 
+  @ViewChildren(AttendanceTableComponent) attendanceTables!: QueryList<AttendanceTableComponent>;
+
   constructor (private router: Router,
                private route: ActivatedRoute,
                public sessionCacheService: SessionCacheService,
@@ -110,14 +112,19 @@ export class SectionPageComponent implements OnInit {
   }
 
   onSectionChange(section: Section) {
-    // this.selectedSection = this.sectionOptions
-    //   .find((s: Section) => s.sectionId == section.sectionId) ?? null;
-    //
-    // this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
-    //   this.memberStats = memberStats;
-    // })
+    this.sectionId = section.sectionId;
 
-    this.router.navigate(['/section', section.sectionId])
+    this.attendanceTables.forEach(table => {
+      table.onSectionChange(section.sectionId);
+    })
+
+    this.selectedSection = this.sectionOptions
+      .find((s: Section) => s.sectionId == section.sectionId) ?? null;
+
+    this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
+      this.memberStats = memberStats;
+    })
+
   }
 
   protected readonly EVENT_TYPE_REHEARSAL = Constants.EVENT_TYPE_REHEARSAL;

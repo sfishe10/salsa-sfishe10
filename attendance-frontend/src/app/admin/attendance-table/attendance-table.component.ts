@@ -126,6 +126,18 @@ export class AttendanceTableComponent implements OnInit {
     })
   }
 
+  onSectionChange(sectionId: number) {
+    if (this.eventType === Constants.EVENT_TYPE_PEP_EVENT && this.selectedPepBand) {
+      this.onPepBandChange(this.selectedPepBand);
+    } else {
+      let termId = this.term.termId;
+
+      this.adminService.getAttendanceByTermIdAndSection(termId, sectionId, this.eventType).subscribe(attendances => {
+        this.populateTable(attendances);
+      })
+    }
+  }
+
   toggleIncludeOtherPepBandMembers(event: MatSlideToggleChange) {
     this.ignoreMemberPepBand = event.checked;
 
