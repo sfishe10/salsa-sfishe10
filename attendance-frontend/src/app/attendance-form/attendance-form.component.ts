@@ -32,6 +32,7 @@ import {MemberSelectComponent} from './member-select/member-select.component';
 import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {MatInput} from '@angular/material/input';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-attendance-form',
@@ -60,6 +61,7 @@ import {MatInput} from '@angular/material/input';
     MemberSelectComponent,
     MatDialogActions,
     MatDialogTitle,
+    MatCheckbox,
   ],
   templateUrl: './attendance-form.component.html',
   styleUrl: './attendance-form.component.css'
@@ -128,8 +130,6 @@ export class AttendanceFormComponent implements OnInit {
 
     let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION).sectionId;
     this.sectionMembers = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_MEMBERS);
-
-    console.log(sectionId);
 
     this.eventService.getEvent(this.eventId).subscribe(event => {
       this.event = event;
@@ -272,6 +272,17 @@ export class AttendanceFormComponent implements OnInit {
       let group = control as FormGroup;
       group.get('attendance')?.setValue(Constants.ATTENDANCE_PRESENT);
     })
+  }
+
+  onPresentCheckboxChange(checked: boolean, index: number) {
+    const attendanceControl = this.attendances.at(index).get('attendance');
+    if (attendanceControl) {
+      if (checked) {
+        attendanceControl.setValue(Constants.ATTENDANCE_PRESENT);
+      } else if (attendanceControl.value === Constants.ATTENDANCE_PRESENT) {
+        attendanceControl.setValue(null);
+      }
+    }
   }
 
   public clearForm() {
