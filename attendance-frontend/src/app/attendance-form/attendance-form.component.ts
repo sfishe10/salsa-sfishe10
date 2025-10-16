@@ -126,7 +126,7 @@ export class AttendanceFormComponent implements OnInit {
 
     this.eventId = Number(this.route.snapshot.paramMap.get('id'));
 
-    let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_ID);
+    let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION).sectionId;
     this.sectionMembers = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_MEMBERS);
 
     console.log(sectionId);

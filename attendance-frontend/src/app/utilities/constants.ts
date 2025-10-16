@@ -47,7 +47,7 @@ export class Constants {
   static readonly STORAGE_KEY_IS_ATTENDANCE_TAKER = 'IS_ATTENDANCE_TAKER';
   static readonly STORAGE_KEY_IS_DRUMLINE_ATTENDANCE_TAKER = 'IS_DRUMLINE_ATTENDANCE_TAKER';
   static readonly STORAGE_KEY_SECTION_MEMBERS = 'SECTION_MEMBERS';
-  static readonly STORAGE_KEY_SECTION_ID = 'SECTION_ID';
+  static readonly STORAGE_KEY_SECTION = 'SECTION';
   static readonly STORAGE_KEY_TERM = 'TERM';
   static readonly STORAGE_KEY_SECTIONS = 'SECTIONS'
   static readonly STORAGE_KEY_PEP_BANDS = 'PEP_BANDS';

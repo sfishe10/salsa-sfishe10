@@ -93,14 +93,14 @@ export class SectionPageComponent implements OnInit {
 
     this.term = this.sessionCacheService.get(Constants.STORAGE_KEY_TERM);
 
-    this.sectionService.getSectionById(this.sectionId).subscribe(section => {
-      this.sectionOptions = Utilities.isDrumline(section)
-        ? this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS).filter((section: Section) => Utilities.isDrumline(section))
-        : this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
+    let mySection = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION);
 
-      this.selectedSection = this.sectionOptions
-        .find((s: Section) => s.sectionId == section.sectionId) ?? null;
-    })
+    this.sectionOptions = (Utilities.isDrumline(mySection) && !this.sessionCacheService.isOfficer())
+      ? this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS).filter((section: Section) => Utilities.isDrumline(section))
+      : this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
+
+    this.selectedSection = this.sectionOptions
+      .find((s: Section) => s.sectionId == this.sectionId) ?? null;
 
     this.attendanceService.getMemberStatsBySectionId(this.sectionId).subscribe(memberStats => {
       this.memberStats = memberStats;
