@@ -388,7 +388,8 @@ module.exports.getMemberStatsBySectionId = async (req, res) => {
     'count(case when ' +
       '(m.memberId = ea.memberId ' +
       'and e.type = \'Pep Event\' ' +
-      'and ea.attendance not like \'%Absent%\') then 1 end) as numPepEvents, ' +
+      'and ea.attendance not like \'%Absent%\'' +
+      'and ea.attendance not like \'%Sub%\') then 1 end) as numPepEvents, ' +
     'count(case when (m.memberId = ea.memberId ' +
       'and e.type = \'Volunteer\' ' +
       'and ea.attendance not like \'%Absent%\') then 1 end) as numVolunteerEvents, ' +
