@@ -67,6 +67,10 @@
               <td mat-cell *matCellDef="let attendance; let i = index" [formGroupName]="i"
                   style="background-color: var(--mat-sidenav-content-background-color);">
                 <div style="display: flex; flex-direction: row; justify-content: end; padding-left: 8px">
+                  <mat-checkbox
+                    [checked]="attendances.at(i).get('attendance')?.value === 'Present'"
+                    (change)="onPresentCheckboxChange($event.checked, i)">
+                  </mat-checkbox>
                   <div class="attendance-cell">
                     <app-attendance-select formControlName="attendance" [includeSub]="includeSubOption()"></app-attendance-select>
 

@@ -35,8 +35,8 @@ export class SessionCacheService {
 
       // If user is a member, fetch their section members and term
       if (response.member) {
-        const sectionId = response.member.section.sectionId;
-        this.set(Constants.STORAGE_KEY_SECTION_ID, sectionId);
+        const section = response.member.section;
+        this.set(Constants.STORAGE_KEY_SECTION, section);
 
         this.set(Constants.STORAGE_KEY_IS_DRUMLINE_ATTENDANCE_TAKER,
           (response.user.role === Constants.ROLE_SECTION_LEADER
@@ -45,7 +45,7 @@ export class SessionCacheService {
         console.log(this.isDrumlineAttendanceTaker());
 
         const sectionMembers: any = await firstValueFrom(
-          this.http.get(`${this.baseUrl}/members/section/${sectionId}`)
+          this.http.get(`${this.baseUrl}/members/section/${section.sectionId}`)
         );
         this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
 

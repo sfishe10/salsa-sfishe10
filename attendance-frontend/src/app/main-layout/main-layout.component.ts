@@ -71,7 +71,7 @@ export class MainLayoutComponent implements OnInit{
   }
 
   public goToSection() {
-    let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION_ID);
+    let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION).sectionId;
 
     this.sidenav.toggle();
     this.router.navigate(['/section', sectionId]);

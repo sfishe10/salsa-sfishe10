@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
@@ -79,6 +79,8 @@ export class SectionPageComponent implements OnInit {
   memberStats: MemberStats[] = [];
   statsColumns: string[] = ['member', 'numRehearsals', 'numWholeBandEvents', 'numPepEvents', 'numVolunteerEvents', 'numSubEvents'];
 
+  @ViewChildren(AttendanceTableComponent) attendanceTables!: QueryList<AttendanceTableComponent>;
+
   constructor (private router: Router,
                private route: ActivatedRoute,
                public sessionCacheService: SessionCacheService,
@@ -91,14 +93,14 @@ export class SectionPageComponent implements OnInit {
 
     this.term = this.sessionCacheService.get(Constants.STORAGE_KEY_TERM);
 
-    this.sectionService.getSectionById(this.sectionId).subscribe(section => {
-      this.sectionOptions = Utilities.isDrumline(section)
-        ? this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS).filter((section: Section) => Utilities.isDrumline(section))
-        : this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
+    let mySection = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION);
 
-      this.selectedSection = this.sectionOptions
-        .find((s: Section) => s.sectionId == section.sectionId) ?? null;
-    })
+    this.sectionOptions = (Utilities.isDrumline(mySection) && !this.sessionCacheService.isOfficer())
+      ? this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS).filter((section: Section) => Utilities.isDrumline(section))
+      : this.sessionCacheService.get(Constants.STORAGE_KEY_SECTIONS);
+
+    this.selectedSection = this.sectionOptions
+      .find((s: Section) => s.sectionId == this.sectionId) ?? null;
 
     this.attendanceService.getMemberStatsBySectionId(this.sectionId).subscribe(memberStats => {
       this.memberStats = memberStats;
@@ -110,12 +112,19 @@ export class SectionPageComponent implements OnInit {
   }
 
   onSectionChange(section: Section) {
+    this.sectionId = section.sectionId;
+
+    this.attendanceTables.forEach(table => {
+      table.onSectionChange(section.sectionId);
+    })
+
     this.selectedSection = this.sectionOptions
       .find((s: Section) => s.sectionId == section.sectionId) ?? null;
 
     this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
       this.memberStats = memberStats;
     })
+
   }
 
   protected readonly EVENT_TYPE_REHEARSAL = Constants.EVENT_TYPE_REHEARSAL;
