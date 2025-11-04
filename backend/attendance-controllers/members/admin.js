@@ -26,7 +26,7 @@ module.exports.create = async (req, res) => {
           email,
           role: result[0].role,
         };
-        db.execute('INSERT INTO MEMBER(email, pepBandId, sectionId, termId, rehearsalConflict) VALUES (?, ?, ?, ?, ?)',
+        db.execute('INSERT INTO Member(email, pepBandId, sectionId, termId, rehearsalConflict) VALUES (?, ?, ?, ?, ?)',
           [email, pepBandId, req.body.member.section.sectionId, req.body.member.term.termId,
             req.body.member.rehearsalConflict],
           (err2, result2) => {
