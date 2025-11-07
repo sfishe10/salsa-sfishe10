@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import {MBEvent} from "./mb-event.entity";
 import {Member} from "./member.entity";
+import {Section} from "./section.entity";
 
 @Entity('EventAttendance')
 export class EventAttendance {
@@ -40,7 +41,8 @@ export class EventAttendance {
     lastUpdated!: Date;
 
     // For when users add extra attendances - keeps the new attendance from showing up for other sections
-    @Column({ type: 'int', nullable: true })
-    sectionId!: number | null;
+    @ManyToOne(() => Section, { nullable: true })
+    @JoinColumn({ name: 'sectionId' })
+    section!: Section | null;
 }
 

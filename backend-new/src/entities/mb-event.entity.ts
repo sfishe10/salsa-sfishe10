@@ -11,7 +11,7 @@ export class MBEvent {
     @Column({ type: 'varchar', length: 50 })
     type!: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 50 })
     title!: string;
 
     @Column({ type: 'datetime' })

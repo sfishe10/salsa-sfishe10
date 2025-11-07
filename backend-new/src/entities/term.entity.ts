@@ -7,7 +7,7 @@ export class Term {
     @PrimaryGeneratedColumn()
     termId!: number;
 
-    @Column({ type: 'varchar', length: 100 })
+    @Column({ type: 'varchar', length: 255 })
     termName!: string;
 
     @Column({ type: 'datetime' })
