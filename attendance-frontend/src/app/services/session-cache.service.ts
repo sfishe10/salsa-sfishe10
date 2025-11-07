@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Constants} from '../utilities/constants';
 import {firstValueFrom, Observable, tap} from 'rxjs';
-import {Section} from '../models/section';
-import {PepBand} from '../models/pep-band';
+import {Section} from '../../../../shared/models/section';
+import {PepBand} from '../../../../shared/models/pep-band';
 import {environment} from '../../environments/environment';
 import {Utilities} from '../utilities/utilities';
 

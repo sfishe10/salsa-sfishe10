@@ -10,3 +10,5 @@ tempSQLscripts/
 
 # environment variables
 .env
+
+dist/

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {EventComponent} from './event/event.component';
 import {NgForOf, NgIf} from '@angular/common';
-import {MBEvent} from '../models/mb-event';
+import {MBEvent} from '../../../../shared/models/mb-event';
 import {EventService} from '../services/event.service';
 import {ActivatedRoute} from '@angular/router';
 

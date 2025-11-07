@@ -9,7 +9,7 @@ import {Constants} from '../utilities/constants';
 import {
   MatDatepickerModule
 } from '@angular/material/datepicker';
-import {Term} from '../models/term';
+import {Term} from '../../../../shared/models/term';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
 import {
@@ -25,7 +25,7 @@ import {AdminService} from '../services/admin.service';
 import {UsersTableComponent} from './users-table/users-table.component';
 import {MatAccordion, MatExpansionPanel, MatExpansionPanelHeader} from '@angular/material/expansion';
 import {MatDivider} from '@angular/material/divider';
-import {User} from '../models/user';
+import {User} from '../../../../shared/models/user';
 import {MatTableDataSource} from '@angular/material/table';
 import {Utilities} from '../utilities/utilities';
 import {MatIcon} from '@angular/material/icon';

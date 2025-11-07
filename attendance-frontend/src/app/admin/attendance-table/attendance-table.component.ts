@@ -10,19 +10,19 @@ import {
   MatRow, MatRowDef, MatTable
 } from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
-import {Term} from '../../models/term';
+import {Term} from '../../../../../shared/models/term';
 import {AdminService} from '../../services/admin.service';
-import {EventAttendanceHeader} from '../../models/event-attendance-header';
+import {EventAttendanceHeader} from '../../../../../shared/models/event-attendance-header';
 import {Constants} from '../../utilities/constants';
 import {Utilities} from '../../utilities/utilities';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
-import {PepBand} from '../../models/pep-band';
+import {PepBand} from '../../../../../shared/models/pep-band';
 import {FormsModule} from '@angular/forms';
 import {SessionCacheService} from '../../services/session-cache.service';
 import {MatSlideToggle, MatSlideToggleChange} from '@angular/material/slide-toggle';
-import {EventAttendanceTermPage} from '../../models/event-attendance-term-page';
+import {EventAttendanceTermPage} from '../../../../../shared/models/event-attendance-term-page';
 import {Router} from '@angular/router';
 
 type MemberWithAttendance = {

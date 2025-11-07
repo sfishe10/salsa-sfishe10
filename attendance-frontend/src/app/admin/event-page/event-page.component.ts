@@ -1,11 +1,11 @@
 import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EventService} from '../../services/event.service';
-import {MBEvent} from '../../models/mb-event';
+import {MBEvent} from '../../../../../shared/models/mb-event';
 import {MatIcon} from '@angular/material/icon';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FormsModule, NgForm} from '@angular/forms';
-import {PepBand} from '../../models/pep-band';
+import {PepBand} from '../../../../../shared/models/pep-band';
 import {Utilities} from '../../utilities/utilities';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
@@ -19,7 +19,7 @@ import {AdminService} from '../../services/admin.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatButton} from '@angular/material/button';
 import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
-import {VolunteerRosterMemberCount} from '../../models/volunteer-roster-member-count';
+import {VolunteerRosterMemberCount} from '../../../../../shared/models/volunteer-roster-member-count';
 import {MatDivider} from '@angular/material/divider';
 import {MatCheckbox} from '@angular/material/checkbox';
 

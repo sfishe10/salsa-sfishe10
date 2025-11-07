@@ -10,7 +10,7 @@ import {
   MatRow, MatRowDef, MatTable, MatTableDataSource
 } from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
-import {EventAttendanceMemberPage} from '../../models/event-attendance-member-page';
+import {EventAttendanceMemberPage} from '../../../../../shared/models/event-attendance-member-page';
 import {MemberService} from '../../services/member.service';
 import {Router} from '@angular/router';
 

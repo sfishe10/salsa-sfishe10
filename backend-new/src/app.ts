@@ -1,0 +1,241 @@
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import https from 'https';
+import fs from 'fs';
+import dotenv from 'dotenv';
+import passport from 'passport';
+import {
+  BearerStrategy,
+  IBearerStrategyOptionWithRequest,
+  VerifyCallback
+} from 'passport-azure-ad';
+
+// Route imports
+
+// import groupsRoutes from './routes/groups';
+// import stationRoutes from './routes/stations';
+// import userRoutes from './routes/users';
+// import sectionRoutes from './routes/sections';
+// import evaluationRoutes from './routes/evaluations';
+// import eventRoutes from './routes/events';
+
+import attendanceRoutes from './routes/attendance';
+import attendanceEventRoutes from './routes/events';
+import attendanceMemberRoutes from './routes/members';
+import attendanceTermRoutes from './routes/terms';
+import attendancePepBandRoutes from './routes/pep-bands';
+import attendanceSectionRoutes from './routes/sections';
+import attendanceUserRoutes from './routes/users';
+
+// Database import
+import db from '../config/db';
+import {AppDataSource} from "./config/data-source";
+
+dotenv.config();
+
+AppDataSource.initialize()
+    .then(() => {
+      console.log('Database connected');
+    })
+    .catch((err) => {
+      console.error('Database connection error:', err);
+    });
+
+const app = express();
+const port = process.env.PORT || 3001;
+
+// Type extension for Passport user info
+interface AuthenticatedRequest extends Request {
+  user?: any;
+}
+
+// ----- Express Configuration -----
+app.disable('etag');
+
+const corsOptions = {
+  origin: [
+    'https://807.band',
+    'https://807.band:444',
+    'http://localhost:3000',
+    'http://localhost:4200'
+  ],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+app.options('*', cors({
+  ...corsOptions,
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.method === 'OPTIONS') {
+    console.log(`Received OPTIONS request for ${req.originalUrl} from origin ${req.headers.origin}`);
+    res.header("Access-Control-Allow-Origin", req.headers.origin || '');
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ----- Error Handlers -----
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
+});
+
+// ----- Passport Azure AD -----
+const bearerOptions: IBearerStrategyOptionWithRequest = {
+  identityMetadata: `${process.env.AUTHORITY}/${process.env.VERSION}/${process.env.DISCOVERY}`,
+  issuer: `${process.env.AUTHORITY}/${process.env.VERSION}`,
+  clientID: process.env.AUDIENCE || '',
+  audience: process.env.AUDIENCE,
+  validateIssuer: process.env.VALIDATE_ISSUER === 'true',
+  passReqToCallback: process.env.PASS_REQ_TO_CALLBACK === 'true',
+  loggingLevel: process.env.LOGGING_LEVEL as any,
+  scope: process.env.SCOPE ? [process.env.SCOPE] : [],
+};
+
+passport.use(new BearerStrategy(bearerOptions, (token: any, done: VerifyCallback) => {
+  console.log('Decoded token:', JSON.stringify(token, null, 2));
+  done(null, token, token);
+}));
+
+app.use(passport.initialize());
+
+// ----- Routes -----
+// app.use('/api/groups/', groupsRoutes);
+// app.use('/api/station/', stationRoutes);
+// app.use('/api/user/', userRoutes);
+// app.use('/api/section/', sectionRoutes);
+// app.use('/api/evaluations/', evaluationRoutes);
+// app.use('/api/event/', eventRoutes);
+// app.use('/api/attendance/', attendanceRoutes);
+
+app.use('/api/mb-attendance/attendance/', attendanceRoutes);
+app.use('/api/mb-attendance/events/', passport.authenticate('oauth-bearer', { session: false }), attendanceEventRoutes);
+app.use('/api/mb-attendance/members/', passport.authenticate('oauth-bearer', { session: false }), attendanceMemberRoutes);
+app.use('/api/mb-attendance/terms/', passport.authenticate('oauth-bearer', { session: false }), attendanceTermRoutes);
+app.use('/api/mb-attendance/pepBands/', passport.authenticate('oauth-bearer', { session: false }), attendancePepBandRoutes);
+app.use('/api/mb-attendance/sections/', passport.authenticate('oauth-bearer', { session: false }), attendanceSectionRoutes);
+app.use('/api/mb-attendance/users/', passport.authenticate('oauth-bearer', { session: false }), attendanceUserRoutes);
+
+// ----- /api/me -----
+app.options('/api/me', cors({
+  ...corsOptions,
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  methods: ['GET', 'OPTIONS']
+}));
+
+app.use('/api/me', (req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  res.setHeader('ETag', Date.now().toString());
+  next();
+});
+
+app.get('/api/me', passport.authenticate('oauth-bearer', { session: false }), async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const email =
+        req.user?.upn ||
+        req.user?.preferred_username ||
+        req.user?.unique_name ||
+        req.user?.email ||
+        (req.query.email as string) ||
+        null;
+
+    if (!email) {
+      return res.status(401).json({ message: 'Unauthorized: no email found' });
+    }
+
+    db.execute('SELECT * FROM User WHERE email = ?', [email], (err, result: any[]) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send(err.message);
+      }
+
+      if (!result.length) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const user = {
+        firstName: result[0].firstName,
+        lastName: result[0].lastName,
+        email,
+        role: result[0].role,
+      };
+
+      db.execute(
+          `SELECT * FROM Member AS m
+         LEFT JOIN Term AS t ON m.termId = t.termId
+         LEFT JOIN PepBand AS p ON m.pepBandId = p.bandId
+         LEFT JOIN Section AS s ON m.sectionId = s.sectionId
+         WHERE email = ? AND t.startDate <= NOW() AND t.endDate >= NOW()`,
+          [email],
+          (err2, result2: any[]) => {
+            if (err2) {
+              console.error(err2);
+              return res.status(500).send(err2.message);
+            }
+
+            let member = null;
+            if (result2.length) {
+              member = {
+                memberId: result2[0].memberId,
+                user,
+                pepBand: {
+                  bandId: result2[0].pepBandId,
+                  displayName: result2[0].displayName,
+                },
+                section: {
+                  sectionId: result2[0].sectionId,
+                  name: result2[0].name,
+                },
+                term: {
+                  termId: result2[0].termId,
+                  termName: result2[0].termName,
+                  startDate: result2[0].startDate,
+                  endDate: result2[0].endDate,
+                },
+                rehearsalConflict: result2[0].rehearsalConflict,
+              };
+            }
+
+            const me = { user, member };
+            console.log('Sending /api/me response:', me);
+            res.json(me);
+          }
+      );
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// ----- Start Server -----
+if (process.env.ENVIRONMENT === 'prod') {
+  const httpsServer = https.createServer(
+      {
+        key: fs.readFileSync('/etc/letsencrypt/live/807.band/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/807.band/fullchain.pem'),
+      },
+      app
+  );
+  httpsServer.listen(port, () => console.log(`HTTPS server running on port ${port}`));
+} else {
+  app.listen(port, () => console.log(`HTTP server running on port ${port}`));
+}
+

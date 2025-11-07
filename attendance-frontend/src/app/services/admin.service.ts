@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Term} from '../models/term';
-import {MBEvent} from '../models/mb-event';
-import {Member} from '../models/member';
-import {User} from '../models/user';
-import {EventAttendanceTermPage} from '../models/event-attendance-term-page';
+import {Term} from '../../../../shared/models/term';
+import {MBEvent} from '../../../../shared/models/mb-event';
+import {Member} from '../../../../shared/models/member';
+import {User} from '../../../../shared/models/user';
+import {EventAttendanceTermPage} from '../../../../shared/models/event-attendance-term-page';
 import {environment} from '../../environments/environment';
-import {VolunteerRosterMemberCount} from '../models/volunteer-roster-member-count';
+import {VolunteerRosterMemberCount} from '../../../../shared/models/volunteer-roster-member-count';
 
 @Injectable({
   providedIn: 'root'

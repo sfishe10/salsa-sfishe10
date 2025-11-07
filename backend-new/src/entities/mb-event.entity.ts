@@ -1,0 +1,31 @@
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { PepBand } from './pep-band.entity';
+import { Term } from './term.entity';
+import { EventAttendance } from './event-attendance.entity';
+
+@Entity('Event')
+export class MBEvent {
+    @PrimaryGeneratedColumn()
+    eventId!: number;
+
+    @Column({ type: 'varchar', length: 50 })
+    type!: string;
+
+    @Column({ type: 'varchar', length: 255 })
+    title!: string;
+
+    @Column({ type: 'datetime' })
+    date!: Date;
+
+    @ManyToOne(() => PepBand, (pepBand: PepBand) => pepBand.events, { nullable: true })
+    pepBand!: PepBand | null;
+
+    @Column({ type: 'boolean', default: false })
+    extraAttendeesAllowed!: boolean;
+
+    @ManyToOne(() => Term, (term: Term) => term.events, { onDelete: 'CASCADE' })
+    term!: Term;
+
+    @OneToMany(() => EventAttendance, (ea) => ea.event)
+    attendances!: EventAttendance[];
+}

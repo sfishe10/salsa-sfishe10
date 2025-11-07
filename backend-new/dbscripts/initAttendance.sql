@@ -1,0 +1,11 @@
+USE 807web;
+
+source dbscripts/attendance/create_term_table.sql
+source dbscripts/attendance/create_user_table.sql
+source dbscripts/attendance/create_section_table.sql
+source dbscripts/attendance/create_pepband_table.sql
+source dbscripts/attendance/create_member_table.sql
+source dbscripts/attendance/create_mbevent_table.sql
+source dbscripts/attendance/create_eventattendance_table.sql
+source dbscripts/attendance/create_createEventAndAttendance_procedure.sql
+source dbscripts/attendance/create_addAttendancesForNewMembers_procedure.sql

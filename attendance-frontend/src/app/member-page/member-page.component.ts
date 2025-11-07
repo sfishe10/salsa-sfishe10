@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {Member} from '../models/member';
+import {Member} from '../../../../shared/models/member';
 import {MemberService} from '../services/member.service';
 import {MatIcon} from '@angular/material/icon';
 import {FormsModule, NgForm} from '@angular/forms';
@@ -10,8 +10,8 @@ import {MatButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
-import {Section} from '../models/section';
-import {PepBand} from '../models/pep-band';
+import {Section} from '../../../../shared/models/section';
+import {PepBand} from '../../../../shared/models/pep-band';
 import {Constants} from '../utilities/constants';
 import {SessionCacheService} from '../services/session-cache.service';
 import {Utilities} from '../utilities/utilities';

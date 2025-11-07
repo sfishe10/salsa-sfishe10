@@ -10,7 +10,7 @@ import {MatIcon} from '@angular/material/icon';
 import {EventTagComponent} from './event-tag/event-tag.component';
 import {DatePipe, NgIf, NgStyle} from '@angular/common';
 import {Router} from '@angular/router';
-import {MBEvent} from '../../models/mb-event';
+import {MBEvent} from '../../../../../shared/models/mb-event';
 import {Constants} from '../../utilities/constants';
 
 @Component({
