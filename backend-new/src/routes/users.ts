@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
-import users from '../controllers/users';
+import * as users from '../controllers/users';
 
 const upload = multer({ storage: multer.memoryStorage() });
 

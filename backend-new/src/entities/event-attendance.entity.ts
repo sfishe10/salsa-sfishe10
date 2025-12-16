@@ -18,7 +18,7 @@ export class EventAttendance {
     // Each attendance belongs to one event
     @ManyToOne(() => MBEvent, (event: MBEvent) => event.attendances, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'eventId' })
-    event!: MBEvent;
+    mbEvent!: MBEvent;
 
     // 'Present', 'Absent', 'Sub', etc.
     @Column({ type: 'varchar', length: 50, nullable: true })

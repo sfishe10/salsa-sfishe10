@@ -28,12 +28,11 @@ import attendanceSectionRoutes from './routes/sections';
 import attendanceUserRoutes from './routes/users';
 
 // Database import
-import db from '../config/db';
-import {AppDataSource} from "./config/data-source";
+import {db} from "./config/data-source";
 
 dotenv.config();
 
-AppDataSource.initialize()
+db.initialize()
     .then(() => {
       console.log('Database connected');
     })

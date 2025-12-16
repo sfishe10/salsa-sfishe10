@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import events from '../controllers/events';
+import * as events from '../controllers/events';
 
 const router: Router = Router();
 
@@ -15,11 +15,9 @@ router.delete('/:id', events.admin.delete);
  * selectors
  */
 
-router.get('/', events.selector.getAll);
 router.get('/upcoming', events.selector.getUpcoming);
 router.get('/recent', events.selector.getRecent);
 router.get('/:id', events.selector.getById);
-router.get('/:id/rosterMemberCounts', events.selector.getRosterMemberCounts);
 router.get('/term/:id', events.selector.getByTermId);
 
 export default router;

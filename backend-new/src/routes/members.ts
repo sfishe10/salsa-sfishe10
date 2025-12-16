@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
-import members from '../controllers/members';
+import * as members from '../controllers/members';
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -21,7 +21,6 @@ router.post('/term/:id/uploadRehearsalConflictsCsv', upload.single('file'), memb
  * selectors
  */
 
-router.get('/', members.selector.getAll);
 router.get('/:id', members.selector.getById);
 router.get('/section/:id', members.selector.getSection);
 router.get('/term/:id', members.selector.getByTermId);

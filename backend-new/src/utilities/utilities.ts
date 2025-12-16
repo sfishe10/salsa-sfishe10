@@ -1,6 +1,10 @@
-class Utilities {
-  static convertDateToPST(date) {
-    const utc = new Date(`${date} UTC`);
+export class Utilities {
+  static convertDateToPST(date: string | Date): string {
+    const utcDate =
+        typeof date === 'string'
+            ? new Date(`${date} UTC`)
+            : date;
+
     const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/Los_Angeles',
       year: 'numeric',
@@ -10,8 +14,7 @@ class Utilities {
       minute: '2-digit',
       second: '2-digit',
     });
-    return formatter.format(utc);
+
+    return formatter.format(utcDate);
   }
 }
-
-module.exports = Utilities;

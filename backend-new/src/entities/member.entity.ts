@@ -4,6 +4,7 @@ import { PepBand } from './pep-band.entity';
 import { Section } from './section.entity';
 import { Term } from './term.entity';
 import { EventAttendance } from './event-attendance.entity';
+import {Expose} from "class-transformer";
 
 @Entity('Member')
 export class Member {
@@ -30,4 +31,17 @@ export class Member {
 
     @OneToMany(() => EventAttendance, (ea) => ea.sub)
     subs!: EventAttendance[];
+
+    @Expose()
+    get allAttendances(): EventAttendance[] {
+        const combined = [...(this.attendances || []), ...(this.subs || [])];
+
+        combined.sort((a, b) => {
+            const dateA = a.mbEvent?.date ? new Date(a.mbEvent.date).getTime() : 0;
+            const dateB = b.mbEvent?.date ? new Date(b.mbEvent.date).getTime() : 0;
+            return dateB - dateA;
+        });
+
+        return combined;
+    }
 }

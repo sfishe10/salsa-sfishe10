@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import attendance from '../controllers/attendance';
+import * as attendance from '../controllers/attendance';
 
 const router: Router = Router();
 

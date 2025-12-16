@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import sections from '../controllers/sections';
+import * as sections from '../controllers/sections';
 
 const router: Router = Router();
 

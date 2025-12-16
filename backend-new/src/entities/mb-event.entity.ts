@@ -2,8 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'ty
 import { PepBand } from './pep-band.entity';
 import { Term } from './term.entity';
 import { EventAttendance } from './event-attendance.entity';
+import {VolunteerRosterMemberCount} from "./volunteer-roster-member-count.entity";
 
-@Entity('Event')
+@Entity('MBEvent')
 export class MBEvent {
     @PrimaryGeneratedColumn()
     eventId!: number;
@@ -26,6 +27,9 @@ export class MBEvent {
     @ManyToOne(() => Term, (term: Term) => term.events, { onDelete: 'CASCADE' })
     term!: Term;
 
-    @OneToMany(() => EventAttendance, (ea) => ea.event)
+    @OneToMany(() => EventAttendance, (ea) => ea.mbEvent)
     attendances!: EventAttendance[];
+
+    @OneToMany(() => VolunteerRosterMemberCount, (count) => count.event)
+    volunteerRosterMemberCounts!: VolunteerRosterMemberCount[];
 }

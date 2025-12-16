@@ -1,117 +1,32 @@
-const db = require('../../../config/db');
-const { convertDateToPST } = require('../../utilities/utilities');
+import {db} from "../../config/data-source";
+import {AttendanceService} from "../../services/attendance.service";
+import {EventAttendanceDto} from "../../dto/event-attendance.dto";
+import {MemberStatsDto} from "../../dto/member-stats.dto";
+
+const attendanceService = new AttendanceService();
 
 /**
  * Attendance selectors
  */
 
-module.exports.getById = async (req, res) => {
+export const getById = async (req: any, res: any) => {
   const attendanceId = req.params.id;
-  db.execute('SELECT e.eventId, e.title, e.type, e.date, e.pepBandId AS eventPepBandId, p1.displayName as eventPepBandName, ' +
-    'ea.*, ' +
-    'm.pepBandId as memberPepBandId, p2.displayName as memberPepBandName, m.sectionId, m.rehearsalConflict, ' +
-    'u.userId, u.firstName, u.lastName, u.email, u.role, ' +
-    'sub.pepBandId as subPepBandId, p3.displayName as subPepBandName, sub.rehearsalConflict as subConflict, ' +
-    'sub_u.userId as subUserId, sub_u.firstName as subFirst, sub_u.lastName as subLast, sub_u.email as subEmail, sub_u.role as subRole, ' +
-    's.name as sectionName, ' +
-    't.* ' +
-    'FROM EventAttendance ea ' +
-    'JOIN MBEvent e ON e.eventId = ea.eventId ' +
-    'LEFT JOIN Member m ON ea.memberId = m.memberId ' +
-    'LEFT JOIN Member sub ON ea.subId = sub.memberId ' +
-    'LEFT JOIN User sub_u ON sub.email = sub_u.email ' +
-    'LEFT JOIN User u on m.email = u.email ' +
-    'LEFT JOIN PepBand p1 on e.pepBandId = p1.bandId ' +
-    'LEFT JOIN PepBand p2 on m.pepBandId = p2.bandId ' +
-    'LEFT JOIN PepBand p3 on sub.pepBandId = p3.bandId ' +
-    'LEFT JOIN Section s on m.sectionId = s.sectionId ' +
-    'LEFT JOIN Term t on e.termId = t.termId ' +
-    'WHERE ea.attendanceId=? ' +
-    'ORDER BY e.date', [attendanceId], (err, result) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send(err.message);
-    } else {
-      if (!result.length) {
-        return res.status(404).send('Attendance not found');
-      }
-      const attendance = {
-        attendanceId: result[0].attendanceId,
-        event: {
-          eventId: result[0].eventId,
-          type: result[0].type,
-          title: result[0].title,
-          date: convertDateToPST(result[0].date),
-          pepBand:
-            result[0].eventPepBandId
-              ? {
-                bandId: result[0].eventPepBandId,
-                displayName: result[0].eventPepBandName,
-              } : null,
-        },
-        member: result[0].memberId
-          ? {
-            memberId: result[0].memberId,
-            user: {
-              userId: result[0].userId,
-              email: result[0].email,
-              firstName: result[0].firstName,
-              lastName: result[0].lastName,
-              role: result[0].role,
-            },
-            section: {
-              sectionId: result[0].sectionId,
-              displayName: result[0].memberPepBandName,
-            },
-            rehearsalConflict: result[0].rehearsalConflict,
-            pepBand:
-              result[0].memberPepBandId
-                ? {
-                  bandId: result[0].memberPepBandId,
-                  displayName: result[0].memberPepBandName,
-                } : null,
-            term: {
-              termId: result[0].termId,
-              termName: result[0].termName,
-              startDate: result[0].startDate,
-              endDate: result[0].endDate,
-            },
-          } : null,
-        sub: result[0].subId ? {
-          memberId: result[0].subId,
-          user: {
-            userId: result[0].subUserId,
-            email: result[0].subEmail,
-            firstName: result[0].subFirst,
-            lastName: result[0].subLast,
-            role: result[0].subRole,
-          },
-          section: {
-            sectionId: result[0].sectionId,
-            displayName: result[0].memberPepBandName,
-          },
-          rehearsalConflict: result[0].subConflict,
-          pepBand:
-            result[0].subPepBandId
-              ? {
-                bandId: result[0].subPepBandId,
-                displayName: result[0].subPepBandName,
-              } : null,
-          term: {
-            termId: result[0].termId,
-            termName: result[0].termName,
-            startDate: result[0].startDate,
-            endDate: result[0].endDate,
-          },
-        } : null,
-        attendance: result[0].attendance,
-        required: result[0].required,
-        lastUpdated: result[0].lastUpdated,
-      };
-      res.send(attendance);
+
+  try {
+    const attendance: EventAttendanceDto | null = await attendanceService.getById(attendanceId);
+
+    if (!attendance) {
+      return res.status(404).send('Attendance not found');
     }
-  });
+
+    res.send(attendance);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Query failed');
+  }
 };
+
 
 module.exports.getByMemberId = async (req, res) => {
   const memberId = req.params.id;
@@ -374,56 +289,19 @@ module.exports.getByTermIdAndSectionAndPepBand = async (req, res) => {
     });
 };
 
-module.exports.getMemberStatsBySectionId = async (req, res) => {
+export const getMemberStatsBySectionId = async (req: any, res: any) => {
   const sectionId = req.params.id;
-  db.execute('select m.memberId, m.termId, m.email, u.firstName, u.lastName, ' +
-    'count(case when ' +
-      '(m.memberId = ea.memberId ' +
-      'and e.type = \'Rehearsal\' ' +
-      'and ea.attendance not like \'%Absent%\') then 1 end) as numRehearsals, ' +
-    'count(case when ' +
-      '(m.memberId = ea.memberId ' +
-      'and e.type = \'Whole Band Event\' ' +
-      'and ea.attendance not like \'%Absent%\') then 1 end) as numWholeBandEvents, ' +
-    'count(case when ' +
-      '(m.memberId = ea.memberId ' +
-      'and e.type = \'Pep Event\' ' +
-      'and ea.attendance not like \'%Absent%\'' +
-      'and ea.attendance not like \'%Sub%\') then 1 end) as numPepEvents, ' +
-    'count(case when (m.memberId = ea.memberId ' +
-      'and e.type = \'Volunteer\' ' +
-      'and ea.attendance not like \'%Absent%\') then 1 end) as numVolunteerEvents, ' +
-    'count(case when ea.subId = m.memberId then 1 end) as numSubEvents ' +
-  'from Member m ' +
-    'left join User u on m.email = u.email ' +
-    'left join EventAttendance ea on (m.memberId = ea.memberId or m.memberId = ea.subId) ' +
-    'left join MBEvent e on ea.eventId = e.eventId ' +
-    'left join Term t on m.termId = t.termId ' +
-  'where t.startDate <= NOW() and t.endDate >= NOW() ' +
-    'and m.sectionId = ? ' +
-  'group by m.memberId ' +
-  'order by u.lastName', [sectionId], (err, results) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send(err.message);
-    } else {
-      const attendances = [];
-      results.forEach((row) => {
-        const attendance = {
-          memberId: row.memberId,
-          termId: row.termId,
-          email: row.email,
-          firstName: row.firstName,
-          lastName: row.lastName,
-          numRehearsals: row.numRehearsals,
-          numWholeBandEvents: row.numWholeBandEvents,
-          numPepEvents: row.numPepEvents,
-          numVolunteerEvents: row.numVolunteerEvents,
-          numSubEvents: row.numSubEvents,
-        };
-        attendances.push(attendance);
-      });
-      res.send(attendances);
+  try {
+    const stats: MemberStatsDto = await attendanceService.getMemberStatsBySectionId(sectionId);
+
+    if (!stats) {
+      return res.status(404).send('Stats not found');
     }
-  });
+
+    res.send(stats);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Query failed');
+  }
 };

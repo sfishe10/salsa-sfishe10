@@ -98,8 +98,8 @@ module.exports.update = async (req, res) => {
                     res.status(500).send(err3.message);
                   } else {
                     if (member.pepBand) {
-                      db.execute('CALL ReassignRemainingPepEventsForMember(?, ?, ?)',
-                        [member.term.termId, member.memberId, member.pepBand.bandId],
+                      db.execute('CALL ReassignRemainingPepEventsForMember(?, ?, ?, ?)',
+                        [member.term.termId, member.memberId, member.pepBand.bandId, member.section.sectionId],
                         (err4, result4) => {
                           if (err4) {
                             console.log(err4);

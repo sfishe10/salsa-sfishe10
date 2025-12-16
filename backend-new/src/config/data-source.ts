@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const AppDataSource = new DataSource({
+export const db = new DataSource({
     type: 'mysql',
     host: process.env.DB_HOST ?? 'localhost',
     port: 3306,
@@ -14,6 +14,7 @@ export const AppDataSource = new DataSource({
     extra: {
         connectionLimit: 10,
     },
+    timezone: 'America/Los_Angeles',
     entities: [__dirname + '/../entities/**/*.{ts,js}'],
     synchronize: false,
     logging: process.env.ENVIRONMENT !== 'production',

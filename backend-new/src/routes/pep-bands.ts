@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import pepBands from '../controllers/pep-bands';
+import * as pepBands from '../controllers/pep-bands';
 
 const router: Router = Router();
 
