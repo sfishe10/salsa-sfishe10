@@ -2,6 +2,7 @@ import {db} from "../config/data-source";
 import {EventAttendance} from "../entities/event-attendance.entity";
 import {plainToInstance} from "class-transformer";
 import {MemberStatsDto} from "../dto/member-stats.dto";
+import {AttendanceTermPageDto} from "../dto/attendance-term-page.dto";
 
 export class AttendanceRepository {
     private repo = db.getRepository(EventAttendance);
@@ -19,7 +20,8 @@ export class AttendanceRepository {
 
     // might not need if this can just get attached to Member
     public async findByMemberId(id: number): Promise<EventAttendance[]> {
-        return await this.repo.find({ where: { member: { memberId: id } },
+        return await this.repo.find({
+            where: { member: { memberId: id } },
             relations: {
                 mbEvent: true,
                 member: true,
@@ -28,6 +30,127 @@ export class AttendanceRepository {
             }
         });
     }
+
+    public async findBySectionAndEventId(sectionId: number, eventId: number): Promise<EventAttendance[]> {
+        return await this.repo.find({
+            where: {
+                section: { sectionId },
+                mbEvent: { eventId }
+            },
+            relations: {
+                mbEvent: true,
+                member: true,
+                sub: true,
+                section: true,
+            }
+        });
+    }
+
+    public async getByTermIdAndSection(
+            termId: number,
+            sectionId: number | null,
+            eventType: string): Promise<AttendanceTermPageDto[]> {
+
+        const params: any[] = [termId, eventType];
+        let sectionClause = '';
+
+        if (sectionId !== null) {
+            sectionClause = 'AND s.sectionId = ?';
+            params.push(sectionId);
+        }
+
+        const sql = `
+              SELECT
+                ea.attendanceId,
+                ea.attendance AS attendanceStatus,
+                e.eventId,
+                e.title AS eventTitle,
+                e.date AS eventDate,
+                mem.memberId,
+                u.firstName AS memberFirstName,
+                u.lastName AS memberLastName,
+                mem.rehearsalConflict,
+                sub.memberId AS subId,
+                sub_u.firstName AS subFirstName,
+                sub_u.lastName AS subLastName,
+                s.sectionId,
+                s.name AS sectionName
+              FROM EventAttendance ea
+              JOIN MBEvent e ON ea.eventId = e.eventId
+              JOIN Member mem ON ea.memberId = mem.memberId
+              JOIN User u ON mem.email = u.email
+              LEFT JOIN Member sub ON ea.subId = sub.memberId
+              LEFT JOIN User sub_u ON sub.email = sub_u.email
+              JOIN Section s ON mem.sectionId = s.sectionId
+              WHERE e.termId = ?
+                AND e.type = ?
+                ${sectionClause}
+              ORDER BY s.sectionId, e.date, u.lastName
+        `;
+
+        const results: any[] = await db.query(sql, params);
+
+        return plainToInstance(AttendanceTermPageDto, results, {
+            excludeExtraneousValues: true,
+        });
+    }
+
+    public async getByTermIdAndSectionAndPepBand(
+            termId: number,
+            pepBandId: number,
+            sectionId: number | null,
+            ignoreMemberPepBand: boolean): Promise<AttendanceTermPageDto[]> {
+        const params: any[] = [termId, pepBandId];
+        let pepBandClause = '';
+        let sectionClause = '';
+
+        if (!ignoreMemberPepBand) {
+            pepBandClause = 'AND mem.pepBandId = ? ';
+            params.push(pepBandId);
+        }
+
+        if (sectionId !== null) {
+            sectionClause = 'AND s.sectionId = ? ';
+            params.push(sectionId);
+        }
+
+        const sql = `
+            SELECT
+              ea.attendanceId,
+              ea.attendance AS attendanceStatus,
+              e.eventId,
+              e.title AS eventTitle,
+              e.date AS eventDate,
+              mem.memberId,
+              u.firstName AS memberFirstName,
+              u.lastName AS memberLastName,
+              mem.rehearsalConflict,
+              sub.memberId AS subId,
+              sub_u.firstName AS subFirstName,
+              sub_u.lastName AS subLastName,
+              s.sectionId,
+              s.name AS sectionName
+            FROM EventAttendance ea
+            JOIN MBEvent e ON ea.eventId = e.eventId
+            JOIN Member mem ON ea.memberId = mem.memberId
+            JOIN User u ON mem.email = u.email
+            LEFT JOIN Member sub ON ea.subId = sub.memberId
+            LEFT JOIN User sub_u ON sub.email = sub_u.email
+            JOIN Section s ON mem.sectionId = s.sectionId
+            WHERE e.termId = ?
+              AND e.pepBandId = ?
+              ${pepBandClause}
+              ${sectionClause}
+            ORDER BY s.sectionId, e.date, u.lastName
+        `;
+
+        const results: any[] = await db.query(sql, params);
+
+        return plainToInstance(AttendanceTermPageDto, results, {
+            excludeExtraneousValues: true,
+        });
+    }
+
 
     public async getMemberStatsBySectionId(sectionId: number): Promise<MemberStatsDto> {
         const sql =

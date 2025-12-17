@@ -15,7 +15,7 @@ router.delete('/:id', attendance.admin.delete);
  * Selectors
  */
 router.get('/:id', attendance.selector.getById);
-router.get('/member/:id', attendance.selector.getByMemberId);
+// router.get('/member/:id', attendance.selector.getByMemberId);
 router.get('/section/:id/stats', attendance.selector.getMemberStatsBySectionId);
 router.get('/event/:eventId/section/:sectionId', attendance.selector.getBySectionAndEventId);
 router.get(
