@@ -6,10 +6,10 @@ const router: Router = Router();
 /**
  * admin operations
  */
-//
-// router.post('/', terms.admin.create);
-// router.put('/:id', terms.admin.update);
-// router.delete('/:id', terms.admin.delete);
+
+router.post('/', sections.admin.create);
+router.put('/:id', sections.admin.update);
+router.delete('/:id', sections.admin.deleteSection);
 
 /**
  * selectors
