@@ -21,7 +21,6 @@ export class MbEventService {
     private pepBandService: PepBandService;
     private sectionService: SectionService;
     private vrmcService: VolunteerRosterMemberCountService;
-    private memberService: MemberService;
     private attendanceService: AttendanceService;
 
     constructor(attendanceRepository?: MbEventRepository,
@@ -36,7 +35,6 @@ export class MbEventService {
         this.pepBandService = pepBandService ?? new PepBandService();
         this.sectionService = sectionService ?? new SectionService();
         this.vrmcService = vrmcService ?? new VolunteerRosterMemberCountService();
-        this.memberService = memberService ?? new MemberService();
         this.attendanceService = attendanceService ?? new AttendanceService();
     }
 
