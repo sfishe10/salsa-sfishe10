@@ -8,8 +8,8 @@ const router: Router = Router();
  */
 
 router.post('/', events.admin.create);
-router.put('/:id', events.admin.updateEvent);
-router.delete('/:id', events.admin.delete);
+router.put('/:id', events.admin.update);
+router.delete('/:id', events.admin.deleteEvent);
 
 /**
  * selectors

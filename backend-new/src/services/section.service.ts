@@ -22,12 +22,10 @@ export class SectionService {
         return section;
     }
 
-    public async getAll(): Promise<SectionDto[]> {
+    public async getAll(): Promise<Section[]> {
         const sections: Section[] =
             await this.sectionRepository.findAll();
 
-        const sectionDtos: SectionDto[] = sections.map(section => toSectionDto(section));
-
-        return sectionDtos;
+        return sections;
     }
 }

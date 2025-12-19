@@ -202,4 +202,18 @@ export class AttendanceRepository {
         await this.repo.delete(attendanceId);
     }
 
+    public async findByEventId(eventId: number): Promise<EventAttendance[]> {
+        return await this.repo.find({
+            where: {
+                mbEvent: { eventId }
+            }
+        });
+    }
+
+    public async deleteAttendancesForEvent(eventId: number): Promise<void> {
+        const attendances = await this.findByEventId(eventId);
+
+        attendances.forEach(att => this.delete(att.attendanceId));
+    }
+
 }

@@ -2,6 +2,7 @@ import {AttendanceService} from "../../services/attendance.service";
 import {EventAttendanceDto} from "../../dto/event-attendance.dto";
 import {MemberStatsDto} from "../../dto/member-stats.dto";
 import {AttendanceTermPageDto} from "../../dto/attendance-term-page.dto";
+import {EventAttendance} from "../../entities/event-attendance.entity";
 
 const attendanceService = new AttendanceService();
 
@@ -13,7 +14,7 @@ export const getById = async (req: any, res: any) => {
   const attendanceId = req.params.id;
 
   try {
-    const attendance: EventAttendanceDto | null = await attendanceService.getById(attendanceId);
+    const attendance: EventAttendance | null = await attendanceService.getById(attendanceId);
 
     if (!attendance) {
       return res.status(404).send('Attendance not found');

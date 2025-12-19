@@ -1,5 +1,7 @@
 import {SectionDto} from "../../dto/section.dto";
 import {SectionService} from "../../services/section.service";
+import {toSectionDto} from "../../mappers/section.mapper";
+import {Section} from "../../entities/section.entity";
 
 const sectionService: SectionService = new SectionService();
 
@@ -9,9 +11,11 @@ const sectionService: SectionService = new SectionService();
 
 export const getAll = async (req: any, res: any) => {
     try {
-        const sections: SectionDto[] = await sectionService.getAll();
+        const sections: Section[] = await sectionService.getAll();
 
-        res.send(sections);
+        const sectionDtos: SectionDto[] = sections.map(section => toSectionDto(section));
+
+        res.send(sectionDtos);
     } catch (err) {
         console.error(err);
         res.status(500).send('Query failed');

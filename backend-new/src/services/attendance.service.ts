@@ -6,23 +6,24 @@ import {MemberStatsDto} from "../dto/member-stats.dto";
 import {AttendanceTermPageDto} from "../dto/attendance-term-page.dto";
 import {MBEvent} from "../entities/mb-event.entity";
 import {Section} from "../entities/section.entity";
-import {MbEventService} from "./mb-event.service";
 import {SectionService} from "./section.service";
 import {Member} from "../entities/member.entity";
 import {MemberService} from "./member.service";
+import {MbEventRepository} from "../repositories/mb-event.repository";
+import {Constants} from "../utilities/constants";
 
 export class AttendanceService {
     private attendanceRepository: AttendanceRepository;
-    private eventService: MbEventService;
+    private eventRepository: MbEventRepository;
     private sectionService: SectionService;
     private memberService: MemberService;
 
     constructor(attendanceRepository?: AttendanceRepository,
-                eventService?: MbEventService,
+                eventRepository?: MbEventRepository,
                 sectionService?: SectionService,
                 memberService?: MemberService) {
         this.attendanceRepository = attendanceRepository ?? new AttendanceRepository();
-        this.eventService = eventService ?? new MbEventService();
+        this.eventRepository = eventRepository ?? new MbEventRepository();
         this.sectionService = sectionService ?? new SectionService();
         this.memberService = memberService ?? new MemberService();
     }
@@ -36,6 +37,13 @@ export class AttendanceService {
         }
 
         return attendance;
+    }
+
+    public async getByEventId(eventId: number) {
+        const attendances: EventAttendance[] =
+            await this.attendanceRepository.findByEventId(eventId);
+
+        return attendances;
     }
 
     public async getBySectionAndEventId(sectionId: number, eventId: number) {
@@ -79,7 +87,7 @@ export class AttendanceService {
         const sectionId = newAttendanceDto?.section ? newAttendanceDto.section.sectionId : null;
 
         let newAttendance: EventAttendance = new EventAttendance();
-        const mbEvent: MBEvent = await this.eventService.getById(eventId);
+        const mbEvent: MBEvent = await this.eventRepository.findById(eventId);
         const section: Section | null = sectionId ? await this.sectionService.getById(sectionId) : null;
 
         newAttendance.mbEvent = mbEvent;
@@ -103,6 +111,37 @@ export class AttendanceService {
         return await this.attendanceRepository.save(existingAttendance);
     }
 
+    public async createAttendancesForEvent(mbEvent: MBEvent): Promise<EventAttendance[]> {
+        const newAttendances: EventAttendance[] = [];
+
+        // create new EventAttendance objects for each appropriate Member
+        let members: Member[] = [];
+
+        if (mbEvent.type == Constants.EVENT_TYPE_PEP_EVENT) {
+            // for ABC band events, assign the appropriate pep band
+            // volunteer events will default to 0 attendances as they will be added later by users
+            if (mbEvent.pepBand != null && mbEvent.pepBand?.bandId != Constants.PEP_BAND_ID_VOLUNTEER) {
+                members = await this.memberService.getByTermAndPepBandId(mbEvent.term.termId, mbEvent.pepBand.bandId);
+            }
+        } else {
+            members = await this.memberService.getByTermId(mbEvent.term.termId);
+        }
+
+        for (let member of members) {
+            let newAttendance: EventAttendance = new EventAttendance();
+            newAttendance.mbEvent = mbEvent;
+            newAttendance.member = member;
+            newAttendance.attendance = null;
+            newAttendance.required = true;
+            newAttendance.section = member.section;
+
+            newAttendance = await this.attendanceRepository.save(newAttendance);
+            newAttendances.push(newAttendance);
+        }
+
+        return newAttendances;
+    }
+
     public async submitForm(attendanceDtos: EventAttendanceDto[]): Promise<EventAttendance[]> {
         const savedAttendances: EventAttendance[] = [];
 
@@ -116,5 +155,9 @@ export class AttendanceService {
 
     public async delete(id: number): Promise<void> {
         return await this.attendanceRepository.delete(id);
+    }
+
+    public async deleteAttendancesForEvent(eventId: number) {
+        return await this.attendanceRepository.deleteAttendancesForEvent(eventId);
     }
 }

@@ -46,9 +46,11 @@ export const getByTermId = async (req: any, res: any) => {
   const termId = req.params.id;
 
   try {
-    const members: MemberDto[] = await memberService.getByTermId(termId);
+    const members: Member[] = await memberService.getByTermId(termId);
 
-    res.send(members);
+    const memberDtos: MemberDto[] = members.map(member => toMemberDto(member));
+
+    res.send(memberDtos);
 
   } catch (err) {
     console.error(err);

@@ -5,14 +5,19 @@ import {LessThan, MoreThanOrEqual} from "typeorm";
 export class MbEventRepository {
     private repo = db.getRepository(MBEvent);
 
-    public async findById(id: number) {
-        return this.repo.findOne({ where: { eventId: id },
+    public async findById(id: number): Promise<MBEvent> {
+        const mbEvent = await this.repo.findOne({ where: { eventId: id },
             relations: {
                 term: true,
                 pepBand: true,
-                volunteerRosterMemberCounts: true
             }
         });
+
+        if (!mbEvent) {
+            throw new Error('Event not found');
+        }
+
+        return mbEvent;
     }
 
     public async getUpcomingOrRecent(upcoming: boolean): Promise<MBEvent[]> {
@@ -49,8 +54,12 @@ export class MbEventRepository {
         });
     }
 
-    async create(mbEvent: Partial<MBEvent>) {
-        const newEvent = this.repo.create(mbEvent);
-        return await this.repo.save(newEvent);
+    public async save(mbEvent: Partial<MBEvent>): Promise<MBEvent> {
+        return await this.repo.save(mbEvent);
     }
+
+    public async delete(eventId: number): Promise<void> {
+        await this.repo.delete(eventId);
+    }
+
 }

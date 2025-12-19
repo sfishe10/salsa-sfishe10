@@ -9,7 +9,6 @@ export class Constants {
   static readonly PEP_BAND_LABEL_C = "C Band";
   static readonly PEP_BAND_LABEL_VOLUNTEER = "Volunteer";
 
-
   static readonly EVENT_TYPE_WHOLE_BAND_EVENT = "Whole Band Event";
   static readonly EVENT_TYPE_PEP_EVENT = "Pep Event";
   static readonly EVENT_TYPE_REHEARSAL = "Rehearsal";

@@ -43,6 +43,20 @@ export class MemberRepository {
             }});
     }
 
+    findByTermAndPepBandId(termId: number, pepBandId: string) {
+        return this.repo.find({
+            where: {
+                term: { termId: termId },
+                pepBand: { bandId: pepBandId }
+            },
+            relations: {
+                user: true,
+                section: true,
+                pepBand: true,
+                term: true,
+            }});
+    }
+
     async create(member: Partial<Member>) {
         const newMember = this.repo.create(member);
         return await this.repo.save(newMember);

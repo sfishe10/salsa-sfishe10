@@ -16,7 +16,7 @@ export class VolunteerRosterMemberCount {
 
     @ManyToOne(() => MBEvent, { nullable: false })
     @JoinColumn({ name: 'eventId' })
-    event!: MBEvent;
+    mbEvent!: MBEvent;
 
     @Column({ type: 'int', nullable: true })
     numMembersNeeded!: number | null;

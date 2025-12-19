@@ -30,6 +30,6 @@ export class MBEvent {
     @OneToMany(() => EventAttendance, (ea) => ea.mbEvent)
     attendances!: EventAttendance[];
 
-    @OneToMany(() => VolunteerRosterMemberCount, (count) => count.event)
+    @OneToMany(() => VolunteerRosterMemberCount, (count) => count.mbEvent)
     volunteerRosterMemberCounts!: VolunteerRosterMemberCount[];
 }

@@ -10,17 +10,16 @@ export class PepBandService {
         this.pepBandRepository = pepBandRepository ?? new PepBandRepository();
     }
 
-    // TODO: probably don't need this
-    // public async getById(pepBandId: string): Promise<PepBandDto> {
-    //     const pepBand: PepBand | null =
-    //         await this.pepBandRepository.findById(pepBandId);
-    //
-    //     if (!pepBand) {
-    //         throw new Error('Pep band not found');
-    //     }
-    //
-    //     return toPepBandDto(pepBand);
-    // }
+    public async getById(pepBandId: string): Promise<PepBand> {
+        const pepBand: PepBand | null =
+            await this.pepBandRepository.findById(pepBandId);
+
+        if (!pepBand) {
+            throw new Error('Pep band not found');
+        }
+
+        return pepBand;
+    }
 
     public async getAll(): Promise<PepBandDto[]> {
         const pepBands: PepBand[] =

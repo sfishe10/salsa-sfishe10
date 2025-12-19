@@ -8,7 +8,7 @@ export function toVolunteerRosterMemberCountDto(count: VolunteerRosterMemberCoun
     const plainObj = {
         numMembersNeeded: count.numMembersNeeded,
 
-        event: count.event ? toMbEventDto(count.event) : null,
+        event: count.mbEvent ? toMbEventDto(count.mbEvent) : null,
         section: count.section ? toSectionDto(count.section) : null
     };
 

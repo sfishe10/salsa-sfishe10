@@ -11,7 +11,7 @@ export class TermService {
         this.termRepository = termRepository ?? new TermRepository();
     }
 
-    public async getById(termId: number): Promise<TermDto> {
+    public async getById(termId: number): Promise<Term> {
         const term: Term | null =
             await this.termRepository.findById(termId);
 
@@ -19,7 +19,7 @@ export class TermService {
             throw new Error('Term not found');
         }
 
-        return toTermDto(term);
+        return term;
     }
 
     public async getAll(): Promise<TermDto[]> {

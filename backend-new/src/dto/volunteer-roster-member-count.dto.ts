@@ -9,7 +9,7 @@ export class VolunteerRosterMemberCountDto {
 
     @Expose()
     @Type(() => MBEventDto)
-    event!: MBEventDto;
+    mbEvent!: MBEventDto;
 
     @Expose()
     numMembersNeeded!: number | null;

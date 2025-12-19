@@ -30,12 +30,17 @@ export class MemberService {
         return memberDtos;
     }
 
-    public async getByTermId(termId: number): Promise<MemberDto[]> {
+    public async getByTermId(termId: number): Promise<Member[]> {
         const members: Member[] =
             await this.memberRepository.findByTermId(termId);
 
-        const memberDtos: MemberDto[] = members.map(member => toMemberDto(member));
+        return members;
+    }
 
-        return memberDtos;
+    public async getByTermAndPepBandId(termId: number, pepBandId: string): Promise<Member[]> {
+        const members: Member[] =
+            await this.memberRepository.findByTermAndPepBandId(termId, pepBandId);
+
+        return members;
     }
 }
