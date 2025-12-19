@@ -67,13 +67,11 @@ export const getByTermId = async (req: any, res: any) => {
   try {
     const termId = req.params.id;
 
-    const events: MBEventDto[] = await eventService.getByTermId(termId);
+    const events: MBEvent[] = await eventService.getByTermId(termId);
 
-    if (!events) {
-      return res.status(404).send('Events not found');
-    }
+    const eventDtos = events.map(event => toMbEventDto(event));
 
-    res.send(events);
+    res.send(eventDtos);
 
   } catch (err) {
     console.error(err);

@@ -2,12 +2,16 @@ import {MemberRepository} from "../repositories/member.repository";
 import {Member} from "../entities/member.entity";
 import {MemberDto} from "../dto/member.dto";
 import {toMemberDto} from "../mappers/member.mapper";
+import {AttendanceRepository} from "../repositories/attendance.repository";
 
 export class MemberService {
     private memberRepository: MemberRepository;
+    private attendanceRepository: AttendanceRepository;
 
-    constructor(memberRepository?: MemberRepository) {
+    constructor(memberRepository?: MemberRepository,
+                attendanceRepository?: AttendanceRepository) {
         this.memberRepository = memberRepository ?? new MemberRepository();
+        this.attendanceRepository = attendanceRepository ?? new AttendanceRepository();
     }
 
     public async getById(memberId: number): Promise<Member> {
@@ -42,5 +46,12 @@ export class MemberService {
             await this.memberRepository.findByTermAndPepBandId(termId, pepBandId);
 
         return members;
+    }
+
+    public async delete(memberId: number) {
+        // delete all EventAttendances associated with member
+        await this.attendanceRepository.deleteAttendancesForMember(memberId);
+
+        await this.memberRepository.delete(memberId);
     }
 }

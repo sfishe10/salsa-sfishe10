@@ -4,21 +4,30 @@ import {Term} from "../entities/term.entity";
 export class TermRepository {
     private repo = db.getRepository(Term);
 
-    findAll() {
+    public async findAll() {
         return this.repo.find();
     }
 
-    findById(id: number) {
-        return this.repo.findOne({
+    public async findById(id: number) {
+        const term: Term | null = await this.repo.findOne({
             where: { termId: id },
             relations: {
                 events: true,
                 members: true
             } });
+
+        if (!term) {
+            throw new Error('Term not found');
+        }
+
+        return term;
     }
 
-    async create(term: Partial<Term>) {
-        const newTerm = this.repo.create(term);
-        return await this.repo.save(newTerm);
+    public async save(term: Partial<Term>) {
+        return await this.repo.save(term);
+    }
+
+    public async delete(termId: number) {
+        return await this.repo.delete(termId);
     }
 }

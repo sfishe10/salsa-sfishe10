@@ -18,16 +18,15 @@ export class AttendanceRepository {
         });
     }
 
-    // might not need if this can just get attached to Member
     public async findByMemberId(id: number): Promise<EventAttendance[]> {
         return await this.repo.find({
             where: { member: { memberId: id } },
-            relations: {
-                mbEvent: true,
-                member: true,
-                sub: true,
-                section: true,
-            }
+            // relations: {
+            //     mbEvent: true,
+            //     member: true,
+            //     sub: true,
+            //     section: true,
+            // }
         });
     }
 
@@ -212,6 +211,12 @@ export class AttendanceRepository {
 
     public async deleteAttendancesForEvent(eventId: number): Promise<void> {
         const attendances = await this.findByEventId(eventId);
+
+        attendances.forEach(att => this.delete(att.attendanceId));
+    }
+
+    public async deleteAttendancesForMember(memberId: number): Promise<void> {
+        const attendances = await this.findByMemberId(memberId);
 
         attendances.forEach(att => this.delete(att.attendanceId));
     }

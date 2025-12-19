@@ -2,36 +2,33 @@ import {MbEventRepository} from "../repositories/mb-event.repository";
 import {MBEventDto} from "../dto/mb-event.dto";
 import {MBEvent} from "../entities/mb-event.entity";
 import {toMbEventDto} from "../mappers/mb-event.mapper";
-import {TermService} from "./term.service";
 import {PepBandService} from "./pep-band.service";
 import {Constants} from "../utilities/constants";
 import {SectionService} from "./section.service";
 import {Section} from "../entities/section.entity";
 import {VolunteerRosterMemberCountService} from "./volunteer-roster-member-count.service";
-import {MemberService} from "./member.service";
-import {Member} from "../entities/member.entity";
 import {AttendanceService} from "./attendance.service";
 import {EventAttendance} from "../entities/event-attendance.entity";
 import {VolunteerRosterMemberCount} from "../entities/volunteer-roster-member-count.entity";
+import {TermRepository} from "../repositories/term.repository";
 
 
 export class MbEventService {
     private eventRepository: MbEventRepository;
-    private termService: TermService;
+    private termRepository: TermRepository;
     private pepBandService: PepBandService;
     private sectionService: SectionService;
     private vrmcService: VolunteerRosterMemberCountService;
     private attendanceService: AttendanceService;
 
     constructor(attendanceRepository?: MbEventRepository,
-                termService?: TermService,
+                termRepository?: TermRepository,
                 pepBandService?: PepBandService,
                 sectionService?: SectionService,
                 vrmcService?: VolunteerRosterMemberCountService,
-                memberService?: MemberService,
                 attendanceService?: AttendanceService) {
         this.eventRepository = attendanceRepository ?? new MbEventRepository();
-        this.termService = termService ?? new TermService();
+        this.termRepository = termRepository ?? new TermRepository();
         this.pepBandService = pepBandService ?? new PepBandService();
         this.sectionService = sectionService ?? new SectionService();
         this.vrmcService = vrmcService ?? new VolunteerRosterMemberCountService();
@@ -63,13 +60,11 @@ export class MbEventService {
         return eventDtos;
     }
 
-    public async getByTermId(termId: number): Promise<MBEventDto[]> {
+    public async getByTermId(termId: number): Promise<MBEvent[]> {
         const events: MBEvent[] =
             await this.eventRepository.getByTermId(termId);
 
-        const eventDtos = events.map(event => toMbEventDto(event));
-
-        return eventDtos;
+        return events;
     }
 
     public async create(eventDto: MBEventDto): Promise<MBEvent> {
@@ -80,7 +75,7 @@ export class MbEventService {
         newEvent.title = eventDto.title;
         newEvent.date = new Date(eventDto.date);
 
-        newEvent.term = await this.termService.getById(eventDto.term.termId);
+        newEvent.term = await this.termRepository.findById(eventDto.term.termId);
         newEvent.pepBand = (eventDto.type === Constants.EVENT_TYPE_PEP_EVENT && eventDto.pepBand)
             ? await this.pepBandService.getById(eventDto.pepBand.bandId) : null;
         newEvent = await this.eventRepository.save(newEvent);

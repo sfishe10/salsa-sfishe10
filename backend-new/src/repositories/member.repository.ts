@@ -4,7 +4,7 @@ import {Member} from "../entities/member.entity";
 export class MemberRepository {
     private repo = db.getRepository(Member);
 
-    findById(id: number) {
+    public async findById(id: number) {
         return this.repo.findOne({
             where: { memberId: id },
             relations: {
@@ -17,7 +17,7 @@ export class MemberRepository {
             }});
     }
 
-    findBySectionId(sectionId: number) {
+    public async findBySectionId(sectionId: number) {
         return this.repo.find({
             where: {
                 section: { sectionId: sectionId }
@@ -30,7 +30,7 @@ export class MemberRepository {
             }});
     }
 
-    findByTermId(termId: number) {
+    public async findByTermId(termId: number) {
         return this.repo.find({
             where: {
                 term: { termId: termId }
@@ -43,7 +43,7 @@ export class MemberRepository {
             }});
     }
 
-    findByTermAndPepBandId(termId: number, pepBandId: string) {
+    public async findByTermAndPepBandId(termId: number, pepBandId: string) {
         return this.repo.find({
             where: {
                 term: { termId: termId },
@@ -57,8 +57,11 @@ export class MemberRepository {
             }});
     }
 
-    async create(member: Partial<Member>) {
-        const newMember = this.repo.create(member);
-        return await this.repo.save(newMember);
+    public async create(member: Partial<Member>) {
+        return await this.repo.save(member);
+    }
+
+    public async delete(memberId: number) {
+        return await this.repo.delete(memberId);
     }
 }

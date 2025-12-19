@@ -9,7 +9,7 @@ const router: Router = Router();
 
 router.post('/', terms.admin.create);
 router.put('/:id', terms.admin.update);
-router.delete('/:id', terms.admin.delete);
+router.delete('/:id', terms.admin.deleteTerm);
 
 /**
  * selectors
