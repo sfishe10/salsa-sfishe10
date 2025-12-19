@@ -1,5 +1,6 @@
 import {UserService} from "../../services/user.service";
 import {UserDto} from "../../dto/user.dto";
+import {User} from "../../entities/user.entity";
 
 const userService: UserService = new UserService();
 
@@ -22,7 +23,7 @@ export const getById = async (req: any, res: any) => {
     const userId = req.params.id;
 
     try {
-        const user: UserDto = await userService.getById(userId);
+        const user: User = await userService.getById(userId);
 
         if (!user) {
             return res.status(404).send('User not found');

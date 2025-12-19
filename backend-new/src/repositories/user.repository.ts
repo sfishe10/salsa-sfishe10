@@ -4,28 +4,33 @@ import {User} from "../entities/user.entity";
 export class UserRepository {
     private repo = db.getRepository(User);
 
-    findAll() {
+    public async findAll() {
         return this.repo.find({
             order: { lastName: 'ASC' }
         });
     }
 
-    findById(id: number) {
+    public async findById(id: number) {
         return this.repo.findOne({
             where: { userId: id },
             relations: { members: true }
         });
     }
 
-    findByRole(role: string) {
+    public async findByEmail(email: string) {
+        return this.repo.findOne({
+            where: { email }
+        });
+    }
+
+    public async findByRole(role: string) {
         return this.repo.find({
             where: { role: role },
             order: { lastName: 'ASC' }
         });
     }
 
-    async create(user: Partial<User>) {
-        const newUser = this.repo.create(user);
-        return await this.repo.save(newUser);
+    public async save(user: Partial<User>) {
+        return await this.repo.save(user);
     }
 }

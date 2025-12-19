@@ -1,64 +1,52 @@
-const db = require('../../../config/db');
+import {UserService} from "../../services/user.service";
+import {UserDto} from "../../dto/user.dto";
+import {plainToInstance} from "class-transformer";
+import {toUserDto} from "../../mappers/user.mapper";
+
 const stream = require("stream");
 const csv = require("csv-parser");
 
-module.exports.create = async (req, res) => {
-  db.execute('SELECT * FROM User WHERE email=?', [req.body.user.email],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send(err.message);
-      }
-      if (result.length) {
-        return res.status(409).json({ message: 'Email already in use' });
-      }
-      db.execute('INSERT INTO User(email, firstName, lastName, role) VALUES (?, ?, ?, ?)',
-        [req.body.user.email, req.body.user.firstName, req.body.user.lastName, req.body.user.role],
-        (err2) => {
-          if (err2) {
-            console.log(err2);
-            res.status(500).send(err2.message);
-          } else {
-            res.send(req.body.user);
-          }
-        });
-    });
+const userService: UserService = new UserService();
+
+export const create = async (req: any, res: any) => {
+  const userDto: UserDto = plainToInstance(UserDto, req.body);
+
+  // check if user exists first
+  if (await userService.isEmailInUse(userDto.email)) {
+    return res.status(409).json({ message: 'Email already in use' });
+  }
+
+  const savedUser = await userService.create(userDto);
+
+  res.send(toUserDto(savedUser));
 };
 
-module.exports.update = async (req, res) => {
-  const { user } = req.body;
-  db.execute('SELECT * FROM User WHERE email=?', [user.email], (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send(err.message);
-    }
-    if (result.length && result[0].userId !== user.userId) {
-      return res.status(409).json({ message: 'Email already in use' });
-    }
-    db.execute('UPDATE User SET email=?, firstName=?, lastName=?, role=? WHERE userId=?',
-      [user.email, user.firstName, user.lastName, user.role, user.userId],
-      (err2, result2) => {
-        if (err2) {
-          console.log(err2);
-          return res.status(500).send(err2.message);
-        }
-        return res.send(result2);
-      });
-  });
+export const update = async (req: any, res: any) => {
+  const userDto: UserDto = plainToInstance(UserDto, req.body);
+
+  // check if email is in use first
+  if (await userService.isEmailInUse(userDto.email)) {
+    return res.status(409).json({ message: 'Email already in use' });
+  }
+
+  const updatedUser = await userService.create(userDto);
+
+  res.send(toUserDto(updatedUser));
 };
 
-module.exports.assignRole = async (req, res) => {
-  const email = req.body.email;
-  const role = req.body.role;
-  db.execute('UPDATE User SET role=? WHERE email=?',
-    [role, email],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send(err.message);
-      }
-      return res.send(result);
-    });
+// TODO: see if this can be removed and update() can just be used instead
+export const assignRole = async (req: any, res: any) => {
+  // const email = req.body.email;
+  // const role = req.body.role;
+  // db.execute('UPDATE User SET role=? WHERE email=?',
+  //   [role, email],
+  //   (err, result) => {
+  //     if (err) {
+  //       console.log(err);
+  //       return res.status(500).send(err.message);
+  //     }
+  //     return res.send(result);
+  //   });
 };
 
 module.exports.uploadRolesCsv = async (req, res) => {
