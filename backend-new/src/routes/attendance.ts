@@ -9,7 +9,7 @@ const router: Router = Router();
 router.post('/', attendance.admin.create);
 router.put('/:id', attendance.admin.update);
 router.post('/submitForm', attendance.admin.submitForm);
-router.delete('/:id', attendance.admin.delete);
+router.delete('/:id', attendance.admin.deleteAttendance);
 
 /**
  * Selectors

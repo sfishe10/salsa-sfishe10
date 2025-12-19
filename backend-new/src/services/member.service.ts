@@ -10,7 +10,7 @@ export class MemberService {
         this.memberRepository = memberRepository ?? new MemberRepository();
     }
 
-    public async getById(memberId: number): Promise<MemberDto> {
+    public async getById(memberId: number): Promise<Member> {
         const member: Member | null =
             await this.memberRepository.findById(memberId);
 
@@ -18,7 +18,7 @@ export class MemberService {
             throw new Error('Member not found');
         }
 
-        return toMemberDto(member);
+        return member;
     }
 
     public async getBySectionId(sectionId: number): Promise<MemberDto[]> {

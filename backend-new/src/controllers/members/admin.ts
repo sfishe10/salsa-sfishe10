@@ -1,11 +1,7 @@
 const stream = require('stream');
 const csv = require('csv-parser');
 const db = require('../../../config/db');
-const { REHEARSAL_CONFLICT_ARRIVING_LATE,
-REHEARSAL_CONFLICT_LEAVING_EARLY,
-REHEARSAL_CONFLICT_OTHER,
-REHEARSAL_CONFLICT_THURS,
-REHEARSAL_CONFLICT_TUES} = require('../../utilities/constants');
+
 
 module.exports.create = async (req, res) => {
   const { email } = req.body.member;
@@ -356,7 +352,7 @@ module.exports.uploadRehearsalConflictsCsv = async (req, res) => {
         && !(!tuesdayArriveLate && !tuesdayLeaveEarly && !thursdayLeaveEarly && !thursdayArriveLate)) {
       let rehearsalConflict = '';
       if (tuesdayArriveLate && thursdayArriveLate && !tuesdayLeaveEarly && !thursdayLeaveEarly) {
-        rehearsalConflict = REHEARSAL_CONFLICT_ARRIVING_LATE;
+        rehearsalConflict = Constants.REHEARSAL_CONFLICT_ARRIVING_LATE;
       } else if (tuesdayLeaveEarly && thursdayLeaveEarly && !tuesdayArriveLate && !thursdayArriveLate) {
         rehearsalConflict = REHEARSAL_CONFLICT_LEAVING_EARLY;
       } else if ((tuesdayLeaveEarly || tuesdayArriveLate) && !thursdayLeaveEarly && !thursdayArriveLate) {

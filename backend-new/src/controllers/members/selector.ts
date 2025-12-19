@@ -1,5 +1,7 @@
 import {MemberService} from "../../services/member.service";
 import {MemberDto} from "../../dto/member.dto";
+import {Member} from "../../entities/member.entity";
+import {toMemberDto} from "../../mappers/member.mapper";
 
 const memberService: MemberService = new MemberService();
 
@@ -12,13 +14,13 @@ export const getById = async (req: any, res: any) => {
   const memberId = req.params.id;
 
   try {
-    const member: MemberDto = await memberService.getById(memberId);
+    const member: Member = await memberService.getById(memberId);
 
     if (!member) {
       return res.status(404).send('Member not found');
     }
 
-    res.send(member);
+    res.send(toMemberDto(member));
 
   } catch (err) {
     console.error(err);

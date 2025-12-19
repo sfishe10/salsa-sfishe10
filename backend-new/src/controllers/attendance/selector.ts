@@ -1,4 +1,3 @@
-import {db} from "../../config/data-source";
 import {AttendanceService} from "../../services/attendance.service";
 import {EventAttendanceDto} from "../../dto/event-attendance.dto";
 import {MemberStatsDto} from "../../dto/member-stats.dto";

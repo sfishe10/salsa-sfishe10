@@ -1,5 +1,7 @@
 import {MbEventService} from "../../services/mb-event.service";
 import {MBEventDto} from "../../dto/mb-event.dto";
+import {MBEvent} from "../../entities/mb-event.entity";
+import {toMbEventDto} from "../../mappers/mb-event.mapper";
 
 const eventService = new MbEventService();
 
@@ -35,13 +37,15 @@ export const getById = async (req: any, res: any) => {
   const eventId = req.params.id;
 
   try {
-    const mbEvent: MBEventDto = await eventService.getById(eventId);
+    const mbEvent: MBEvent = await eventService.getById(eventId);
 
     if (!mbEvent) {
       return res.status(404).send('Event not found');
     }
 
-    res.send(mbEvent);
+    const eventDto = toMbEventDto(mbEvent);
+
+    res.send(eventDto);
 
   } catch (err) {
     console.error(err);

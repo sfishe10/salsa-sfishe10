@@ -11,7 +11,7 @@ export class MbEventService {
         this.eventRepository = attendanceRepository ?? new MbEventRepository();
     }
 
-    public async getById(attendanceId: number): Promise<MBEventDto> {
+    public async getById(attendanceId: number): Promise<MBEvent> {
         const mbEvent: MBEvent | null =
             await this.eventRepository.findById(attendanceId);
 
@@ -19,7 +19,7 @@ export class MbEventService {
             throw new Error('Event not found');
         }
 
-        return toMbEventDto(mbEvent);
+        return mbEvent;
     }
 
     public async getUpcoming(): Promise<MBEventDto[]> {

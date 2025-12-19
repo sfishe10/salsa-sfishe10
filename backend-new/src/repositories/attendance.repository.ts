@@ -193,9 +193,13 @@ export class AttendanceRepository {
         return stats;
     }
 
-    public async create(attendance: Partial<EventAttendance>) {
-        const newAttendance = this.repo.create(attendance);
-        return await this.repo.save(newAttendance);
+    public async save(attendance: Partial<EventAttendance>): Promise<EventAttendance> {
+        return this.repo.save(attendance);
+
+    }
+
+    public async delete(attendanceId: number): Promise<void> {
+        await this.repo.delete(attendanceId);
     }
 
 }

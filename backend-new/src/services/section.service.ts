@@ -11,7 +11,7 @@ export class SectionService {
         this.sectionRepository = sectionRepository ?? new SectionRepository();
     }
 
-    public async getById(sectionId: number): Promise<SectionDto> {
+    public async getById(sectionId: number): Promise<Section> {
         const section: Section | null =
             await this.sectionRepository.findById(sectionId);
 
@@ -19,7 +19,7 @@ export class SectionService {
             throw new Error('Section not found');
         }
 
-        return toSectionDto(section);
+        return section;
     }
 
     public async getAll(): Promise<SectionDto[]> {

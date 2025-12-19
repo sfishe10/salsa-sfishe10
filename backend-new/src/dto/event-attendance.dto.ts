@@ -9,7 +9,7 @@ export class EventAttendanceDto {
 
     @Expose()
     @Type(() => MBEventDto)
-    event!: MBEventDto;
+    mbEvent!: MBEventDto;
 
     @Expose()
     attendance!: string | null;
