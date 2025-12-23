@@ -2,6 +2,7 @@ import {PepBandRepository} from "../repositories/pep-band.repository";
 import {PepBand} from "../entities/pep-band.entity";
 import {toPepBandDto} from "../mappers/pepBand.mapper";
 import {PepBandDto} from "../dto/pep-band.dto";
+import {NotFoundError} from "../errors/not-found-error";
 
 export class PepBandService {
     private pepBandRepository: PepBandRepository;
@@ -15,7 +16,7 @@ export class PepBandService {
             await this.pepBandRepository.findById(pepBandId);
 
         if (!pepBand) {
-            throw new Error('Pep band not found');
+            throw new NotFoundError('Pep band not found');
         }
 
         return pepBand;

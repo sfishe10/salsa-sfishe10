@@ -147,6 +147,7 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   }
 
   submitMember(form: NgForm) {
+    // TODO: send a User instead of just email... add an autocomplete/dropdown
     let newMember = {
       email: form.value.memberEmail,
       pepBand: form.value.memberPepBand,
@@ -213,32 +214,9 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
           this.openSnackBar('Error uploading CSV', 'OK', 3000);
         },
       });
-    } else if (this.uploadCsvType == 'assignPepBands') {
-      formData.append('emailsToSkip', JSON.stringify(this.emailsMissingMembers));
-      this.adminService.uploadPepBandsCsv(formData, termId).subscribe({
-        next: (res: any) => {
-          this.emailsMissingMembers = [];
-          this.onTermChange(termId);
-          this.onCancelDialog();
-          this.openSnackBar('Pep Bands Assigned', 'OK', 3000);
-        },
-        error: (err: any) => {
-          if (err.status === 422) {
-            this.emailsMissingMembers = [];
-            console.log(err.error);
-            err.error.forEach((emailObj: any) => {
-              this.emailsMissingMembers.push(emailObj.email);
-            })
-            this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
-          } else {
-            console.error('Upload error:', err)
-            this.onCancelDialog();
-            this.openSnackBar('Error uploading CSV', 'OK', 3000);
-          }
-        },
-      });
     } else if (this.uploadCsvType === 'assignRehearsalConflicts') {
-      formData.append('emailsToSkip', JSON.stringify(this.emailsMissingMembers));
+      // if we've already been warned about invalid emails, proceed and ignore them
+      formData.append('ignoreInvalidEmails', JSON.stringify(!!this.missingEmailsConfirmationDialogRef));
       this.adminService.uploadRehearsalConflictsCsv(formData, termId).subscribe({
         next: (res: any) => {
           this.emailsMissingMembers = [];
@@ -250,8 +228,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
           if (err.status === 422) {
             this.emailsMissingMembers = [];
             console.log(err.error);
-            err.error.forEach((emailObj: any) => {
-              this.emailsMissingMembers.push(emailObj.email);
+            err.error.forEach((email: string) => {
+              this.emailsMissingMembers.push(email);
             })
             this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
           } else {

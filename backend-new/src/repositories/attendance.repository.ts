@@ -3,6 +3,8 @@ import {EventAttendance} from "../entities/event-attendance.entity";
 import {plainToInstance} from "class-transformer";
 import {MemberStatsDto} from "../dto/member-stats.dto";
 import {AttendanceTermPageDto} from "../dto/attendance-term-page.dto";
+import {InsertResult, IsNull} from "typeorm";
+import {Constants} from "../utilities/constants";
 
 export class AttendanceRepository {
     private repo = db.getRepository(EventAttendance);
@@ -192,9 +194,23 @@ export class AttendanceRepository {
         return stats;
     }
 
+    // TODO: this will throw an error if the unique (memberId, eventId) constraint is violated.
+    //  It shouldn't happen but still handle gracefully!!
+    // Use this when saving a new blank attendance row that has just been added in the frontend, or when
+    // updating an existing attendance
     public async save(attendance: Partial<EventAttendance>): Promise<EventAttendance> {
         return this.repo.save(attendance);
+    }
 
+    // Use this when creating a new attendance to be assigned to a member (like when a new member or event is added)
+    // If a duplicate entry is added (i.e. an entry already exists for that member and event) it will just be ignored
+    public async create(attendance: Partial<EventAttendance>) {
+        await this.repo
+            .createQueryBuilder()
+            .insert()
+            .values(attendance)
+            .orIgnore()
+            .execute();
     }
 
     public async delete(attendanceId: number): Promise<void> {
@@ -221,4 +237,27 @@ export class AttendanceRepository {
         attendances.forEach(att => this.delete(att.attendanceId));
     }
 
+    public async findEmptyByMemberId(id: number): Promise<EventAttendance[]> {
+        return await this.repo.find({
+            where: {
+                member: { memberId: id },
+                attendance: IsNull()
+            }
+        });
+    }
+
+    public async findPepEventsByMemberId(id: number): Promise<EventAttendance[]> {
+        return await this.repo.find({
+            where: {
+                member: { memberId: id },
+                mbEvent: { type: Constants.EVENT_TYPE_PEP_EVENT }
+            }
+        });
+    }
+
+    public async deleteEmptyAttendancesForMember(memberId: number): Promise<void> {
+        const attendances = await this.findEmptyByMemberId(memberId);
+
+        attendances.forEach(att => this.delete(att.attendanceId));
+    }
 }

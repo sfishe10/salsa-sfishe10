@@ -2,6 +2,7 @@ import {SectionRepository} from "../repositories/section.repository";
 import {SectionDto} from "../dto/section.dto";
 import {Section} from "../entities/section.entity";
 import {toSectionDto} from "../mappers/section.mapper";
+import {NotFoundError} from "../errors/not-found-error";
 
 
 export class SectionService {
@@ -16,7 +17,7 @@ export class SectionService {
             await this.sectionRepository.findById(sectionId);
 
         if (!section) {
-            throw new Error('Section not found');
+            throw new NotFoundError('Section not found');
         }
 
         return section;

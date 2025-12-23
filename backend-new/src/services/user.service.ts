@@ -2,6 +2,7 @@ import {UserRepository} from "../repositories/user.repository";
 import {UserDto} from "../dto/user.dto";
 import {User} from "../entities/user.entity";
 import {toUserDto} from "../mappers/user.mapper";
+import {NotFoundError} from "../errors/not-found-error";
 
 export class UserService {
     private userRepository: UserRepository;
@@ -24,7 +25,18 @@ export class UserService {
             await this.userRepository.findById(userId);
 
         if (!user) {
-            throw new Error('User not found');
+            throw new NotFoundError('User not found');
+        }
+
+        return user;
+    }
+
+    public async getByEmail(email: string): Promise<User> {
+        const user: User | null =
+            await this.userRepository.findByEmail(email);
+
+        if (!user) {
+            throw new NotFoundError('User not found');
         }
 
         return user;
@@ -53,6 +65,10 @@ export class UserService {
         existingUser.lastName = userDto.lastName;
 
         return await this.userRepository.save(existingUser);
+    }
+
+    public async insertOrUpdate(users: User[] | User) {
+        return await this.userRepository.insertOrUpdate(users);
     }
 
     // TODO: I think we can get rid of this - just use getAll() and divide the roles in the frontend

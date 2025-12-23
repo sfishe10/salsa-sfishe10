@@ -17,7 +17,7 @@ export class MemberRepository {
             }});
     }
 
-    public async findBySectionId(sectionId: number) {
+    public async findBySectionId(sectionId: number): Promise<Member[]> {
         return this.repo.find({
             where: {
                 section: { sectionId: sectionId }
@@ -30,7 +30,7 @@ export class MemberRepository {
             }});
     }
 
-    public async findByTermId(termId: number) {
+    public async findByTermId(termId: number): Promise<Member[]> {
         return this.repo.find({
             where: {
                 term: { termId: termId }
@@ -41,6 +41,15 @@ export class MemberRepository {
                 pepBand: true,
                 term: true,
             }});
+    }
+
+    public async findByTermIdAndEmail(termId: number, email: string): Promise<Member[]> {
+        return this.repo.find({
+            where: {
+                user: {email},
+                term: {termId}
+            }
+        });
     }
 
     public async findByTermAndPepBandId(termId: number, pepBandId: string) {
@@ -57,8 +66,24 @@ export class MemberRepository {
             }});
     }
 
-    public async create(member: Partial<Member>) {
+    public async save(member: Partial<Member>) {
         return await this.repo.save(member);
+    }
+
+    // for a duplicate member (user + term + section already in use), ignores insert
+    public async insertOrIgnore(members: Member[] | Member) {
+        await this.repo
+            .createQueryBuilder()
+            .insert()
+            .values(members)
+            .orIgnore()
+            .execute();
+    }
+
+    public async updateRehearsalConflict(member: Member) {
+        await this.repo.update(
+            { user: { email: member.user.email } },
+            { rehearsalConflict: member.rehearsalConflict })
     }
 
     public async delete(memberId: number) {

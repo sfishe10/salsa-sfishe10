@@ -6,26 +6,22 @@ import {MemberStatsDto} from "../dto/member-stats.dto";
 import {AttendanceTermPageDto} from "../dto/attendance-term-page.dto";
 import {MBEvent} from "../entities/mb-event.entity";
 import {Section} from "../entities/section.entity";
-import {SectionService} from "./section.service";
 import {Member} from "../entities/member.entity";
-import {MemberService} from "./member.service";
 import {MbEventRepository} from "../repositories/mb-event.repository";
 import {Constants} from "../utilities/constants";
+import {MemberRepository} from "../repositories/member.repository";
 
 export class AttendanceService {
     private attendanceRepository: AttendanceRepository;
     private eventRepository: MbEventRepository;
-    private sectionService: SectionService;
-    private memberService: MemberService;
+    private memberRepository: MemberRepository;
 
     constructor(attendanceRepository?: AttendanceRepository,
                 eventRepository?: MbEventRepository,
-                sectionService?: SectionService,
-                memberService?: MemberService) {
+                memberRepository?: MemberRepository) {
         this.attendanceRepository = attendanceRepository ?? new AttendanceRepository();
         this.eventRepository = eventRepository ?? new MbEventRepository();
-        this.sectionService = sectionService ?? new SectionService();
-        this.memberService = memberService ?? new MemberService();
+        this.memberRepository = memberRepository ?? new MemberRepository();
     }
 
     public async getById(attendanceId: number): Promise<EventAttendance> {
@@ -42,6 +38,13 @@ export class AttendanceService {
     public async getByEventId(eventId: number) {
         const attendances: EventAttendance[] =
             await this.attendanceRepository.findByEventId(eventId);
+
+        return attendances;
+    }
+
+    public async getByMemberId(memberId: number) {
+        const attendances: EventAttendance[] =
+            await this.attendanceRepository.findByMemberId(memberId);
 
         return attendances;
     }
@@ -82,14 +85,15 @@ export class AttendanceService {
         return stats;
     }
 
-    public async createAttendance(newAttendanceDto: EventAttendanceDto): Promise<EventAttendance> {
+    public async createBlankAttendance(newAttendanceDto: EventAttendanceDto): Promise<EventAttendance> {
         const eventId = newAttendanceDto.mbEvent.eventId;
         const sectionId = newAttendanceDto?.section ? newAttendanceDto.section.sectionId : null;
 
         let newAttendance: EventAttendance = new EventAttendance();
-        const mbEvent: MBEvent = await this.eventRepository.findById(eventId);
-        const section: Section | null = sectionId ? await this.sectionService.getById(sectionId) : null;
+        const mbEvent: MBEvent = { eventId } as MBEvent;
+        const section: Section | null = sectionId ? { sectionId } as Section : null;
 
+        newAttendance.member = null;
         newAttendance.mbEvent = mbEvent;
         newAttendance.section = section;
 
@@ -100,9 +104,9 @@ export class AttendanceService {
         const existingAttendance: EventAttendance = await this.getById(attendanceDto.attendanceId);
 
         const member: Member | null = attendanceDto.member
-            ? await this.memberService.getById(attendanceDto.member.memberId) : null;
+            ? await this.memberRepository.findById(attendanceDto.member.memberId) : null;
         const sub: Member | null = attendanceDto.sub
-            ? await this.memberService.getById(attendanceDto.sub.memberId) : null;
+            ? await this.memberRepository.findById(attendanceDto.sub.memberId) : null;
 
         existingAttendance.member = member;
         existingAttendance.sub = sub;
@@ -111,9 +115,8 @@ export class AttendanceService {
         return await this.attendanceRepository.save(existingAttendance);
     }
 
-    public async createAttendancesForEvent(mbEvent: MBEvent): Promise<EventAttendance[]> {
-        const newAttendances: EventAttendance[] = [];
-
+    // used when creating or updating an event
+    public async createAttendancesForEvent(mbEvent: MBEvent) {
         // create new EventAttendance objects for each appropriate Member
         let members: Member[] = [];
 
@@ -121,25 +124,53 @@ export class AttendanceService {
             // for ABC band events, assign the appropriate pep band
             // volunteer events will default to 0 attendances as they will be added later by users
             if (mbEvent.pepBand != null && mbEvent.pepBand?.bandId != Constants.PEP_BAND_ID_VOLUNTEER) {
-                members = await this.memberService.getByTermAndPepBandId(mbEvent.term.termId, mbEvent.pepBand.bandId);
+                members = await this.memberRepository.findByTermAndPepBandId(mbEvent.term.termId, mbEvent.pepBand.bandId);
             }
         } else {
-            members = await this.memberService.getByTermId(mbEvent.term.termId);
+            members = await this.memberRepository.findByTermId(mbEvent.term.termId);
         }
 
         for (let member of members) {
-            let newAttendance: EventAttendance = new EventAttendance();
-            newAttendance.mbEvent = mbEvent;
-            newAttendance.member = member;
-            newAttendance.attendance = null;
-            newAttendance.required = true;
-            newAttendance.section = member.section;
-
-            newAttendance = await this.attendanceRepository.save(newAttendance);
-            newAttendances.push(newAttendance);
+            await this.createAndSaveAttendance(mbEvent, member);
         }
+    }
 
-        return newAttendances;
+    // used when creating or updating an individual member
+    public async createAttendancesForMember(member: Member) {
+        let mbEvents: MBEvent[];
+
+        let pepBandId: string | null = member.pepBand ? member.pepBand.bandId : null;
+        mbEvents = await this.eventRepository.getByTermAndPepBandId(member.term.termId, pepBandId);
+
+        for (let mbEvent of mbEvents) {
+            await this.createAndSaveAttendance(mbEvent, member);
+        }
+    }
+
+    // used when adding members from the supplemental form
+    public async createAttendancesForWholeTerm(termId: number) {
+        let mbEvents: MBEvent[];
+        let members: Member[] = await this.memberRepository.findByTermId(termId);
+
+        for (let member of members) {
+            let pepBandId: string | null = member.pepBand ? member.pepBand.bandId : null;
+            mbEvents = await this.eventRepository.getByTermAndPepBandId(member.term.termId, pepBandId);
+
+            for (let mbEvent of mbEvents) {
+                await this.createAndSaveAttendance(mbEvent, member);
+            }
+        }
+    }
+
+    private async createAndSaveAttendance(mbEvent: MBEvent, member: Member) {
+        let newAttendance: EventAttendance = new EventAttendance();
+        newAttendance.mbEvent = mbEvent;
+        newAttendance.member = member;
+        newAttendance.attendance = null;
+        newAttendance.required = true;
+        newAttendance.section = member.section;
+
+        await this.attendanceRepository.create(newAttendance);
     }
 
     public async submitForm(attendanceDtos: EventAttendanceDto[]): Promise<EventAttendance[]> {
@@ -159,5 +190,25 @@ export class AttendanceService {
 
     public async deleteAttendancesForEvent(eventId: number) {
         return await this.attendanceRepository.deleteAttendancesForEvent(eventId);
+    }
+
+    public async deleteAttendancesForMember(memberId: number) {
+        return await this.attendanceRepository.deleteAttendancesForMember(memberId);
+    }
+
+    public async deleteEmptyAttendancesForMember(memberId: number) {
+        await this.attendanceRepository.deleteEmptyAttendancesForMember(memberId);
+    }
+
+    public async changePepAttendancesToNotRequired(memberId: number) {
+        const pepAttendances: EventAttendance[] = await this.attendanceRepository.findPepEventsByMemberId(memberId);
+
+        const updatedAttendances: EventAttendance[] = [];
+        for (let att of pepAttendances) {
+            att.required = false;
+            updatedAttendances.push(await this.attendanceRepository.save(att));
+        }
+
+        return updatedAttendances;
     }
 }

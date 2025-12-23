@@ -10,7 +10,7 @@ export const create = async (req: any, res: any) => {
   const newAttendanceDto: EventAttendanceDto = plainToInstance(EventAttendanceDto, req.body);
 
   // send the saved attendance so the frontend can have the newly generated ID
-  const savedAttendance: EventAttendance = await attendanceService.createAttendance(newAttendanceDto);
+  const savedAttendance: EventAttendance = await attendanceService.createBlankAttendance(newAttendanceDto);
 
   res.send(toEventAttendanceDto(savedAttendance));
 };

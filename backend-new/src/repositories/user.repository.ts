@@ -33,4 +33,12 @@ export class UserRepository {
     public async save(user: Partial<User>) {
         return await this.repo.save(user);
     }
+
+    public async insertOrUpdate(users: User[] | User): Promise<number> {
+        // try to insert the object, but if there already exists a User object with that email value, update it
+        const result = await this.repo.upsert(users, ["email"]);
+
+        // this isn't very useful info right now, but just wanted something to indicate if anything was inserted
+        return result.identifiers.length;
+    }
 }

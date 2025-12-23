@@ -1,6 +1,7 @@
 import {db} from "../config/data-source";
 import {MBEvent} from "../entities/mb-event.entity";
-import {LessThan, MoreThanOrEqual} from "typeorm";
+import {IsNull, LessThan, MoreThanOrEqual} from "typeorm";
+import {NotFoundError} from "../errors/not-found-error";
 
 export class MbEventRepository {
     private repo = db.getRepository(MBEvent);
@@ -14,7 +15,7 @@ export class MbEventRepository {
         });
 
         if (!mbEvent) {
-            throw new Error('Event not found');
+            throw new NotFoundError('Event not found');
         }
 
         return mbEvent;
@@ -52,6 +53,15 @@ export class MbEventRepository {
                 date: 'DESC',
             },
         });
+    }
+
+    public async getByTermAndPepBandId(termId: number, bandId: string | null): Promise<MBEvent[]> {
+        const where = [{ term: { termId }, pepBand: IsNull() as any }];
+        if (bandId) {
+            where.push({ term: { termId }, pepBand: { bandId } });
+        }
+
+        return this.repo.find({ where });
     }
 
     public async save(mbEvent: Partial<MBEvent>): Promise<MBEvent> {

@@ -18,7 +18,7 @@ export class MemberDto {
 
     @Expose()
     @Type(() => SectionDto)
-    section!: SectionDto | null;
+    section!: SectionDto;
 
     @Expose()
     @Type(() => TermDto)

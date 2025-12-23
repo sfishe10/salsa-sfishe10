@@ -14,4 +14,10 @@ export class Constants {
   static readonly PEP_BAND_ID_C = "C";
   static readonly PEP_BAND_ID_VOLUNTEER = "V";
 
+  static readonly ROLE_ADMIN = 'Admin';
+  static readonly ROLE_OFFICER = 'Officer';
+  static readonly ROLE_SECTION_LEADER = 'Section Leader';
+  static readonly ROLE_ATTENDANCE_TAKER = 'Attendance Taker';
+  static readonly ROLE_MEMBER = 'Member';
+
 }

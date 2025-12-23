@@ -1,5 +1,6 @@
 import {db} from "../config/data-source";
 import {Term} from "../entities/term.entity";
+import {NotFoundError} from "../errors/not-found-error";
 
 export class TermRepository {
     private repo = db.getRepository(Term);
@@ -17,7 +18,7 @@ export class TermRepository {
             } });
 
         if (!term) {
-            throw new Error('Term not found');
+            throw new NotFoundError('Term not found');
         }
 
         return term;
