@@ -79,7 +79,7 @@ export const uploadRehearsalConflictsCsv = async (req: any, res: any)  => {
 
   try {
     const termId: number = req.params.id;
-    const ignoreInvalidEmails: boolean = req.body;
+    const ignoreInvalidEmails: boolean = req.body.ignoreInvalidEmails === 'true';
 
     await memberService.parseRehearsalConflictsCsv(req.file, termId, ignoreInvalidEmails);
 

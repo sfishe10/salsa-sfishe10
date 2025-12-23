@@ -3,6 +3,11 @@ import {UserDto} from "../dto/user.dto";
 import {User} from "../entities/user.entity";
 import {toUserDto} from "../mappers/user.mapper";
 import {NotFoundError} from "../errors/not-found-error";
+import {Utilities} from "../utilities/utilities";
+import {InvalidEmailsError} from "../errors/invalid-emails-error";
+import {Constants} from "../utilities/constants";
+import {Member} from "../entities/member.entity";
+import {Term} from "../entities/term.entity";
 
 export class UserService {
     private userRepository: UserRepository;
@@ -79,5 +84,36 @@ export class UserService {
         const userDtos: UserDto[] = users.map(user => toUserDto(user));
 
         return userDtos;
+    }
+
+    public async parseRolesCsv(file: any, ignoreInvalidEmails: boolean) {
+        const rows: Array<Record<string, string>> = await Utilities.parseCsv(file);
+
+        if (!ignoreInvalidEmails) {
+            // make sure each of the emails belongs to a current member - if not, send back the ones that don't
+            const invalidEmails: string[] = rows
+                .map(row => row.Email?.trim().toLowerCase() ?? '')
+                .filter(async email => !(await this.isEmailInUse(email)));
+            if (invalidEmails.length) {
+                // return any invalid emails to the frontend
+                throw new InvalidEmailsError(invalidEmails);
+            }
+        }
+
+        for (const row of rows) {
+            // TODO: extract these column names out as constants
+            const email = row.Email?.trim().toLowerCase() ?? '';
+            const role = row.Role?.trim() ?? '';
+
+            const regex = /^.*<(.*)>.*$/;
+            const formattedEmail = email.replace(regex, '$1');
+            const user = {
+                email: formattedEmail,
+                role,
+            } as User;
+
+            await this.userRepository.updateRole(user);
+        }
+
     }
 }

@@ -289,7 +289,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    formData.append('emailsToSkip', JSON.stringify(this.emailsMissingUsers));
+    // if we've already been warned about invalid emails, proceed and ignore them
+    formData.append('ignoreInvalidEmails', this.missingEmailsConfirmationDialogRef ? 'true' : 'false');
     this.adminService.uploadRolesCsv(formData).subscribe({
       next: (res: any) => {
         this.emailsMissingUsers = [];
@@ -299,8 +300,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
       error: (err: any) => {
         if (err.status === 422) {
           this.emailsMissingUsers = [];
-          err.error.forEach((emailObj: any) => {
-            this.emailsMissingUsers.push(emailObj.email);
+          err.error.forEach((email: string) => {
+            this.emailsMissingUsers.push(email);
           })
           this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
         } else {

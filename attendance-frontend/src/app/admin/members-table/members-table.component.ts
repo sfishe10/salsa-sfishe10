@@ -216,7 +216,7 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
       });
     } else if (this.uploadCsvType === 'assignRehearsalConflicts') {
       // if we've already been warned about invalid emails, proceed and ignore them
-      formData.append('ignoreInvalidEmails', JSON.stringify(!!this.missingEmailsConfirmationDialogRef));
+      formData.append('ignoreInvalidEmails', this.missingEmailsConfirmationDialogRef ? 'true' : 'false');
       this.adminService.uploadRehearsalConflictsCsv(formData, termId).subscribe({
         next: (res: any) => {
           this.emailsMissingMembers = [];

@@ -41,4 +41,10 @@ export class UserRepository {
         // this isn't very useful info right now, but just wanted something to indicate if anything was inserted
         return result.identifiers.length;
     }
+
+    public async updateRole(user: User) {
+        await this.repo.update(
+            { email: user.email },
+            { role: user.role })
+    }
 }
