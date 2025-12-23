@@ -4,12 +4,10 @@ import {MBEvent} from "../../entities/mb-event.entity";
 import {toMbEventDto} from "../../mappers/mb-event.mapper";
 import {VolunteerRosterMemberCount} from "../../entities/volunteer-roster-member-count.entity";
 import {VolunteerRosterMemberCountService} from "../../services/volunteer-roster-member-count.service";
-import {EventAttendance} from "../../entities/event-attendance.entity";
-import {AttendanceService} from "../../services/attendance.service";
+import {NotFoundError} from "../../errors/not-found-error";
 
 const eventService = new MbEventService();
 const vrmcService = new VolunteerRosterMemberCountService();
-const attendanceService = new AttendanceService();
 
 /**
  * Event selectors
@@ -45,19 +43,17 @@ export const getById = async (req: any, res: any) => {
   try {
     const mbEvent: MBEvent = await eventService.getById(eventId);
 
-    const volunteerRosterMemberCounts: VolunteerRosterMemberCount[] = await vrmcService.getByEventId(mbEvent.eventId);
-
-    mbEvent.volunteerRosterMemberCounts = volunteerRosterMemberCounts;
-
-    if (!mbEvent) {
-      return res.status(404).send('Event not found');
-    }
+    mbEvent.volunteerRosterMemberCounts = await vrmcService.getByEventId(mbEvent.eventId);
 
     const eventDto = toMbEventDto(mbEvent);
 
     res.send(eventDto);
 
   } catch (err) {
+    if (err instanceof NotFoundError) {
+      return res.status(404).send('Event not found');
+    }
+
     console.error(err);
     res.status(500).send('Query failed');
   }

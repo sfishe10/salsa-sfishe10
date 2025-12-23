@@ -10,6 +10,7 @@ import {Member} from "../entities/member.entity";
 import {MbEventRepository} from "../repositories/mb-event.repository";
 import {Constants} from "../utilities/constants";
 import {MemberRepository} from "../repositories/member.repository";
+import {NotFoundError} from "../errors/not-found-error";
 
 export class AttendanceService {
     private attendanceRepository: AttendanceRepository;
@@ -29,7 +30,7 @@ export class AttendanceService {
             await this.attendanceRepository.findById(attendanceId);
 
         if (!attendance) {
-            throw new Error('Attendance not found');
+            throw new NotFoundError('Attendance not found');
         }
 
         return attendance;

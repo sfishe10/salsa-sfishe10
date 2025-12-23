@@ -1,6 +1,7 @@
 import {UserService} from "../../services/user.service";
 import {UserDto} from "../../dto/user.dto";
 import {User} from "../../entities/user.entity";
+import {NotFoundError} from "../../errors/not-found-error";
 
 const userService: UserService = new UserService();
 
@@ -25,12 +26,12 @@ export const getById = async (req: any, res: any) => {
     try {
         const user: User = await userService.getById(userId);
 
-        if (!user) {
+        res.send(user);
+    } catch (err) {
+        if (err instanceof NotFoundError) {
             return res.status(404).send('User not found');
         }
 
-        res.send(user);
-    } catch (err) {
         console.error(err);
         res.status(500).send('Query failed');
     }

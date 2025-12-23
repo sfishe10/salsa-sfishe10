@@ -2,6 +2,7 @@ import {SectionDto} from "../../dto/section.dto";
 import {SectionService} from "../../services/section.service";
 import {toSectionDto} from "../../mappers/section.mapper";
 import {Section} from "../../entities/section.entity";
+import {NotFoundError} from "../../errors/not-found-error";
 
 const sectionService: SectionService = new SectionService();
 
@@ -28,12 +29,12 @@ export const getById = async (req: any, res: any) => {
     try {
         const section: SectionDto = await sectionService.getById(sectionId);
 
-        if (!section) {
+        res.send(section);
+    } catch (err) {
+        if (err instanceof NotFoundError) {
             return res.status(404).send('Section not found');
         }
 
-        res.send(section);
-    } catch (err) {
         console.error(err);
         res.status(500).send('Query failed');
     }

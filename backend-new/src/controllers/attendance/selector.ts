@@ -3,6 +3,7 @@ import {EventAttendanceDto} from "../../dto/event-attendance.dto";
 import {MemberStatsDto} from "../../dto/member-stats.dto";
 import {AttendanceTermPageDto} from "../../dto/attendance-term-page.dto";
 import {EventAttendance} from "../../entities/event-attendance.entity";
+import {NotFoundError} from "../../errors/not-found-error";
 
 const attendanceService = new AttendanceService();
 
@@ -16,13 +17,13 @@ export const getById = async (req: any, res: any) => {
   try {
     const attendance: EventAttendance | null = await attendanceService.getById(attendanceId);
 
-    if (!attendance) {
-      return res.status(404).send('Attendance not found');
-    }
-
     res.send(attendance);
 
   } catch (err) {
+    if (err instanceof NotFoundError) {
+      return res.status(404).send('Attendance not found');
+    }
+
     console.error(err);
     res.status(500).send('Query failed');
   }
