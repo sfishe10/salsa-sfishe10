@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {User} from '../../../../../shared/models/user';
+import {User} from '../../models/user';
 import {UserService} from '../../services/user.service';
 import {MatIcon} from '@angular/material/icon';
 import {NgForOf, NgIf} from '@angular/common';

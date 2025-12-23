@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import https from 'https';
 import fs from 'fs';
-import dotenv from 'dotenv';
 import passport from 'passport';
 import {
   BearerStrategy,
@@ -33,8 +32,6 @@ import {UserService} from "./services/user.service";
 import {MemberService} from "./services/member.service";
 import {User} from "./entities/user.entity";
 import {Member} from "./entities/member.entity";
-
-dotenv.config();
 
 db.initialize()
     .then(() => {

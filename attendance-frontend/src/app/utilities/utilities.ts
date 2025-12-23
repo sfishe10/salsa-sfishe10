@@ -1,5 +1,5 @@
 import {Constants} from './constants';
-import {Section} from '../../../../shared/models/section';
+import {Section} from '../models/section';
 
 export class Utilities {
   public static getConflictColor(conflict: string): string {

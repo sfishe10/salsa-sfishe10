@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {EventAttendance} from '../../../../shared/models/event-attendance';
+import {EventAttendance} from '../models/event-attendance';
 import {Observable} from 'rxjs';
-import {MemberStats} from '../../../../shared/models/member-stats';
+import {MemberStats} from '../models/member-stats';
 
 @Injectable({
   providedIn: 'root'

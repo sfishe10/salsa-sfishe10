@@ -14,7 +14,7 @@ export const db = new DataSource({
     extra: {
         connectionLimit: 10,
     },
-    timezone: 'America/Los_Angeles',
+    timezone: '-08:00', // Pacific Standard Time
     entities: [__dirname + '/../entities/**/*.{ts,js}'],
     synchronize: false,
     logging: process.env.ENVIRONMENT !== 'production',

@@ -4,7 +4,7 @@ import {CdkOverlayOrigin, Overlay, OverlayModule} from '@angular/cdk/overlay';
 import {NgForOf, NgIf} from '@angular/common';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
-import {Member} from '../../../../../shared/models/member';
+import {Member} from '../../models/member';
 
 @Component({
   selector: 'app-member-select',

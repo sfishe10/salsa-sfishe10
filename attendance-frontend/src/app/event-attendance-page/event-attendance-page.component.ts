@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {EventAttendance} from '../../../../shared/models/event-attendance';
+import {EventAttendance} from '../models/event-attendance';
 import {AttendanceService} from '../services/attendance.service';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule} from '@angular/forms';
@@ -17,7 +17,7 @@ import {Constants} from '../utilities/constants';
 import {AttendanceSelectComponent} from '../attendance-form/attendance-select/attendance-select.component';
 import {MemberSelectComponent} from '../attendance-form/member-select/member-select.component';
 import {MemberService} from '../services/member.service';
-import {Member} from '../../../../shared/models/member';
+import {Member} from '../models/member';
 
 @Component({
   selector: 'app-event-attendance-page',

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Member} from '../../../../shared/models/member';
-import {EventAttendanceMemberPage} from '../../../../shared/models/event-attendance-member-page';
+import {Member} from '../models/member';
+import {EventAttendanceMemberPage} from '../models/event-attendance-member-page';
 import {environment} from '../../environments/environment';
-import {Section} from '../../../../shared/models/section';
+import {Section} from '../models/section';
 
 @Injectable({
   providedIn: 'root'

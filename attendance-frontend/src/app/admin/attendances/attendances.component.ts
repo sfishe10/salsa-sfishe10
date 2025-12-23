@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
 import {AttendanceTableComponent} from '../attendance-table/attendance-table.component';
 import {AdminService} from '../../services/admin.service';
-import {Term} from '../../../../../shared/models/term';
+import {Term} from '../../models/term';
 import {NgIf} from '@angular/common';
 import {Constants} from '../../utilities/constants';
 import {MatIcon} from '@angular/material/icon';

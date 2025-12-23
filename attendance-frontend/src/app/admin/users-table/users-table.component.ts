@@ -11,7 +11,7 @@ import {
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
-import {User} from '../../../../../shared/models/user';
+import {User} from '../../models/user';
 import {FormsModule} from '@angular/forms';
 import {AdminService} from '../../services/admin.service';
 import {MatButton} from '@angular/material/button';
