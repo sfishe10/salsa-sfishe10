@@ -1,5 +1,6 @@
 import {db} from "../config/data-source";
 import {Member} from "../entities/member.entity";
+import {LessThanOrEqual, MoreThanOrEqual} from "typeorm";
 
 export class MemberRepository {
     private repo = db.getRepository(Member);
@@ -34,6 +35,23 @@ export class MemberRepository {
         return this.repo.find({
             where: {
                 term: { termId: termId }
+            },
+            relations: {
+                user: true,
+                section: true,
+                pepBand: true,
+                term: true,
+            }});
+    }
+
+    public async findByEmailForCurrentTerm(email: string): Promise<Member[]> {
+        return this.repo.find({
+            where: {
+                user: { email },
+                term: {
+                    startDate: LessThanOrEqual(new Date()),
+                    endDate: MoreThanOrEqual(new Date())
+                }
             },
             relations: {
                 user: true,

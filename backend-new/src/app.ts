@@ -29,6 +29,10 @@ import attendanceUserRoutes from './routes/users';
 
 // Database import
 import {db} from "./config/data-source";
+import {UserService} from "./services/user.service";
+import {MemberService} from "./services/member.service";
+import {User} from "./entities/user.entity";
+import {Member} from "./entities/member.entity";
 
 dotenv.config();
 
@@ -145,6 +149,8 @@ app.use('/api/me', (req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+const userService: UserService = new UserService();
+const memberService: MemberService = new MemberService();
 app.get('/api/me', passport.authenticate('oauth-bearer', { session: false }), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const email =
@@ -159,65 +165,13 @@ app.get('/api/me', passport.authenticate('oauth-bearer', { session: false }), as
       return res.status(401).json({ message: 'Unauthorized: no email found' });
     }
 
-    db.execute('SELECT * FROM User WHERE email = ?', [email], (err, result: any[]) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send(err.message);
-      }
+    const user: User = await userService.getByEmail(email);
+    const member: Member | null = await memberService.getMemberForCurrentTerm(email);
 
-      if (!result.length) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+    const me = { user, member };
 
-      const user = {
-        firstName: result[0].firstName,
-        lastName: result[0].lastName,
-        email,
-        role: result[0].role,
-      };
+    res.send(me);
 
-      db.execute(
-          `SELECT * FROM Member AS m
-         LEFT JOIN Term AS t ON m.termId = t.termId
-         LEFT JOIN PepBand AS p ON m.pepBandId = p.bandId
-         LEFT JOIN Section AS s ON m.sectionId = s.sectionId
-         WHERE email = ? AND t.startDate <= NOW() AND t.endDate >= NOW()`,
-          [email],
-          (err2, result2: any[]) => {
-            if (err2) {
-              console.error(err2);
-              return res.status(500).send(err2.message);
-            }
-
-            let member = null;
-            if (result2.length) {
-              member = {
-                memberId: result2[0].memberId,
-                user,
-                pepBand: {
-                  bandId: result2[0].pepBandId,
-                  displayName: result2[0].displayName,
-                },
-                section: {
-                  sectionId: result2[0].sectionId,
-                  name: result2[0].name,
-                },
-                term: {
-                  termId: result2[0].termId,
-                  termName: result2[0].termName,
-                  startDate: result2[0].startDate,
-                  endDate: result2[0].endDate,
-                },
-                rehearsalConflict: result2[0].rehearsalConflict,
-              };
-            }
-
-            const me = { user, member };
-            console.log('Sending /api/me response:', me);
-            res.json(me);
-          }
-      );
-    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error' });
