@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn} from 'typeorm';
 import { User } from './user.entity';
 import { PepBand } from './pep-band.entity';
 import { Section } from './section.entity';
@@ -12,15 +12,19 @@ export class Member {
     memberId!: number;
 
     @ManyToOne(() => User, (user: User) => user.members, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'email' })
     user!: User;
 
     @ManyToOne(() => PepBand, (pepBand: PepBand) => pepBand.members, { nullable: true })
+    @JoinColumn({ name: 'pepBandId' })
     pepBand!: PepBand | null;
 
     @ManyToOne(() => Section, (section: Section) => section.members, { nullable: true })
+    @JoinColumn({ name: 'sectionId' })
     section!: Section | null;
 
     @ManyToOne(() => Term, (term: Term) => term.members, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'termId' })
     term!: Term;
 
     @Column({ type: 'text', nullable: true })

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn} from 'typeorm';
 import { PepBand } from './pep-band.entity';
 import { Term } from './term.entity';
 import { EventAttendance } from './event-attendance.entity';
@@ -19,12 +19,14 @@ export class MBEvent {
     date!: Date;
 
     @ManyToOne(() => PepBand, (pepBand: PepBand) => pepBand.events, { nullable: true })
+    @JoinColumn({ name: 'pepBandId' })
     pepBand!: PepBand | null;
 
     @Column({ type: 'boolean', default: false })
     extraAttendeesAllowed!: boolean;
 
     @ManyToOne(() => Term, (term: Term) => term.events, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'termId' })
     term!: Term;
 
     @OneToMany(() => EventAttendance, (ea) => ea.mbEvent)

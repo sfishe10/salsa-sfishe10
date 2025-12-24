@@ -163,6 +163,7 @@ app.get('/api/me', passport.authenticate('oauth-bearer', { session: false }), as
     }
 
     const user: User = await userService.getByEmail(email);
+    console.log(user);
     const member: Member | null = await memberService.getMemberForCurrentTerm(email);
 
     const me = { user, member };
