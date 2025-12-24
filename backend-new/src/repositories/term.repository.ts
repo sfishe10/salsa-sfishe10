@@ -6,7 +6,9 @@ export class TermRepository {
     private repo = db.getRepository(Term);
 
     public async findAll() {
-        return this.repo.find();
+        return this.repo.find({
+            order: { startDate: 'DESC' }
+        });
     }
 
     public async findById(id: number) {
