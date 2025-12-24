@@ -41,14 +41,10 @@ export class Constants {
 
   // SESSION CACHE STORAGE KEYS
   static readonly STORAGE_KEY_ME = 'ME';
-  static readonly STORAGE_KEY_IS_ADMIN = 'IS_ADMIN';
-  static readonly STORAGE_KEY_IS_OFFICER = 'IS_OFFICER';
-  static readonly STORAGE_KEY_IS_ATTENDANCE_TAKER = 'IS_ATTENDANCE_TAKER';
   static readonly STORAGE_KEY_IS_DRUMLINE_ATTENDANCE_TAKER = 'IS_DRUMLINE_ATTENDANCE_TAKER';
   static readonly STORAGE_KEY_SECTION_MEMBERS = 'SECTION_MEMBERS';
   static readonly STORAGE_KEY_SECTION = 'SECTION';
   static readonly STORAGE_KEY_TERM = 'TERM';
   static readonly STORAGE_KEY_SECTIONS = 'SECTIONS'
   static readonly STORAGE_KEY_PEP_BANDS = 'PEP_BANDS';
-  static readonly STORAGE_KEY_USER = 'USER';
 }
