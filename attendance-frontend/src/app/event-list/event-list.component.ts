@@ -30,8 +30,6 @@ export class EventListComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.listType = params['type'] || 'upcoming';
 
-      console.log(this.listType);
-
       if (this.listType === 'upcoming') {
         this.eventService.getUpcomingEvents().subscribe(events => {
           this.eventList = events;

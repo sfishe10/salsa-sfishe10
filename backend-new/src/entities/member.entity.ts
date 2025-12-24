@@ -12,7 +12,7 @@ export class Member {
     memberId!: number;
 
     @ManyToOne(() => User, (user: User) => user.members, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'email' })
+    @JoinColumn({ name: 'email', referencedColumnName: 'email', })
     user!: User;
 
     @ManyToOne(() => PepBand, (pepBand: PepBand) => pepBand.members, { nullable: true })
