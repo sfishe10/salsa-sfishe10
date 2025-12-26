@@ -67,12 +67,12 @@ export class AdminService {
 
   public createTerm(term: Term): Observable<Term> {
     const url = this.baseUrl + '/terms';
-    return this.http.post<Term>(url, {term: term})
+    return this.http.post<Term>(url, term)
   }
 
   public updateTerm(term: Term): Observable<Term> {
     const url = this.baseUrl + `/terms/${term.termId}`;
-    return this.http.put<Term>(url, {term: term})
+    return this.http.put<Term>(url, term)
   }
 
   public createMember(memberInfo: any): Observable<Member> {
