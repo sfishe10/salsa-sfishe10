@@ -11,6 +11,7 @@ export class MbEventRepository {
             relations: {
                 term: true,
                 pepBand: true,
+                volunteerRosterMemberCounts: true
             }
         });
 

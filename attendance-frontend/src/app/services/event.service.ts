@@ -34,11 +34,6 @@ export class EventService {
     return this.http.get<MBEvent>(url);
   }
 
-  public getEventVolunteerRosterMemberCounts(id: number): Observable<VolunteerRosterMemberCount[]> {
-    const url = this.baseUrl + `/events/${id}/rosterMemberCounts`
-    return this.http.get<VolunteerRosterMemberCount[]>(url);
-  }
-
   public submitAttendanceForm(attendances: EventAttendance[]) {
     const url = this.baseUrl + `/attendance/submitForm`;
     return this.http.post<EventAttendance>(url, {attendances: attendances});

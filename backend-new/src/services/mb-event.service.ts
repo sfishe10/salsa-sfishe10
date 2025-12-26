@@ -121,7 +121,7 @@ export class MbEventService {
 
             for (let countDto of eventDto.volunteerRosterMemberCounts) {
                 const existingCount: VolunteerRosterMemberCount =
-                    await this.vrmcService.getBySectionAndEventId(countDto.section.sectionId, countDto.mbEvent.eventId);
+                    await this.vrmcService.getBySectionAndEventId(countDto.section.sectionId, countDto.eventId);
                 existingCount.numMembersNeeded = countDto.numMembersNeeded;
                 await this.vrmcService.update(existingCount);
                 counts.push(existingCount);

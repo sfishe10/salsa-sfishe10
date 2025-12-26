@@ -43,8 +43,6 @@ export const getById = async (req: any, res: any) => {
   try {
     const mbEvent: MBEvent = await eventService.getById(eventId);
 
-    mbEvent.volunteerRosterMemberCounts = await vrmcService.getByEventId(mbEvent.eventId);
-
     const eventDto = toMbEventDto(mbEvent);
 
     res.send(eventDto);

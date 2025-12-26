@@ -10,7 +10,8 @@ export class VolunteerRosterMemberCount {
     @PrimaryColumn({ type: 'int', name: 'eventId' })
     eventId!: number;
 
-    @ManyToOne(() => Section, { nullable: false })
+    // use eager loading here because Section only has a couple columns, and will always be needed when fetching VRMC's
+    @ManyToOne(() => Section, { nullable: false, eager: true })
     @JoinColumn({ name: 'sectionId' })
     section!: Section;
 

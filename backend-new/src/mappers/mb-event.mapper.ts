@@ -3,6 +3,7 @@ import {MBEvent} from "../entities/mb-event.entity";
 import {MBEventDto} from "../dto/mb-event.dto";
 import {toPepBandDto} from "./pepBand.mapper";
 import {toTermDto} from "./term.mapper";
+import {toVolunteerRosterMemberCountDto} from "./volunteer-roster-member-count.mapper";
 
 export function toMbEventDto(mbEvent: MBEvent): MBEventDto {
     const plainObj = {
@@ -13,7 +14,11 @@ export function toMbEventDto(mbEvent: MBEvent): MBEventDto {
         extraAttendeesAllowed: mbEvent.extraAttendeesAllowed,
 
         pepBand: mbEvent.pepBand ? toPepBandDto(mbEvent.pepBand) : null,
-        term: mbEvent.term ? toTermDto(mbEvent.term) : null
+        term: mbEvent.term ? toTermDto(mbEvent.term) : null,
+
+        volunteerRosterMemberCounts: mbEvent.volunteerRosterMemberCounts
+            ? mbEvent.volunteerRosterMemberCounts.map(toVolunteerRosterMemberCountDto)
+            : [],
     };
 
     return plainToInstance(MBEventDto, plainObj, { excludeExtraneousValues: true });

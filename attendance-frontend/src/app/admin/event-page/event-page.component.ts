@@ -102,11 +102,8 @@ export class EventPageComponent implements OnInit {
       this.eventType = event.type;
       this.eventPepBand = this.pepBandOptions.find(band => band.bandId === event.pepBand?.bandId) ?? null;
       this.extraAttendeesAllowed = event.extraAttendeesAllowed ?? true;
+      this.volunteerRosterMemberCounts = event.volunteerRosterMemberCounts;
       this.separateDateAndTimeInputs(new Date(event.date));
-    })
-
-    this.eventService.getEventVolunteerRosterMemberCounts(eventId).subscribe(counts => {
-      this.volunteerRosterMemberCounts = counts;
     })
   }
 
