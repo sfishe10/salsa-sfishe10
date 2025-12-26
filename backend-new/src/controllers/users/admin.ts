@@ -46,21 +46,6 @@ export const update = async (req: any, res: any) => {
   }
 };
 
-// TODO: see if this can be removed and update() can just be used instead
-export const assignRole = async (req: any, res: any) => {
-  // const email = req.body.email;
-  // const role = req.body.role;
-  // db.execute('UPDATE User SET role=? WHERE email=?',
-  //   [role, email],
-  //   (err, result) => {
-  //     if (err) {
-  //       console.log(err);
-  //       return res.status(500).send(err.message);
-  //     }
-  //     return res.send(result);
-  //   });
-};
-
 export const uploadRolesCsv = async (req: any, res: any) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });

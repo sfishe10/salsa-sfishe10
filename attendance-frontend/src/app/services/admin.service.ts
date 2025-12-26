@@ -85,11 +85,6 @@ export class AdminService {
     return this.http.post<User>(url, user);
   }
 
-  public updateRole(email: string, role: string) {
-    const url = this.baseUrl + '/users/assignRole';
-    return this.http.put(url, { email: email, role: role })
-  }
-
   public getAllUsers(): Observable<User[]> {
     const url = this.baseUrl + '/users';
     return this.http.get<User[]>(url);

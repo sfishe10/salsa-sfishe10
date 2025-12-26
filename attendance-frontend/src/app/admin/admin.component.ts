@@ -31,6 +31,7 @@ import {Utilities} from '../utilities/utilities';
 import {MatIcon} from '@angular/material/icon';
 import {Router} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
+import {UserService} from '../services/user.service';
 
 @Component({
   selector: 'app-admin',
@@ -114,6 +115,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   emailsMissingUsers: string[] = [];
 
   constructor(private adminService: AdminService,
+              private userService: UserService,
               public sessionCacheService: SessionCacheService,
               private dialog: MatDialog,
               private router: Router) {
@@ -252,7 +254,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   updateUserRole(form: NgForm) {
-    this.adminService.updateRole(form.value.userEmail, form.value.userRole).subscribe(() => {
+    const user = {
+      email: form.value.userEmail,
+      role: form.value.userRole
+    } as User;
+    this.userService.updateUser(user).subscribe(() => {
       this.userTables.forEach(table => {
         table.fetchUsers();
       })

@@ -5,9 +5,6 @@ import {toUserDto} from "../mappers/user.mapper";
 import {NotFoundError} from "../errors/not-found-error";
 import {Utilities} from "../utilities/utilities";
 import {InvalidEmailsError} from "../errors/invalid-emails-error";
-import {Constants} from "../utilities/constants";
-import {Member} from "../entities/member.entity";
-import {Term} from "../entities/term.entity";
 
 export class UserService {
     private userRepository: UserRepository;
@@ -59,8 +56,12 @@ export class UserService {
     }
 
     public async update(userDto: UserDto): Promise<User> {
-        const existingUser: User = await this.getById(userDto.userId);
-        existingUser.email = userDto.email;
+        const existingUser = userDto.userId ? await this.getById(userDto.userId) : await this.getByEmail(userDto.email);
+
+        if (!existingUser) {
+            throw new NotFoundError('User not found');
+        }
+
         existingUser.role = userDto.role;
         existingUser.firstName = userDto.firstName;
         existingUser.lastName = userDto.lastName;
