@@ -121,10 +121,11 @@ export class EventPageComponent implements OnInit {
       date: form.value.eventDate,
       pepBand: form.value.eventPepBand ?? null,
       extraAttendeesAllowed: form.value.extraAttendeesAllowed ?? null,
-      term: this.event?.term
+      term: this.event?.term,
+      volunteerRosterMemberCounts: this.volunteerRosterMemberCounts
     } as MBEvent;
 
-    this.adminService.updateEvent(newEvent, this.volunteerRosterMemberCounts).subscribe(() => {
+    this.adminService.updateEvent(newEvent).subscribe(() => {
       this.event = newEvent;
       this.separateDateAndTimeInputs(newEvent.date);
       this.openSnackBar("Event updated!", "Ok", 3000);

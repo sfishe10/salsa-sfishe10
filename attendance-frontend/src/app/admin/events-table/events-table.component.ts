@@ -150,7 +150,6 @@ export class EventsTableComponent implements OnInit, AfterViewInit {
     } as MBEvent;
 
     this.adminService.createEvent(newEvent).subscribe(response => {
-      console.log(response);
       newEvent.eventId = response.eventId;
       this.events.push(newEvent);
       this.eventDataSource = new MatTableDataSource(this.events);

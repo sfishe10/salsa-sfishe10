@@ -52,12 +52,12 @@ export class AdminService {
 
   public createEvent(event: MBEvent) {
     const url = this.baseUrl + '/events';
-    return this.http.post<any>(url, {event: event})
+    return this.http.post<any>(url, event)
   }
 
-  public updateEvent(event: MBEvent, volunteerRosterMemberCounts: VolunteerRosterMemberCount[]) {
+  public updateEvent(event: MBEvent) {
     const url = this.baseUrl + `/events/${event.eventId}`;
-    return this.http.put<MBEvent>(url, {event, volunteerRosterMemberCounts});
+    return this.http.put<MBEvent>(url, event);
   }
 
   public deleteEvent(eventId: number) {
