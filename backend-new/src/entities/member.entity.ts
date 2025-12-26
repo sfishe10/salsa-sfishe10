@@ -11,7 +11,10 @@ export class Member {
     @PrimaryGeneratedColumn()
     memberId!: number;
 
-    @ManyToOne(() => User, (user: User) => user.members, { onDelete: 'CASCADE' })
+    // use eager fetch here (typeorm will always automatically fetch the user with the member) because the User
+    // class only has a few columns, and no fields referencing other entities. And almost every time Member is used,
+    // the corresponding User is referenced
+    @ManyToOne(() => User, (user: User) => user.members, { onDelete: 'CASCADE', eager: true })
     @JoinColumn({ name: 'email', referencedColumnName: 'email', })
     user!: User;
 
