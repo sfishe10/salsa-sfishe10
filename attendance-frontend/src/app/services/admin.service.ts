@@ -75,14 +75,14 @@ export class AdminService {
     return this.http.put<Term>(url, term)
   }
 
-  public createMember(memberInfo: any): Observable<Member> {
+  public createMember(member: Member): Observable<Member> {
     const url = this.baseUrl + '/members';
-    return this.http.post<Member>(url, {member: memberInfo});
+    return this.http.post<Member>(url, member);
   }
 
-  public createUser(userInfo: any): Observable<User> {
+  public createUser(user: User): Observable<User> {
     const url = this.baseUrl + '/users';
-    return this.http.post<User>(url, {user: userInfo});
+    return this.http.post<User>(url, user);
   }
 
   public updateRole(email: string, role: string) {

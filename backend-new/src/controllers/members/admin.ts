@@ -11,14 +11,15 @@ const userService: UserService = new UserService();
 
 export const create = async (req: any, res: any) => {
   try {
-    const memberInfo: any = req.body.member;
+    const memberDto: any = req.body;
+    console.log(memberDto);
 
     // make sure the User exists
-    if (!(await userService.isEmailInUse(memberInfo.email))) {
+    if (!(await userService.isEmailInUse(memberDto.user.email))) {
       return res.status(404).send({ message: 'User not found' });
     }
 
-    const savedMember: Member = await memberService.create(memberInfo);
+    const savedMember: Member = await memberService.create(memberDto);
 
     res.send(toMemberDto(savedMember));
   } catch (err: any) {

@@ -232,7 +232,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       firstName: form.value.userFirstName,
       lastName: form.value.userLastName,
       role: form.value.userRole
-    }
+    } as User;
 
     this.adminService.createUser(newUser).subscribe((insertedUser: User) => {
       this.userTables.forEach(table => {

@@ -28,6 +28,7 @@ import {SessionCacheService} from '../../services/session-cache.service';
 import {AdminService} from '../../services/admin.service';
 import {MatIcon} from '@angular/material/icon';
 import {Router} from '@angular/router';
+import {User} from '../../models/user';
 
 @Component({
   selector: 'app-members-table',
@@ -149,12 +150,12 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   submitMember(form: NgForm) {
     // TODO: send a User instead of just email... add an autocomplete/dropdown
     let newMember = {
-      email: form.value.memberEmail,
+      user: {email: form.value.memberEmail} as User,
       pepBand: form.value.memberPepBand,
       section: form.value.memberSection,
       rehearsalConflict: form.value.memberRehearsalConflict,
       term: this.selectedTerm
-    }
+    } as Member;
 
     this.adminService.createMember(newMember).subscribe((insertedMember: Member) => {
       this.members.push(insertedMember);

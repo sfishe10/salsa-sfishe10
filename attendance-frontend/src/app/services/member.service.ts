@@ -20,7 +20,7 @@ export class MemberService {
 
   public updateMember(member: Member): Observable<Member> {
     const url = this.baseUrl + `/members/${member.memberId}`;
-    return this.http.put<Member>(url, {member: member});
+    return this.http.put<Member>(url, member);
   }
 
   public deleteMember(member: Member): Observable<any> {

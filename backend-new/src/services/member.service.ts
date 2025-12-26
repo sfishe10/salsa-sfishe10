@@ -75,17 +75,17 @@ export class MemberService {
     }
 
     // TODO: redo this to take a MemberDto
-    public async create(memberInfo: any): Promise<Member> {
+    public async create(memberDto: MemberDto): Promise<Member> {
         let newMember: Member = new Member();
 
-        newMember.rehearsalConflict = memberInfo.rehearsalConflict;
+        newMember.rehearsalConflict = memberDto.rehearsalConflict;
 
         // since we're using a lot of relations here, skip fetching the entire objects
         // TypeOrm just needs the primary keys (the ID's) to link these tables when we save in the repository
-        newMember.user = { email: memberInfo.email } as User;
-        newMember.pepBand = { bandId: memberInfo.pepBand.bandId } as PepBand;
-        newMember.term = { termId: memberInfo.term.termId } as Term;
-        newMember.section = { sectionId: memberInfo.section.sectionId } as Section;
+        newMember.user = { email: memberDto.user.email } as User;
+        newMember.pepBand = memberDto.pepBand ? { bandId: memberDto.pepBand.bandId } as PepBand : null;
+        newMember.term = { termId: memberDto.term.termId } as Term;
+        newMember.section = { sectionId: memberDto.section.sectionId } as Section;
 
         newMember = await this.memberRepository.save(newMember);
 

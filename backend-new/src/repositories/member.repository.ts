@@ -41,7 +41,9 @@ export class MemberRepository {
                 section: true,
                 pepBand: true,
                 term: true,
-            }});
+            },
+            order: { section: { sectionId: 'ASC' } }
+        });
     }
 
     public async findByEmailForCurrentTerm(email: string): Promise<Member[]> {
