@@ -32,6 +32,7 @@ import {UserService} from "./services/user.service";
 import {MemberService} from "./services/member.service";
 import {User} from "./entities/user.entity";
 import {Member} from "./entities/member.entity";
+import {NotFoundError} from "./errors/not-found-error";
 
 db.initialize()
     .then(() => {
@@ -162,7 +163,11 @@ app.get('/api/me', passport.authenticate('oauth-bearer', { session: false }), as
       return res.status(401).json({ message: 'Unauthorized: no email found' });
     }
 
-    const user: User = await userService.getByEmail(email);
+    const user: User | null = await userService.getByEmail(email);
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
     const member: Member | null = await memberService.getMemberForCurrentTerm(email);
 
     const me = { user, member };

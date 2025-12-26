@@ -28,12 +28,16 @@ export const update = async (req: any, res: any) => {
   try {
     const userDto: UserDto = plainToInstance(UserDto, req.body);
 
-    // check if email is in use first
-    if (await userService.isEmailInUse(userDto.email)) {
-      return res.status(409).json({ message: 'Email already in use' });
-    }
+    // TODO: it would be great to be able to update the email if needed, but right now throws an error because
+    //  the Member table references the 'email' column  of User. Change Member to reference the 'userId' column
 
-    const updatedUser = await userService.create(userDto);
+    // // check if email is being used by someone else first
+    // const existingUser = await userService.getByEmail(userDto.email);
+    // if (existingUser && existingUser.userId != userDto.userId) {
+    //   return res.status(409).json({ message: 'Email already in use' });
+    // }
+
+    const updatedUser = await userService.update(userDto);
 
     res.send(toUserDto(updatedUser));
   } catch (err: any) {
