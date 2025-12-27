@@ -3,6 +3,7 @@ import {UserDto} from "./user.dto";
 import {TermDto} from "./term.dto";
 import {PepBandDto} from "./pep-band.dto";
 import {SectionDto} from "./section.dto";
+import {AttendanceMemberPageDto} from "./attendance-member-page.dto";
 
 export class MemberDto {
     @Expose()
@@ -26,4 +27,8 @@ export class MemberDto {
 
     @Expose()
     rehearsalConflict!: string | null;
+
+    @Expose()
+    @Type(() => AttendanceMemberPageDto)
+    attendances?: AttendanceMemberPageDto[];
 }

@@ -20,15 +20,22 @@ export class AttendanceRepository {
         });
     }
 
+    // used when deleting a member and all their attendances - skips fetching the event/member/sub fields
+    public async findByMemberIdConcise(id: number): Promise<EventAttendance[]> {
+        return await this.repo.find({
+            where: { member: { memberId: id } },
+        });
+    }
+
     public async findByMemberId(id: number): Promise<EventAttendance[]> {
         return await this.repo.find({
             where: { member: { memberId: id } },
-            // relations: {
-            //     mbEvent: true,
-            //     member: true,
-            //     sub: true,
-            //     section: true,
-            // }
+            relations: {
+                // since we're fetching by the member id, we presumably already have the member object
+                mbEvent: true,
+                sub: true,
+                section: true,
+            }
         });
     }
 
@@ -232,7 +239,7 @@ export class AttendanceRepository {
     }
 
     public async deleteAttendancesForMember(memberId: number): Promise<void> {
-        const attendances = await this.findByMemberId(memberId);
+        const attendances = await this.findByMemberIdConcise(memberId);
 
         attendances.forEach(att => this.delete(att.attendanceId));
     }

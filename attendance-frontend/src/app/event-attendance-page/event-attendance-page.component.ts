@@ -88,7 +88,7 @@ export class EventAttendancePageComponent implements OnInit {
         })
       }
 
-      this.attendanceOptions = Utilities.getAttendanceOptions(this.eventAttendance?.event?.type === this.PEP_EVENT);
+      this.attendanceOptions = Utilities.getAttendanceOptions(this.eventAttendance?.mbEvent?.type === this.PEP_EVENT);
     }, error => {
       console.log(error)
     })
@@ -136,7 +136,7 @@ export class EventAttendancePageComponent implements OnInit {
   }
 
   includeSubOption(): boolean {
-    return this.eventAttendance?.event?.type === Constants.EVENT_TYPE_PEP_EVENT;
+    return this.eventAttendance?.mbEvent?.type === Constants.EVENT_TYPE_PEP_EVENT;
   }
 
   openSnackBar(message: string, action: string, duration: number) {

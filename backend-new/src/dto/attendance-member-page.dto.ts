@@ -1,6 +1,6 @@
 import {Expose} from "class-transformer";
 
-export class AttendanceTermPageDto {
+export class AttendanceMemberPageDto {
     @Expose()
     attendanceId!: number;
 
@@ -14,19 +14,10 @@ export class AttendanceTermPageDto {
     eventTitle!: string;
 
     @Expose()
+    eventType!: string;
+
+    @Expose()
     eventDate!: Date;
-
-    @Expose()
-    memberId!: number;
-
-    @Expose()
-    memberFirstName!: string;
-
-    @Expose()
-    memberLastName!: string;
-
-    @Expose()
-    rehearsalConflict!: boolean;
 
     @Expose()
     subId!: number | null;

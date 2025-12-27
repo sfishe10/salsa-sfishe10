@@ -13,7 +13,6 @@ export class MemberRepository {
                 section: true,
                 pepBand: true,
                 term: true,
-                attendances: true,
                 subs: true
             }});
     }

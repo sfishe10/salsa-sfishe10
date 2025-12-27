@@ -39,6 +39,9 @@ export class MemberService {
             throw new NotFoundError('Member not found');
         }
 
+        member.attendances = await this.attendanceService.getByMemberId(memberId);
+
+        console.log(member);
         return member;
     }
 
