@@ -97,8 +97,8 @@ export class EventAttendancePageComponent implements OnInit {
       this.eventAttendance.sub = this.form.value.sub;
     }
 
-    this.attendanceService.updateAttendance(this.attendanceId, this.eventAttendance).subscribe(newLastUpdated => {
-      this.eventAttendance.lastUpdated = newLastUpdated;
+    this.attendanceService.updateAttendance(this.attendanceId, this.eventAttendance).subscribe(att => {
+      this.eventAttendance.lastUpdated = att.lastUpdated;
       this.openSnackBar("Attendance updated!", "Ok", 3000);
       this.editing = false;
     }, error => {
