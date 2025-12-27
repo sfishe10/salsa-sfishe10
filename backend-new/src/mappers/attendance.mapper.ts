@@ -41,26 +41,3 @@ export function toAttendanceMemberPageDto(attendance: EventAttendance) : Attenda
 
     return plainToInstance(AttendanceMemberPageDto, plainObj, { excludeExtraneousValues: true });
 }
-
-export function toAttendanceTermPageDto(attendance: EventAttendance) : AttendanceTermPageDto {
-    const plainObj = {
-        attendanceId: attendance.attendanceId,
-        attendanceStatus: attendance.attendance,
-
-        eventId: attendance.mbEvent.eventId,
-        eventTitle: attendance.mbEvent.title,
-        eventDate: attendance.mbEvent.date,
-
-        memberId: attendance.member ? attendance.member.memberId : null,
-        memberFirstName: attendance.member ? attendance.member.user.firstName : null,
-        memberLastName: attendance.member ? attendance.member.user.lastName : null,
-
-        subId: attendance.sub ? attendance.sub.memberId : null,
-        subFirstName: attendance.sub ? attendance.sub.user.firstName : null,
-        subLastName: attendance.sub ? attendance.sub.user.lastName : null,
-        sectionId: attendance.section ? attendance.section.sectionId : null,
-        sectionName: attendance.section ? attendance.section.name : null,
-    };
-
-    return plainToInstance(AttendanceTermPageDto, plainObj, { excludeExtraneousValues: true });
-}

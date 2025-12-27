@@ -2,16 +2,11 @@ import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EventAttendance} from '../models/event-attendance';
 import {AttendanceService} from '../services/attendance.service';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule} from '@angular/forms';
+import {DatePipe, NgIf} from '@angular/common';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatIcon} from '@angular/material/icon';
-import {MatOption} from '@angular/material/core';
-import {MatSelect} from '@angular/material/select';
-import {MemberAttendanceTableComponent} from '../shared/member-attendance-table/member-attendance-table.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatInput} from '@angular/material/input';
 import {Utilities} from '../utilities/utilities';
 import {Constants} from '../utilities/constants';
 import {AttendanceSelectComponent} from '../attendance-form/attendance-select/attendance-select.component';
@@ -26,16 +21,9 @@ import {Member} from '../models/member';
     DatePipe,
     FormsModule,
     MatButton,
-    MatFormField,
     MatIcon,
-    MatLabel,
-    MatOption,
-    MatSelect,
-    MemberAttendanceTableComponent,
-    NgForOf,
     NgIf,
     ReactiveFormsModule,
-    MatInput,
     AttendanceSelectComponent,
     MemberSelectComponent
   ],

@@ -13,7 +13,9 @@ export class AttendanceRepository {
         return await this.repo.findOne({ where: { attendanceId: id },
             relations: {
                 mbEvent: true,
-                member: true,
+                member: {
+                    term: true
+                },
                 sub: true,
                 section: true,
             }
