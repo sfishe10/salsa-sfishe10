@@ -62,6 +62,7 @@ import {MatCheckbox} from '@angular/material/checkbox';
     MatDialogActions,
     MatDialogTitle,
     MatCheckbox,
+    MatDialogContent,
   ],
   templateUrl: './attendance-form.component.html',
   styleUrl: './attendance-form.component.css'
@@ -168,7 +169,7 @@ export class AttendanceFormComponent implements OnInit {
   onSectionChange(section: Section) {
     let sectionId = section.sectionId;
 
-    this.memberService.getMembersBySectionId(sectionId).subscribe(members => {
+    this.memberService.getMembersBySectionAndTermId(sectionId, this.event.term.termId).subscribe(members => {
       this.sectionMembers = members;
     })
 

@@ -38,8 +38,10 @@ export class SessionCacheService {
             || response.user.role === Constants.ROLE_ATTENDANCE_TAKER)
           && Utilities.isDrumline(response.member.section))
 
+        const termId = response.member.term.termId;
+
         const sectionMembers: any = await firstValueFrom(
-          this.http.get(`${this.baseUrl}/members/section/${section.sectionId}`)
+          this.http.get(`${this.baseUrl}/members/section/${section.sectionId}/term/${termId}`)
         );
         this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
 

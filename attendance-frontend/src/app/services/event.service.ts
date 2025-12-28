@@ -36,7 +36,7 @@ export class EventService {
 
   public submitAttendanceForm(attendances: EventAttendance[]) {
     const url = this.baseUrl + `/attendance/submitForm`;
-    return this.http.post<EventAttendance>(url, {attendances: attendances});
+    return this.http.post<EventAttendance>(url, attendances);
   }
 
   public getEventAttendance(eventId: number, sectionId: number): Observable<EventAttendance[]> {

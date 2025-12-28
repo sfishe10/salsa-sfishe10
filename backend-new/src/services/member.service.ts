@@ -54,9 +54,9 @@ export class MemberService {
         return members.length ? members[0]! : null;
     }
 
-    public async getBySectionId(sectionId: number): Promise<MemberDto[]> {
+    public async getBySectionAndTermId(sectionId: number, termId: number): Promise<MemberDto[]> {
         const members: Member[] =
-            await this.memberRepository.findBySectionId(sectionId);
+            await this.memberRepository.findBySectionAndTermId(sectionId, termId);
 
         const memberDtos: MemberDto[] = members.map(member => toMemberDto(member));
 

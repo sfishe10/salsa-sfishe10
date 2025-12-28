@@ -29,11 +29,12 @@ export const getById = async (req: any, res: any) => {
   }
 };
 
-export const getSection = async (req: any, res: any) => {
-  const sectionId = req.params.id;
+export const getBySectionAndTermId = async (req: any, res: any) => {
+  const sectionId = req.params.sectionId;
+  const termId = req.params.termId;
 
   try {
-    const members: MemberDto[] = await memberService.getBySectionId(sectionId);
+    const members: MemberDto[] = await memberService.getBySectionAndTermId(sectionId, termId);
 
     res.send(members);
 

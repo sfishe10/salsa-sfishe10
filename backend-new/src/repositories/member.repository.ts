@@ -17,10 +17,11 @@ export class MemberRepository {
             }});
     }
 
-    public async findBySectionId(sectionId: number): Promise<Member[]> {
+    public async findBySectionAndTermId(sectionId: number, termId: number): Promise<Member[]> {
         return this.repo.find({
             where: {
-                section: { sectionId: sectionId }
+                section: { sectionId },
+                term: { termId }
             },
             relations: {
                 user: true,

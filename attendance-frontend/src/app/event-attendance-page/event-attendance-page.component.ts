@@ -71,7 +71,7 @@ export class EventAttendancePageComponent implements OnInit {
 
       let sectionId = attendance.member?.section?.sectionId;
       if (sectionId) {
-        this.memberService.getMembersBySectionId(sectionId).subscribe(members => {
+        this.memberService.getMembersBySectionAndTermId(sectionId, this.eventAttendance.mbEvent.term.termId).subscribe(members => {
           this.sectionMembers = members;
         })
       }

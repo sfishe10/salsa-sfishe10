@@ -21,7 +21,7 @@ router.post('/term/:id/uploadRehearsalConflictsCsv', upload.single('file'), memb
  */
 
 router.get('/:id', members.selector.getById);
-router.get('/section/:id', members.selector.getSection);
+router.get('/section/:sectionId/term/:termId', members.selector.getBySectionAndTermId);
 router.get('/term/:id', members.selector.getByTermId);
 
 export default router;
