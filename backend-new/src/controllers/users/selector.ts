@@ -24,14 +24,14 @@ export const getById = async (req: any, res: any) => {
     const userId = req.params.id;
 
     try {
-        const user: User = await userService.getById(userId);
+        const user: User | null = await userService.getById(userId);
 
-        res.send(user);
-    } catch (err) {
-        if (err instanceof NotFoundError) {
+        if (!user) {
             return res.status(404).send('User not found');
         }
 
+        res.send(user);
+    } catch (err) {
         console.error(err);
         res.status(500).send('Query failed');
     }

@@ -22,13 +22,9 @@ export class UserService {
         return userDtos;
     }
 
-    public async getById(userId: number): Promise<User> {
+    public async getById(userId: number): Promise<User | null> {
         const user: User | null =
             await this.userRepository.findById(userId);
-
-        if (!user) {
-            throw new NotFoundError('User not found');
-        }
 
         return user;
     }

@@ -134,3 +134,16 @@
     <button mat-button (click)="uploadFile()">Proceed</button>
   </mat-dialog-actions>
 </ng-template>
+
+<ng-template #invalidSectionNamesDialog>
+  <h2 mat-dialog-title>The following section names do not correspond to existing sections:</h2>
+  <mat-dialog-content>
+    <ul>
+      <li *ngFor="let section of invalidSectionNames">{{ section }}</li>
+    </ul>
+    <span style="color:black">Review the list of valid section names and make the necessary changes to continue.</span>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialogAndClearEmails()">Ok</button>&nbsp;
+  </mat-dialog-actions>
+</ng-template>

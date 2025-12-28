@@ -151,19 +151,21 @@ export class MemberService {
             sections.map(s => [s.name.trim().toLowerCase(), s])
         );
 
-        const invalidSections: string[] = rows
-            .map(row => row.Section?.trim().toLowerCase() ?? '')
-            .filter(async sectionName => !(sectionMap.get(sectionName)));
-        if (invalidSections.length) {
+        const invalidSections: Set<string> = new Set(rows
+            .map(row => row.Section?.trim().toLowerCase())
+            .filter((s): s is string => !!s)
+            .filter(sectionName => !(sectionMap.has(sectionName))));
+
+        if (invalidSections.size) {
             // return any invalid sections to the frontend
-            throw new InvalidSectionsError(invalidSections);
+            throw new InvalidSectionsError([...invalidSections]);
         }
 
         // collect User and Member objects to insert once all parsing is done
         const users: User[] = [];
         const members: Member[] = [];
 
-        rows.forEach((row: any) => {
+        for (const row of rows) {
             // TODO: extract these column names out as constants
             const officialLastName = row['Official Last']?.trim() ?? '';
             const officialFirstName = row['Official First']?.trim() ?? '';
@@ -171,7 +173,7 @@ export class MemberService {
             const preferredFirstName = row['Preferred First']?.trim() ?? '';
             // for extended ed students without a CP email, use their preferred email for now -
             // they will not be needing to log in, so it won't cause problems
-            const email = row.Email?.trim() !== 'anonymous' ? row.Email?.trim() : row['Preferred Email'].trim();
+            const email = row.Email!.trim() !== 'anonymous' ? row.Email!.trim() : row['Preferred Email']!.trim();
 
             const lastName = preferredLastName === '0' ? officialLastName : preferredLastName;
             const firstName = preferredFirstName === '0' ? officialFirstName : preferredFirstName;
@@ -180,12 +182,20 @@ export class MemberService {
             // ! = non-null assertion, since we already checked for invalid section names
             const section: Section = sectionMap.get(sectionName)!;
 
-            const user: User = new User();
-            user.firstName = firstName;
-            user.lastName = lastName;
-            user.email = email;
-            user.role = Constants.ROLE_MEMBER;
-            users.push(user);
+            let user: User | null = await this.userService.getByEmail(email);
+            if (user && user.role != Constants.ROLE_ADMIN && user.role != Constants.ROLE_OFFICER) {
+                // reset everyone's role, unless they're an admin/officer - in case the logged-in user is an admin/officer,
+                // we don't want it to change their access level during the session
+                user.role = Constants.ROLE_MEMBER;
+                users.push(user);
+            } else if (!user) {
+                user = new User();
+                user.firstName = firstName;
+                user.lastName = lastName;
+                user.email = email;
+                user.role = Constants.ROLE_MEMBER;
+                users.push(user);
+            }
 
             const member: Member = new Member();
             member.user = user;
@@ -194,7 +204,7 @@ export class MemberService {
             member.pepBand = null;
             member.rehearsalConflict = null;
             members.push(member);
-        })
+        }
 
         // insert users if they don't exist
         await this.userService.insertOrUpdate(users);

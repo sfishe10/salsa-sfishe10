@@ -78,6 +78,9 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   @ViewChild('missingEmailsConfirmationDialog') missingEmailsConfirmationDialog!: TemplateRef<any>;
   missingEmailsConfirmationDialogRef!: MatDialogRef<any>;
 
+  @ViewChild('invalidSectionNamesDialog') invalidSectionNamesDialog!: TemplateRef<any>;
+  invalidSectionNamesDialogRef!: MatDialogRef<any>;
+
   sectionOptions: Section[] = [];
   pepBandOptions: PepBand[] = [];
 
@@ -103,6 +106,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   filterText: string = '';
 
   emailsMissingMembers: string[] = [];
+
+  invalidSectionNames: string[] = [];
 
   showMissingTermError: boolean = false;
 
@@ -210,9 +215,18 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
           this.openSnackBar('Members added', 'OK', 3000);
         },
         error: (err: any) => {
-          console.error('Upload error:', err)
-          this.onCancelDialog();
-          this.openSnackBar('Error uploading CSV', 'OK', 3000);
+          if (err.status === 422) {
+            this.invalidSectionNames = [];
+            console.log(err.error);
+            err.error.forEach((email: string) => {
+              this.invalidSectionNames.push(email);
+            })
+            this.invalidSectionNamesDialogRef = this.dialog.open(this.invalidSectionNamesDialog);
+          } else {
+            console.error('Upload error:', err)
+            this.onCancelDialog();
+            this.openSnackBar('Error uploading CSV', 'OK', 3000);
+          }
         },
       });
     } else if (this.uploadCsvType === 'assignRehearsalConflicts') {

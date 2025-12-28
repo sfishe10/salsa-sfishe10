@@ -5,6 +5,7 @@ import {UserService} from "../../services/user.service";
 import {Member} from "../../entities/member.entity";
 import {toMemberDto} from "../../mappers/member.mapper";
 import {InvalidEmailsError} from "../../errors/invalid-emails-error";
+import {InvalidSectionsError} from "../../errors/invalid-sections-error";
 
 const memberService: MemberService = new MemberService();
 const userService: UserService = new UserService();
@@ -61,12 +62,15 @@ export const uploadCsv = async (req: any, res: any) => {
   }
 
   try {
-    let termId: number = req.params.id
+    const termId: number = req.params.id;
 
     await memberService.parseCsvAndCreateMembers(req.file, termId);
 
     res.status(200).send(true);
   } catch (err: any) {
+    if (err instanceof InvalidSectionsError) {
+      return res.status(422).send(err.invalidSections);
+    }
     console.error('A critical error occurred in members.uploadCsv():', err.message);
     return res.status(500).send(err.message);
   }
