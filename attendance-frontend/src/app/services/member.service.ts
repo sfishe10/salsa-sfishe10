@@ -20,7 +20,7 @@ export class MemberService {
 
   public updateMember(member: Member): Observable<Member> {
     const url = this.baseUrl + `/members/${member.memberId}`;
-    return this.http.put<Member>(url, {member: member});
+    return this.http.put<Member>(url, member);
   }
 
   public deleteMember(member: Member): Observable<any> {
@@ -33,8 +33,8 @@ export class MemberService {
     return this.http.get<EventAttendanceMemberPage[]>(url);
   }
 
-  public getMembersBySectionId(sectionId: number): Observable<Member[]> {
-    const url = this.baseUrl + `/members/section/${sectionId}`;
+  public getMembersBySectionAndTermId(sectionId: number, termId: number): Observable<Member[]> {
+    const url = this.baseUrl + `/members/section/${sectionId}/term/${termId}`;
     return this.http.get<Member[]>(url);
   }
 }

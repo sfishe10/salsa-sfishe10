@@ -2,16 +2,11 @@ import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EventAttendance} from '../models/event-attendance';
 import {AttendanceService} from '../services/attendance.service';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule} from '@angular/forms';
+import {DatePipe, NgIf} from '@angular/common';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatIcon} from '@angular/material/icon';
-import {MatOption} from '@angular/material/core';
-import {MatSelect} from '@angular/material/select';
-import {MemberAttendanceTableComponent} from '../shared/member-attendance-table/member-attendance-table.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatInput} from '@angular/material/input';
 import {Utilities} from '../utilities/utilities';
 import {Constants} from '../utilities/constants';
 import {AttendanceSelectComponent} from '../attendance-form/attendance-select/attendance-select.component';
@@ -26,16 +21,9 @@ import {Member} from '../models/member';
     DatePipe,
     FormsModule,
     MatButton,
-    MatFormField,
     MatIcon,
-    MatLabel,
-    MatOption,
-    MatSelect,
-    MemberAttendanceTableComponent,
-    NgForOf,
     NgIf,
     ReactiveFormsModule,
-    MatInput,
     AttendanceSelectComponent,
     MemberSelectComponent
   ],
@@ -83,12 +71,12 @@ export class EventAttendancePageComponent implements OnInit {
 
       let sectionId = attendance.member?.section?.sectionId;
       if (sectionId) {
-        this.memberService.getMembersBySectionId(sectionId).subscribe(members => {
+        this.memberService.getMembersBySectionAndTermId(sectionId, this.eventAttendance.mbEvent.term.termId).subscribe(members => {
           this.sectionMembers = members;
         })
       }
 
-      this.attendanceOptions = Utilities.getAttendanceOptions(this.eventAttendance?.event?.type === this.PEP_EVENT);
+      this.attendanceOptions = Utilities.getAttendanceOptions(this.eventAttendance?.mbEvent?.type === this.PEP_EVENT);
     }, error => {
       console.log(error)
     })
@@ -109,8 +97,8 @@ export class EventAttendancePageComponent implements OnInit {
       this.eventAttendance.sub = this.form.value.sub;
     }
 
-    this.attendanceService.updateAttendance(this.attendanceId, this.eventAttendance).subscribe(newLastUpdated => {
-      this.eventAttendance.lastUpdated = newLastUpdated;
+    this.attendanceService.updateAttendance(this.attendanceId, this.eventAttendance).subscribe(att => {
+      this.eventAttendance.lastUpdated = att.lastUpdated;
       this.openSnackBar("Attendance updated!", "Ok", 3000);
       this.editing = false;
     }, error => {
@@ -136,7 +124,7 @@ export class EventAttendancePageComponent implements OnInit {
   }
 
   includeSubOption(): boolean {
-    return this.eventAttendance?.event?.type === Constants.EVENT_TYPE_PEP_EVENT;
+    return this.eventAttendance?.mbEvent?.type === Constants.EVENT_TYPE_PEP_EVENT;
   }
 
   openSnackBar(message: string, action: string, duration: number) {

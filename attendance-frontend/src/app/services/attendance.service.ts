@@ -20,7 +20,7 @@ export class AttendanceService {
 
   public updateAttendance(attendanceId: number, attendance: EventAttendance) {
     const url = this.baseUrl + `/attendance/${attendanceId}`;
-    return this.http.put<Date>(url, {attendance});
+    return this.http.put<EventAttendance>(url, attendance);
   }
 
   public getMemberStatsBySectionId(sectionId: number): Observable<MemberStats[]> {

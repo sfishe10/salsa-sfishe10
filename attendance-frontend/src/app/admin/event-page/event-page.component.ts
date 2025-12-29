@@ -102,11 +102,8 @@ export class EventPageComponent implements OnInit {
       this.eventType = event.type;
       this.eventPepBand = this.pepBandOptions.find(band => band.bandId === event.pepBand?.bandId) ?? null;
       this.extraAttendeesAllowed = event.extraAttendeesAllowed ?? true;
+      this.volunteerRosterMemberCounts = event.volunteerRosterMemberCounts;
       this.separateDateAndTimeInputs(new Date(event.date));
-    })
-
-    this.eventService.getEventVolunteerRosterMemberCounts(eventId).subscribe(counts => {
-      this.volunteerRosterMemberCounts = counts;
     })
   }
 
@@ -124,10 +121,11 @@ export class EventPageComponent implements OnInit {
       date: form.value.eventDate,
       pepBand: form.value.eventPepBand ?? null,
       extraAttendeesAllowed: form.value.extraAttendeesAllowed ?? null,
-      term: this.event?.term
+      term: this.event?.term,
+      volunteerRosterMemberCounts: this.volunteerRosterMemberCounts
     } as MBEvent;
 
-    this.adminService.updateEvent(newEvent, this.volunteerRosterMemberCounts).subscribe(() => {
+    this.adminService.updateEvent(newEvent).subscribe(() => {
       this.event = newEvent;
       this.separateDateAndTimeInputs(newEvent.date);
       this.openSnackBar("Event updated!", "Ok", 3000);

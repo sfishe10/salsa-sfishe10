@@ -1,0 +1,14 @@
+# IDE artifacts
+*.swp
+.DS_Store
+
+# node stuffs
+node_modules/
+
+# singe-use sql scripts
+tempSQLscripts/
+
+# environment variables
+.env
+
+dist/

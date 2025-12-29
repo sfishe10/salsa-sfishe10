@@ -3,6 +3,6 @@ import {MBEvent} from './mb-event';
 
 export interface VolunteerRosterMemberCount {
   section: Section;
-  event: MBEvent;
+  eventId: number;
   numMembersNeeded: number | null;
 }

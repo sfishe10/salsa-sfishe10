@@ -19,7 +19,7 @@ export class UserService {
 
   public updateUser(user: User) {
     const url = this.baseUrl + `/users`;
-    return this.http.put<any>(url, {user});
+    return this.http.put<any>(url, user);
   }
 
 }
