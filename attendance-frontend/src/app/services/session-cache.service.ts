@@ -20,15 +20,10 @@ export class SessionCacheService {
       // Fetch current user info
       const response: any = await firstValueFrom(
         this.http.get(`${environment.apiURL}/me`, {
-	  withCredentials: true
-	}).pipe(
+          withCredentials: true
+        }).pipe(
           tap((res: any) => {
             this.set(Constants.STORAGE_KEY_ME, res);
-
-            const role = res.user.role;
-            this.set(Constants.STORAGE_KEY_IS_ADMIN, role === Constants.ROLE_ADMIN);
-            this.set(Constants.STORAGE_KEY_IS_OFFICER, role === Constants.ROLE_OFFICER);
-            this.set(Constants.STORAGE_KEY_IS_ATTENDANCE_TAKER, role === Constants.ROLE_ATTENDANCE_TAKER);
           })
         )
       );
@@ -42,10 +37,11 @@ export class SessionCacheService {
           (response.user.role === Constants.ROLE_SECTION_LEADER
             || response.user.role === Constants.ROLE_ATTENDANCE_TAKER)
           && Utilities.isDrumline(response.member.section))
-        console.log(this.isDrumlineAttendanceTaker());
+
+        const termId = response.member.term.termId;
 
         const sectionMembers: any = await firstValueFrom(
-          this.http.get(`${this.baseUrl}/members/section/${section.sectionId}`)
+          this.http.get(`${this.baseUrl}/members/section/${section.sectionId}/term/${termId}`)
         );
         this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
 

@@ -84,7 +84,7 @@ export class UserPageComponent implements OnInit {
 
     const newUser = {
       userId: this.user.userId,
-      email: form.value.email,
+      email: this.user.email,
       firstName: form.value.firstName,
       lastName: form.value.lastName,
       role: form.value.role

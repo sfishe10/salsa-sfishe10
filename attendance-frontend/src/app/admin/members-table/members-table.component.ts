@@ -28,6 +28,7 @@ import {SessionCacheService} from '../../services/session-cache.service';
 import {AdminService} from '../../services/admin.service';
 import {MatIcon} from '@angular/material/icon';
 import {Router} from '@angular/router';
+import {User} from '../../models/user';
 
 @Component({
   selector: 'app-members-table',
@@ -77,6 +78,9 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   @ViewChild('missingEmailsConfirmationDialog') missingEmailsConfirmationDialog!: TemplateRef<any>;
   missingEmailsConfirmationDialogRef!: MatDialogRef<any>;
 
+  @ViewChild('invalidSectionNamesDialog') invalidSectionNamesDialog!: TemplateRef<any>;
+  invalidSectionNamesDialogRef!: MatDialogRef<any>;
+
   sectionOptions: Section[] = [];
   pepBandOptions: PepBand[] = [];
 
@@ -102,6 +106,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   filterText: string = '';
 
   emailsMissingMembers: string[] = [];
+
+  invalidSectionNames: string[] = [];
 
   showMissingTermError: boolean = false;
 
@@ -147,13 +153,14 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   }
 
   submitMember(form: NgForm) {
+    // TODO: send a User instead of just email... add an autocomplete/dropdown
     let newMember = {
-      email: form.value.memberEmail,
+      user: {email: form.value.memberEmail} as User,
       pepBand: form.value.memberPepBand,
       section: form.value.memberSection,
       rehearsalConflict: form.value.memberRehearsalConflict,
       term: this.selectedTerm
-    }
+    } as Member;
 
     this.adminService.createMember(newMember).subscribe((insertedMember: Member) => {
       this.members.push(insertedMember);
@@ -208,28 +215,13 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
           this.openSnackBar('Members added', 'OK', 3000);
         },
         error: (err: any) => {
-          console.error('Upload error:', err)
-          this.onCancelDialog();
-          this.openSnackBar('Error uploading CSV', 'OK', 3000);
-        },
-      });
-    } else if (this.uploadCsvType == 'assignPepBands') {
-      formData.append('emailsToSkip', JSON.stringify(this.emailsMissingMembers));
-      this.adminService.uploadPepBandsCsv(formData, termId).subscribe({
-        next: (res: any) => {
-          this.emailsMissingMembers = [];
-          this.onTermChange(termId);
-          this.onCancelDialog();
-          this.openSnackBar('Pep Bands Assigned', 'OK', 3000);
-        },
-        error: (err: any) => {
           if (err.status === 422) {
-            this.emailsMissingMembers = [];
+            this.invalidSectionNames = [];
             console.log(err.error);
-            err.error.forEach((emailObj: any) => {
-              this.emailsMissingMembers.push(emailObj.email);
+            err.error.forEach((email: string) => {
+              this.invalidSectionNames.push(email);
             })
-            this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
+            this.invalidSectionNamesDialogRef = this.dialog.open(this.invalidSectionNamesDialog);
           } else {
             console.error('Upload error:', err)
             this.onCancelDialog();
@@ -238,7 +230,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
         },
       });
     } else if (this.uploadCsvType === 'assignRehearsalConflicts') {
-      formData.append('emailsToSkip', JSON.stringify(this.emailsMissingMembers));
+      // if we've already been warned about invalid emails, proceed and ignore them
+      formData.append('ignoreInvalidEmails', this.missingEmailsConfirmationDialogRef ? 'true' : 'false');
       this.adminService.uploadRehearsalConflictsCsv(formData, termId).subscribe({
         next: (res: any) => {
           this.emailsMissingMembers = [];
@@ -250,8 +243,8 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
           if (err.status === 422) {
             this.emailsMissingMembers = [];
             console.log(err.error);
-            err.error.forEach((emailObj: any) => {
-              this.emailsMissingMembers.push(emailObj.email);
+            err.error.forEach((email: string) => {
+              this.emailsMissingMembers.push(email);
             })
             this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
           } else {

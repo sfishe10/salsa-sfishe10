@@ -31,6 +31,7 @@ import {Utilities} from '../utilities/utilities';
 import {MatIcon} from '@angular/material/icon';
 import {Router} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
+import {UserService} from '../services/user.service';
 
 @Component({
   selector: 'app-admin',
@@ -114,6 +115,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   emailsMissingUsers: string[] = [];
 
   constructor(private adminService: AdminService,
+              private userService: UserService,
               public sessionCacheService: SessionCacheService,
               private dialog: MatDialog,
               private router: Router) {
@@ -232,7 +234,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       firstName: form.value.userFirstName,
       lastName: form.value.userLastName,
       role: form.value.userRole
-    }
+    } as User;
 
     this.adminService.createUser(newUser).subscribe((insertedUser: User) => {
       this.userTables.forEach(table => {
@@ -252,7 +254,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   updateUserRole(form: NgForm) {
-    this.adminService.updateRole(form.value.userEmail, form.value.userRole).subscribe(() => {
+    const user = {
+      email: form.value.userEmail,
+      role: form.value.userRole
+    } as User;
+    this.userService.updateUser(user).subscribe(() => {
       this.userTables.forEach(table => {
         table.fetchUsers();
       })
@@ -289,7 +295,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    formData.append('emailsToSkip', JSON.stringify(this.emailsMissingUsers));
+    // if we've already been warned about invalid emails, proceed and ignore them
+    formData.append('ignoreInvalidEmails', this.missingEmailsConfirmationDialogRef ? 'true' : 'false');
     this.adminService.uploadRolesCsv(formData).subscribe({
       next: (res: any) => {
         this.emailsMissingUsers = [];
@@ -299,8 +306,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
       error: (err: any) => {
         if (err.status === 422) {
           this.emailsMissingUsers = [];
-          err.error.forEach((emailObj: any) => {
-            this.emailsMissingUsers.push(emailObj.email);
+          err.error.forEach((email: string) => {
+            this.emailsMissingUsers.push(email);
           })
           this.missingEmailsConfirmationDialogRef = this.dialog.open(this.missingEmailsConfirmationDialog);
         } else {

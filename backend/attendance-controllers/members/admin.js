@@ -99,7 +99,7 @@ module.exports.update = async (req, res) => {
                   } else {
                     if (member.pepBand) {
                       db.execute('CALL ReassignRemainingPepEventsForMember(?, ?, ?, ?)',
-                        [member.term.termId, member.memberId, member.pepBand.bandId, member.pepBand.sectionId],
+                        [member.term.termId, member.memberId, member.pepBand.bandId, member.section.sectionId],
                         (err4, result4) => {
                           if (err4) {
                             console.log(err4);

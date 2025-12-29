@@ -52,12 +52,12 @@ export class AdminService {
 
   public createEvent(event: MBEvent) {
     const url = this.baseUrl + '/events';
-    return this.http.post<any>(url, {event: event})
+    return this.http.post<any>(url, event)
   }
 
-  public updateEvent(event: MBEvent, volunteerRosterMemberCounts: VolunteerRosterMemberCount[]) {
+  public updateEvent(event: MBEvent) {
     const url = this.baseUrl + `/events/${event.eventId}`;
-    return this.http.put<MBEvent>(url, {event, volunteerRosterMemberCounts});
+    return this.http.put<MBEvent>(url, event);
   }
 
   public deleteEvent(eventId: number) {
@@ -67,27 +67,22 @@ export class AdminService {
 
   public createTerm(term: Term): Observable<Term> {
     const url = this.baseUrl + '/terms';
-    return this.http.post<Term>(url, {term: term})
+    return this.http.post<Term>(url, term)
   }
 
   public updateTerm(term: Term): Observable<Term> {
     const url = this.baseUrl + `/terms/${term.termId}`;
-    return this.http.put<Term>(url, {term: term})
+    return this.http.put<Term>(url, term)
   }
 
-  public createMember(memberInfo: any): Observable<Member> {
+  public createMember(member: Member): Observable<Member> {
     const url = this.baseUrl + '/members';
-    return this.http.post<Member>(url, {member: memberInfo});
+    return this.http.post<Member>(url, member);
   }
 
-  public createUser(userInfo: any): Observable<User> {
+  public createUser(user: User): Observable<User> {
     const url = this.baseUrl + '/users';
-    return this.http.post<User>(url, {user: userInfo});
-  }
-
-  public updateRole(email: string, role: string) {
-    const url = this.baseUrl + '/users/assignRole';
-    return this.http.put(url, { email: email, role: role })
+    return this.http.post<User>(url, user);
   }
 
   public getAllUsers(): Observable<User[]> {

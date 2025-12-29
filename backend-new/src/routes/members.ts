@@ -1,0 +1,27 @@
+import { Router } from 'express';
+import multer from 'multer';
+import * as members from '../controllers/members';
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+const router: Router = Router();
+
+/**
+ * admin
+ */
+
+router.post('/', members.admin.create);
+router.put('/:id', members.admin.update);
+router.delete('/:id', members.admin.deleteMember);
+router.post('/term/:id/uploadCsv', upload.single('file'), members.admin.uploadCsv);
+router.post('/term/:id/uploadRehearsalConflictsCsv', upload.single('file'), members.admin.uploadRehearsalConflictsCsv);
+
+/**
+ * selectors
+ */
+
+router.get('/:id', members.selector.getById);
+router.get('/section/:sectionId/term/:termId', members.selector.getBySectionAndTermId);
+router.get('/term/:id', members.selector.getByTermId);
+
+export default router;

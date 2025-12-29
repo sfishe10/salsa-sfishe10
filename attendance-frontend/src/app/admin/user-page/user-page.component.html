@@ -13,9 +13,9 @@
 
     <div *ngIf="!editing" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; font-size: 1.2rem">
       <span>Email: <b>{{user?.email}}</b></span>
-      <span>First Name: <b>{{user.firstName}}</b></span>
-      <span>Last Name: <b>{{user.lastName}}</b></span>
-      <span>Role: <b>{{user.role}}</b></span>
+      <span>First Name: <b>{{user?.firstName}}</b></span>
+      <span>Last Name: <b>{{user?.lastName}}</b></span>
+      <span>Role: <b>{{user?.role}}</b></span>
     </div>
 
 
@@ -23,7 +23,7 @@
       <div style="display: flex; flex-direction: column">
         <mat-form-field style="max-width: 400px">
           <mat-label class="form-label">Email</mat-label>
-          <input matInput id="email" type="text" name="email" [(ngModel)]="email">
+          <input matInput id="email" type="text" name="email" [(ngModel)]="email" [disabled]="true">
         </mat-form-field>
         <mat-form-field style="max-width: 400px">
           <mat-label class="form-label">First Name</mat-label>

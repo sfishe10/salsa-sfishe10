@@ -3,7 +3,7 @@ import {Member} from './member';
 
 export interface EventAttendance {
   attendanceId: number;
-  event: MBEvent;
+  mbEvent: MBEvent;
   attendance: string;
   member: Member | null;
   sub: Member | null;

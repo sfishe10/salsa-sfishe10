@@ -43,6 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe((result: EventMessage) => {
         const payload = result.payload as AuthenticationResult;
         this.authService.instance.setActiveAccount(payload.account);
+        this.sessionCacheService.preload();
       });
 
     this.msalBroadcastService.inProgress$
@@ -59,6 +60,7 @@ export class AppComponent implements OnInit, OnDestroy {
             this.authService.instance.setActiveAccount(account);
           }
         }
+        this.sessionCacheService.preload();
       });
   }
 

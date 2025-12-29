@@ -105,10 +105,9 @@ export class MemberPageComponent implements OnInit {
       pepBand: form.value.pepBand,
       rehearsalConflict: form.value.rehearsalConflict,
       term: this.member?.term
-    }
+    } as Member
 
     this.memberService.updateMember(member).subscribe(updatedMember => {
-      this.member = updatedMember;
       this.openSnackBar("Member updated!", "Ok", 3000);
       this.editing = false;
     }, error => {
