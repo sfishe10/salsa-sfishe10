@@ -6,8 +6,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 const router: Router = Router();
 
-export default router;
-
 /**
  * admin
  */
@@ -24,4 +22,4 @@ router.get('/', users.selector.getAll);
 router.get('/:id', users.selector.getById);
 router.get('/role/:role', users.selector.getByRole);
 
-module.exports = router;
+export default router;
