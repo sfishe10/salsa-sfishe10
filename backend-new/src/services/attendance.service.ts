@@ -70,7 +70,7 @@ export class AttendanceService {
     }
 
     public async getByTermIdAndSectionAndPepBand(termId: number,
-                                                 pepBandId: number,
+                                                 pepBandId: string,
                                                  sectionId: number | null,
                                                  ignoreMemberPepBand: boolean) {
         const attendances: AttendanceTermPageDto[] =
