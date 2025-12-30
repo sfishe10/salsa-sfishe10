@@ -88,15 +88,18 @@ export class AttendanceService {
 
     public async createBlankAttendance(newAttendanceDto: EventAttendanceDto): Promise<EventAttendance> {
         const eventId = newAttendanceDto.mbEvent.eventId;
-        const sectionId = newAttendanceDto?.section ? newAttendanceDto.section.sectionId : null;
+        const sectionId = newAttendanceDto?.section?.sectionId;
 
         let newAttendance: EventAttendance = new EventAttendance();
         const mbEvent: MBEvent = { eventId } as MBEvent;
-        const section: Section | null = sectionId ? { sectionId } as Section : null;
+        const section: Section = { sectionId } as Section;
 
         newAttendance.member = null;
+        newAttendance.sub = null;
         newAttendance.mbEvent = mbEvent;
         newAttendance.section = section;
+        newAttendance.required = false;
+        newAttendance.attendance = null;
 
         return await this.attendanceRepository.save(newAttendance);
     }
