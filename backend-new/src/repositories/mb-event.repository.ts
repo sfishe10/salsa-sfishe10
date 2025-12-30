@@ -1,4 +1,4 @@
-import {db} from "../../data-source";
+import {db} from "../data-source";
 import {MBEvent} from "../entities/mb-event.entity";
 import {IsNull, LessThan, MoreThanOrEqual} from "typeorm";
 import {NotFoundError} from "../errors/not-found-error";

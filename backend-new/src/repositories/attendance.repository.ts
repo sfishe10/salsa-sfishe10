@@ -1,4 +1,4 @@
-import {db} from "../../data-source";
+import {db} from "../data-source";
 import {EventAttendance} from "../entities/event-attendance.entity";
 import {plainToInstance} from "class-transformer";
 import {MemberStatsDto} from "../dto/member-stats.dto";

@@ -27,7 +27,7 @@ import attendanceSectionRoutes from './routes/sections';
 import attendanceUserRoutes from './routes/users';
 
 // Database import
-import {db} from "../data-source";
+import {db} from "./data-source";
 import {UserService} from "./services/user.service";
 import {MemberService} from "./services/member.service";
 import {User} from "./entities/user.entity";

@@ -9,6 +9,6 @@ node_modules/
 tempSQLscripts/
 
 # environment variables
-.env
+src/.env
 
 dist/

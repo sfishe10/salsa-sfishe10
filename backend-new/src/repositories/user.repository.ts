@@ -1,4 +1,4 @@
-import {db} from "../../data-source";
+import {db} from "../data-source";
 import {User} from "../entities/user.entity";
 
 export class UserRepository {

@@ -1,4 +1,4 @@
-import {db} from "../../data-source";
+import {db} from "../data-source";
 import {Section} from "../entities/section.entity";
 
 export class SectionRepository {
