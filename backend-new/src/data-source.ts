@@ -1,8 +1,11 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
+import * as path from "node:path";
 
-dotenv.config();
+dotenv.config({
+    path: path.resolve(__dirname, '.env'),
+});
 
 export const db = new DataSource({
     type: 'mysql',
