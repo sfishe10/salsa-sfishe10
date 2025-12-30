@@ -1,8 +1,11 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
+import * as path from "node:path";
 
-dotenv.config();
+dotenv.config({
+    path: path.resolve(__dirname, '.env'),
+});
 
 export const db = new DataSource({
     type: 'mysql',
@@ -15,7 +18,7 @@ export const db = new DataSource({
         connectionLimit: 10,
     },
     timezone: '-08:00', // Pacific Standard Time
-    entities: [__dirname + '/../entities/**/*.{ts,js}'],
+    entities: [__dirname + '/entities/**/*.{ts,js}'],
     synchronize: false,
     logging: process.env.ENVIRONMENT !== 'production',
 });
