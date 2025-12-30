@@ -1,4 +1,4 @@
-import {db} from "../config/data-source";
+import {db} from "../../data-source";
 import {Member} from "../entities/member.entity";
 import {LessThanOrEqual, MoreThanOrEqual} from "typeorm";
 
