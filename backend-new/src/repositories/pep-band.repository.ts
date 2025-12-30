@@ -1,4 +1,4 @@
-import {db} from "../../data-source";
+import {db} from "../data-source";
 import {PepBand} from "../entities/pep-band.entity";
 
 export class PepBandRepository {

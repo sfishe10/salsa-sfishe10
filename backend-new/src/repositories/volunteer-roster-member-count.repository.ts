@@ -1,4 +1,4 @@
-import {db} from "../../data-source";
+import {db} from "../data-source";
 import {VolunteerRosterMemberCount} from "../entities/volunteer-roster-member-count.entity";
 
 export class VolunteerRosterMemberCountRepository {

@@ -1,4 +1,4 @@
-import {db} from "../../data-source";
+import {db} from "../data-source";
 import {Term} from "../entities/term.entity";
 import {NotFoundError} from "../errors/not-found-error";
 
