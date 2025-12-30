@@ -65,7 +65,7 @@ export class AttendanceRepository {
         let sectionClause = '';
 
         if (sectionId !== null) {
-            sectionClause = 'AND s.sectionId = ?';
+            sectionClause = 'AND ea.sectionId = ?';
             params.push(sectionId);
         }
 
@@ -94,6 +94,7 @@ export class AttendanceRepository {
               JOIN Section s ON mem.sectionId = s.sectionId
               WHERE e.termId = ?
                 AND e.type = ?
+                AND mem.memberId IS NOT NULL
                 ${sectionClause}
               ORDER BY s.sectionId, e.date, u.lastName
         `;
@@ -149,6 +150,7 @@ export class AttendanceRepository {
             LEFT JOIN Section s ON mem.sectionId = s.sectionId
             WHERE e.termId = ?
               AND e.pepBandId = ?
+              AND mem.memberId IS NOT NULL
               ${pepBandClause}
               ${sectionClause}
             ORDER BY e.date, u.lastName

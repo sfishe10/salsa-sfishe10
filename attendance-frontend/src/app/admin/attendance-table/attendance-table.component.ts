@@ -29,7 +29,6 @@ type MemberWithAttendance = {
   isSection: false;
   memberId: number;
   fullName: string;
-  subName: string;
   sectionName: string;
   rehearsalConflict: string;
   attendanceMap: { [eventId: number]: AttendanceCell }; // eventId -> status
@@ -156,9 +155,7 @@ export class AttendanceTableComponent implements OnInit {
 
     this.events = [];
     for (const record of attendances) {
-      const key = `${record.memberId}`;
       const fullName = `${record.memberFirstName} ${record.memberLastName}`;
-      const subName = `${record.subFirstName} ${record.subLastName}`
       const sectionName = record.sectionName;
 
       const attendanceEvent = {
@@ -180,7 +177,6 @@ export class AttendanceTableComponent implements OnInit {
           isSection: false,
           memberId: record.memberId,
           fullName,
-          subName,
           sectionName,
           rehearsalConflict: record.rehearsalConflict,
           attendanceMap: {}
@@ -190,7 +186,7 @@ export class AttendanceTableComponent implements OnInit {
 
       memberRow.attendanceMap[record.eventId] = {
         id: record.attendanceId,
-        status: record.attendanceStatus
+        status: record.attendanceStatus == 'Sub' ? `Subbed by ${record.subFirstName} ${record.subLastName}` : record.attendanceStatus
       };
     }
 
@@ -210,11 +206,11 @@ export class AttendanceTableComponent implements OnInit {
     this.dataSource = rows;
     this.displayedColumns = ['name', ...this.events.map(e => e.eventId.toString())];
 
-    console.table(rows.map(r => ({
-      isSection: r.isSection,
-      sectionName: (r as SectionRow).sectionName,
-      fullName: (r as MemberWithAttendance).fullName
-    })));
+    // console.table(rows.map(r => ({
+    //   isSection: r.isSection,
+    //   sectionName: (r as SectionRow).sectionName,
+    //   fullName: (r as MemberWithAttendance).fullName
+    // })));
   }
 
   navigateToAttendance(attendanceId: number) {
