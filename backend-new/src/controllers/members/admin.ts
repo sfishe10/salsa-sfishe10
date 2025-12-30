@@ -57,11 +57,11 @@ export const deleteMember = async (req: any, res: any) => {
 
 // For uploading the supplemental form
 export const uploadCsv = async (req: any, res: any) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
-
   try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
     const termId: number = req.params.id;
 
     await memberService.parseCsvAndCreateMembers(req.file, termId);
@@ -78,11 +78,11 @@ export const uploadCsv = async (req: any, res: any) => {
 };
 
 export const uploadRehearsalConflictsCsv = async (req: any, res: any)  => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
-
   try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
     const termId: number = req.params.id;
     const ignoreInvalidEmails: boolean = req.body.ignoreInvalidEmails === 'true';
 

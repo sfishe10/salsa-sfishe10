@@ -21,9 +21,9 @@ export const getAll = async (req: any, res: any) => {
 };
 
 export const getById = async (req: any, res: any) => {
-    const userId = req.params.id;
-
     try {
+        const userId = req.params.id;
+
         const user: User | null = await userService.getById(userId);
 
         if (!user) {

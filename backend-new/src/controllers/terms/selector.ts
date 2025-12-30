@@ -22,9 +22,9 @@ export const getAll = async (req: any, res: any) => {
 };
 
 export const getById = async (req: any, res: any) => {
-    const termId = req.params.id;
-
     try {
+        const termId = req.params.id;
+
         const term: Term = await termService.getById(termId);
 
         res.send(toTermDto(term));

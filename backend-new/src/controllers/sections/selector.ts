@@ -24,9 +24,9 @@ export const getAll = async (req: any, res: any) => {
 };
 
 export const getById = async (req: any, res: any) => {
-    const sectionId = req.params.id;
-
     try {
+        const sectionId = req.params.id;
+
         const section: SectionDto = await sectionService.getById(sectionId);
 
         res.send(section);

@@ -84,11 +84,11 @@ export class UserPageComponent implements OnInit {
 
     const newUser = {
       userId: this.user.userId,
-      email: this.user.email,
+      email: form.value.email,
       firstName: form.value.firstName,
       lastName: form.value.lastName,
       role: form.value.role
-    }
+    } as User;
 
     this.userService.updateUser(newUser).subscribe(() => {
       this.user = newUser;

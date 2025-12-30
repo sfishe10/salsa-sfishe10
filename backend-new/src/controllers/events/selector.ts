@@ -38,9 +38,9 @@ export const getUpcoming = async (req: any, res: any) => {
 };
 
 export const getById = async (req: any, res: any) => {
-  const eventId = req.params.id;
-
   try {
+    const eventId = req.params.id;
+
     const mbEvent: MBEvent = await eventService.getById(eventId);
 
     const eventDto = toMbEventDto(mbEvent);

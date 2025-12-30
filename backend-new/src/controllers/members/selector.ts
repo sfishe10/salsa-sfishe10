@@ -12,9 +12,9 @@ const memberService: MemberService = new MemberService();
 
 
 export const getById = async (req: any, res: any) => {
-  const memberId = req.params.id;
-
   try {
+    const memberId = req.params.id;
+
     const member: Member = await memberService.getById(memberId);
 
     res.send(toMemberDto(member));
@@ -30,10 +30,10 @@ export const getById = async (req: any, res: any) => {
 };
 
 export const getBySectionAndTermId = async (req: any, res: any) => {
-  const sectionId = req.params.sectionId;
-  const termId = req.params.termId;
-
   try {
+    const sectionId = req.params.sectionId;
+    const termId = req.params.termId;
+
     const members: MemberDto[] = await memberService.getBySectionAndTermId(sectionId, termId);
 
     res.send(members);
@@ -45,9 +45,9 @@ export const getBySectionAndTermId = async (req: any, res: any) => {
 };
 
 export const getByTermId = async (req: any, res: any) => {
-  const termId = req.params.id;
-
   try {
+    const termId = req.params.id;
+
     const members: Member[] = await memberService.getByTermId(termId);
 
     const memberDtos: MemberDto[] = members.map(member => toMemberDto(member));
