@@ -165,36 +165,52 @@ export class AttendanceRepository {
 
 
     public async getMemberStatsBySectionId(sectionId: number): Promise<MemberStatsDto> {
-        const sql =
-            'SELECT\n' +
-            '      m.memberId,\n' +
-            '      m.termId,\n' +
-            '      m.email,\n' +
-            '      u.firstName,\n' +
-            '      u.lastName,\n' +
-            '      COUNT(CASE WHEN \n' +
-            '          m.memberId = ea.memberId AND e.type = \'Rehearsal\' AND ea.attendance NOT LIKE \'%Absent%\'\n' +
-            '        THEN 1 END) AS numRehearsals,\n' +
-            '      COUNT(CASE WHEN \n' +
-            '          m.memberId = ea.memberId AND e.type = \'Whole Band Event\' AND ea.attendance NOT LIKE \'%Absent%\'\n' +
-            '        THEN 1 END) AS numWholeBandEvents,\n' +
-            '      COUNT(CASE WHEN \n' +
-            '          m.memberId = ea.memberId AND e.type = \'Pep Event\' AND ea.attendance NOT LIKE \'%Absent%\' AND ea.attendance NOT LIKE \'%Sub%\'\n' +
-            '        THEN 1 END) AS numPepEvents,\n' +
-            '      COUNT(CASE WHEN \n' +
-            '          m.memberId = ea.memberId AND b.bandId = \'V\' AND ea.attendance NOT LIKE \'%Absent%\'\n' +
-            '        THEN 1 END) AS numVolunteerEvents,\n' +
-            '      COUNT(CASE WHEN ea.subId = m.memberId THEN 1 END) AS numSubEvents\n' +
-            'FROM Member m\n' +
-            '    LEFT JOIN User u ON m.email = u.email\n' +
-            '    LEFT JOIN EventAttendance ea ON (m.memberId = ea.memberId OR m.memberId = ea.subId)\n' +
-            '    LEFT JOIN MBEvent e ON ea.eventId = e.eventId\n' +
-            '    LEFT JOIN PepBand b ON e.pepBandId = b.bandId\n' +
-            '    LEFT JOIN Term t ON m.termId = t.termId\n' +
-            'WHERE t.startDate <= NOW() AND t.endDate >= NOW()\n' +
-            '      AND m.sectionId = ?\n' +
-            'GROUP BY m.memberId\n' +
-            'ORDER BY u.lastName';
+        const sql = `
+            SELECT
+                 m.memberId,
+                 m.termId,
+                 m.email,
+                 u.firstName,
+                 u.lastName,
+                 COUNT(CASE WHEN
+                                m.memberId = ea.memberId 
+                                    AND e.type = 'Rehearsal' 
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance NOT LIKE '%Absent%'
+                                THEN 1 END) AS numRehearsals,
+                 COUNT(CASE WHEN
+                                m.memberId = ea.memberId 
+                                    AND e.type = 'Whole Band Event'
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance NOT LIKE '%Absent%'
+                                THEN 1 END) AS numWholeBandEvents,
+                 COUNT(CASE WHEN
+                                m.memberId = ea.memberId 
+                                    AND e.type = 'Pep Event'
+                                    AND b.bandId <> 'V'
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance NOT LIKE '%Absent%' 
+                                    AND ea.attendance NOT LIKE '%Sub%'
+                                THEN 1 END) AS numPepEvents,
+                 COUNT(CASE WHEN
+                                m.memberId = ea.memberId 
+                                    AND b.bandId = 'V'
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance NOT LIKE '%Absent%'
+                                    AND ea.attendance NOT LIKE '%Sub%'
+                                THEN 1 END) AS numVolunteerEvents,
+                 COUNT(CASE WHEN ea.subId = m.memberId THEN 1 END) AS numSubEvents
+             FROM Member m
+                      LEFT JOIN User u ON m.email = u.email
+                      LEFT JOIN EventAttendance ea ON (m.memberId = ea.memberId OR m.memberId = ea.subId)
+                      LEFT JOIN MBEvent e ON ea.eventId = e.eventId
+                      LEFT JOIN PepBand b ON e.pepBandId = b.bandId
+                      LEFT JOIN Term t ON m.termId = t.termId
+             WHERE t.startDate <= NOW() AND t.endDate >= NOW()
+               AND m.sectionId = ?
+             GROUP BY m.memberId
+             ORDER BY u.lastName
+             `;
 
         const results = await db.query(sql, [sectionId]);
 

@@ -312,7 +312,7 @@ export class AttendanceFormComponent implements OnInit {
         this.fb.group({
           attendanceId: [response.attendanceId],
           member: [null],
-          attendance: [''],
+          attendance: [null],
           sub: [null],
           required: [false]
         })
