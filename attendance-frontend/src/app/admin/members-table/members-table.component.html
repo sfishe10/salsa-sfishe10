@@ -60,13 +60,13 @@
       <mat-label class="form-label">Select an option</mat-label>
       <mat-select [(value)]="uploadCsvType">
         <mat-option value="addMembers">Supplemental Form</mat-option>
-        <mat-option value="assignPepBands">Pep Bands</mat-option>
         <mat-option value="assignRehearsalConflicts">Rehearsal Conflicts</mat-option>
       </mat-select>
     </mat-form-field><br/>
-    <a *ngIf="uploadCsvType === 'addMembers'"
-       href="/assets/files/pepBandTemplate.xls"
-       download="pepBandTemplate.xls" style="font-size: .9rem;">Download supplemental form template</a>
+    <!-- TODO: make actual excel template and replace this with it -->
+<!--    <a *ngIf="uploadCsvType === 'addMembers'"-->
+<!--       href="/assets/files/pepBandTemplate.xls"-->
+<!--       download="pepBandTemplate.xls" style="font-size: .9rem;">Download supplemental form template</a>-->
     <div style="display:flex; align-items:center; margin-top: 10px;">
       <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>
       <button *ngIf="selectedFile"
