@@ -52,12 +52,13 @@ export class UserService {
     }
 
     public async update(userDto: UserDto): Promise<User> {
-        const existingUser = userDto.userId ? await this.getById(userDto.userId) : await this.getByEmail(userDto.email);
+        const existingUser = await this.getById(userDto.userId);
 
         if (!existingUser) {
             throw new NotFoundError('User not found');
         }
 
+        existingUser.email = userDto.email;
         existingUser.role = userDto.role;
         existingUser.firstName = userDto.firstName;
         existingUser.lastName = userDto.lastName;

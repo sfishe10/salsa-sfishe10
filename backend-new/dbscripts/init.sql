@@ -1,19 +1,17 @@
 CREATE DATABASE 807web;
 USE 807web;
 
-source dbscripts/create_station_tables.sql
-source dbscripts/create_station_triggers.sql
-source dbscripts/create_users_tables.sql
-source dbscripts/create_evaluation_tables.sql
-source dbscripts/create_events_tables.sql
+-- source dbscripts/create_station_tables.sql
+-- source dbscripts/create_station_triggers.sql
+-- source dbscripts/create_users_tables.sql
+-- source dbscripts/create_evaluation_tables.sql
+-- source dbscripts/create_events_tables.sql
 
-source dbscripts/attendance/create_term_table.sql
-source dbscripts/attendance/create_user_table.sql
-source dbscripts/attendance/create_section_table.sql
-source dbscripts/attendance/create_pepband_table.sql
-source dbscripts/attendance/create_member_table.sql
-source dbscripts/attendance/create_mbevent_table.sql
-source dbscripts/attendance/create_eventattendance_table.sql
-source dbscripts/attendance/create_createEventAndAttendance_procedure.sql
-source dbscripts/attendance/create_addAttendancesForNewMembers_procedure.sql
-source dbscripts/attendance/create_reassignRemainingPepEventsForMember_procedure.sql
+source dbscripts/create_tables/create_term_table.sql
+source dbscripts/create_tables/create_user_table.sql
+source dbscripts/create_tables/create_section_table.sql
+source dbscripts/create_tables/create_pepband_table.sql
+source dbscripts/create_tables/create_member_table.sql
+source dbscripts/create_tables/create_mbevent_table.sql
+source dbscripts/create_tables/create_eventattendance_table.sql
+source dbscripts/create_tables/create_volunteerRosterMemberCount_table.sql

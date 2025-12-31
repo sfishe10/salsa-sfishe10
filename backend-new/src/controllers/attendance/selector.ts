@@ -64,9 +64,9 @@ export const getByTermIdAndSection = async (req: any, res: any) => {
 
 export const getByTermIdAndSectionAndPepBand = async (req: any, res: any) => {
   try {
-    const termId = req.params.termId;
-    const pepBandId = req.params.pepBandId;
-    const sectionId = req.params.sectionId !== 'null' ? req.params.sectionId : null;
+    const termId: number = req.params.termId;
+    const pepBandId: string = req.params.pepBandId;
+    const sectionId: number = req.params.sectionId !== 'null' ? req.params.sectionId : null;
     const ignoreMemberPepBand = req.query.ignoreMemberPepBand === 'true';
 
     const attendances: AttendanceTermPageDto[] =

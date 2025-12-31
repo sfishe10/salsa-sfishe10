@@ -44,9 +44,9 @@ export class EventService {
     return this.http.get<EventAttendance[]>(url);
   }
 
-  public addAttendance(eventId: number, sectionId: number | null): Observable<any> {
+  public addAttendance(attendance: EventAttendance): Observable<any> {
     const url = this.baseUrl + `/attendance`;
-    return this.http.post<any>(url, {eventId, sectionId})
+    return this.http.post<any>(url, attendance)
   }
 
   public removeAttendance(attendanceId: number): Observable<any> {

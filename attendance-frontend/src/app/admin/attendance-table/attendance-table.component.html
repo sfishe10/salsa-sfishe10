@@ -56,7 +56,6 @@
           ">
         <span *ngIf="!isSectionRow(i, row)">
           <span *ngIf="!row.attendanceMap[event.eventId]?.status">-</span>
-          <span *ngIf="row.attendanceMap[event.eventId]?.status === 'Sub'">Subbed by {{row.subName}}</span>
           <span *ngIf="!(row.attendanceMap[event.eventId]?.status === 'Sub')">{{row.attendanceMap[event.eventId]?.status}}</span>
         </span>
       </td>

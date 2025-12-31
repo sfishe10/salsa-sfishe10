@@ -65,7 +65,7 @@ export class AttendanceRepository {
         let sectionClause = '';
 
         if (sectionId !== null) {
-            sectionClause = 'AND s.sectionId = ?';
+            sectionClause = 'AND ea.sectionId = ?';
             params.push(sectionId);
         }
 
@@ -94,6 +94,7 @@ export class AttendanceRepository {
               JOIN Section s ON mem.sectionId = s.sectionId
               WHERE e.termId = ?
                 AND e.type = ?
+                AND mem.memberId IS NOT NULL
                 ${sectionClause}
               ORDER BY s.sectionId, e.date, u.lastName
         `;
@@ -107,20 +108,20 @@ export class AttendanceRepository {
 
     public async getByTermIdAndSectionAndPepBand(
             termId: number,
-            pepBandId: number,
+            pepBandId: string,
             sectionId: number | null,
             ignoreMemberPepBand: boolean): Promise<AttendanceTermPageDto[]> {
         const params: any[] = [termId, pepBandId];
         let pepBandClause = '';
         let sectionClause = '';
 
-        if (!ignoreMemberPepBand) {
+        if (!ignoreMemberPepBand && pepBandId != Constants.PEP_BAND_ID_VOLUNTEER) {
             pepBandClause = 'AND mem.pepBandId = ? ';
             params.push(pepBandId);
         }
 
         if (sectionId !== null) {
-            sectionClause = 'AND s.sectionId = ? ';
+            sectionClause = 'AND ea.sectionId = ? ';
             params.push(sectionId);
         }
 
@@ -141,17 +142,18 @@ export class AttendanceRepository {
               s.sectionId,
               s.name AS sectionName
             FROM EventAttendance ea
-            JOIN MBEvent e ON ea.eventId = e.eventId
-            JOIN Member mem ON ea.memberId = mem.memberId
-            JOIN User u ON mem.email = u.email
+            LEFT JOIN MBEvent e ON ea.eventId = e.eventId
+            LEFT JOIN Member mem ON ea.memberId = mem.memberId
+            LEFT JOIN User u ON mem.email = u.email
             LEFT JOIN Member sub ON ea.subId = sub.memberId
             LEFT JOIN User sub_u ON sub.email = sub_u.email
-            JOIN Section s ON mem.sectionId = s.sectionId
+            LEFT JOIN Section s ON mem.sectionId = s.sectionId
             WHERE e.termId = ?
               AND e.pepBandId = ?
+              AND mem.memberId IS NOT NULL
               ${pepBandClause}
               ${sectionClause}
-            ORDER BY s.sectionId, e.date, u.lastName
+            ORDER BY e.date, u.lastName
         `;
 
         const results: any[] = await db.query(sql, params);
@@ -180,14 +182,14 @@ export class AttendanceRepository {
             '          m.memberId = ea.memberId AND e.type = \'Pep Event\' AND ea.attendance NOT LIKE \'%Absent%\' AND ea.attendance NOT LIKE \'%Sub%\'\n' +
             '        THEN 1 END) AS numPepEvents,\n' +
             '      COUNT(CASE WHEN \n' +
-            // TODO: fix this bug - 'volunteer' is a pep band, not event type
-            '          m.memberId = ea.memberId AND e.type = \'Volunteer\' AND ea.attendance NOT LIKE \'%Absent%\'\n' +
+            '          m.memberId = ea.memberId AND b.bandId = \'V\' AND ea.attendance NOT LIKE \'%Absent%\'\n' +
             '        THEN 1 END) AS numVolunteerEvents,\n' +
             '      COUNT(CASE WHEN ea.subId = m.memberId THEN 1 END) AS numSubEvents\n' +
             'FROM Member m\n' +
             '    LEFT JOIN User u ON m.email = u.email\n' +
             '    LEFT JOIN EventAttendance ea ON (m.memberId = ea.memberId OR m.memberId = ea.subId)\n' +
             '    LEFT JOIN MBEvent e ON ea.eventId = e.eventId\n' +
+            '    LEFT JOIN PepBand b ON e.pepBandId = b.bandId\n' +
             '    LEFT JOIN Term t ON m.termId = t.termId\n' +
             'WHERE t.startDate <= NOW() AND t.endDate >= NOW()\n' +
             '      AND m.sectionId = ?\n' +
