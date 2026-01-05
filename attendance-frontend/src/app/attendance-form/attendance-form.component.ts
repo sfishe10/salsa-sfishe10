@@ -271,7 +271,9 @@ export class AttendanceFormComponent implements OnInit {
   public markAllPresent() {
     this.attendances.controls.forEach(control => {
       let group = control as FormGroup;
-      group.get('attendance')?.setValue(Constants.ATTENDANCE_PRESENT);
+      if (!group.get('attendance')?.value) {
+        group.get('attendance')?.setValue(Constants.ATTENDANCE_PRESENT);
+      }
     })
   }
 

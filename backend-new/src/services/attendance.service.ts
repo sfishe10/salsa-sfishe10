@@ -139,13 +139,29 @@ export class AttendanceService {
         }
     }
 
-    // used when creating or updating an individual member
-    public async createAttendancesForMember(member: Member) {
+    // used when creating an individual member
+    public async createAttendancesForNewMember(member: Member) {
         let mbEvents: MBEvent[];
 
         let pepBandId: string | null = member.pepBand ? member.pepBand.bandId : null;
         mbEvents = await this.eventRepository.getByTermAndPepBandId(member.term.termId, pepBandId);
 
+        for (let mbEvent of mbEvents) {
+            await this.createAndSaveAttendance(mbEvent, member);
+        }
+    }
+
+    // used when updating an individual member's pep band
+    public async createPepAttendancesForMember(member: Member) {
+        let mbEvents: MBEvent[];
+
+        let pepBandId = member.pepBand?.bandId;
+        if (!pepBandId) {
+            return;
+
+        }
+        mbEvents = await this.eventRepository.getABCEventsOnlyByTermId(member.term.termId, pepBandId);
+        console.log(mbEvents);
         for (let mbEvent of mbEvents) {
             await this.createAndSaveAttendance(mbEvent, member);
         }
@@ -157,8 +173,8 @@ export class AttendanceService {
         let members: Member[] = await this.memberRepository.findByTermId(termId);
 
         for (let member of members) {
-            let pepBandId: string | null = member.pepBand ? member.pepBand.bandId : null;
-            mbEvents = await this.eventRepository.getByTermAndPepBandId(member.term.termId, pepBandId);
+            // members will not be assigned a pep band yet, so just assign whole band events for now
+            mbEvents = await this.eventRepository.getNonPepEventsByTermId(member.term.termId);
 
             for (let mbEvent of mbEvents) {
                 await this.createAndSaveAttendance(mbEvent, member);
@@ -170,6 +186,7 @@ export class AttendanceService {
         let newAttendance: EventAttendance = new EventAttendance();
         newAttendance.mbEvent = mbEvent;
         newAttendance.member = member;
+        newAttendance.sub = null;
         newAttendance.attendance = null;
         newAttendance.required = true;
         newAttendance.section = member.section;
@@ -200,8 +217,8 @@ export class AttendanceService {
         return await this.attendanceRepository.deleteAttendancesForMember(memberId);
     }
 
-    public async deleteEmptyAttendancesForMember(memberId: number) {
-        await this.attendanceRepository.deleteEmptyAttendancesForMember(memberId);
+    public async deleteEmptyPepAttendancesForMember(memberId: number, oldPepBandId: string) {
+        await this.attendanceRepository.deleteEmptyPepAttendancesForMember(memberId, oldPepBandId);
     }
 
     public async changePepAttendancesToNotRequired(memberId: number) {

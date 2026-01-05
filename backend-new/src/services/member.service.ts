@@ -93,7 +93,7 @@ export class MemberService {
         newMember = await this.memberRepository.save(newMember);
 
         // create EventAttendances for all events for this term
-        await this.attendanceService.createAttendancesForMember(newMember);
+        await this.attendanceService.createAttendancesForNewMember(newMember);
 
         return newMember;
     }
@@ -118,14 +118,14 @@ export class MemberService {
         newMember = await this.memberRepository.save(newMember);
 
         if (oldPepBandId && oldPepBandId != newPepBandId) {
-            // delete empty attendances, change non-empty ones to non-required
-            await this.attendanceService.deleteEmptyAttendancesForMember(memberId)
+            // delete empty pep attendances, change non-empty ones to non-required
+            await this.attendanceService.deleteEmptyPepAttendancesForMember(memberId, oldPepBandId)
             await this.attendanceService.changePepAttendancesToNotRequired(memberId);
         }
 
         if (newPepBandId && oldPepBandId != newPepBandId) {
             // assign new attendances
-            await this.attendanceService.createAttendancesForMember(newMember);
+            await this.attendanceService.createPepAttendancesForMember(newMember);
         }
 
         newMember.attendances = await this.attendanceService.getByMemberId(memberId);
