@@ -3,7 +3,7 @@ import {EventAttendance} from "../entities/event-attendance.entity";
 import {plainToInstance} from "class-transformer";
 import {MemberStatsDto} from "../dto/member-stats.dto";
 import {AttendanceTermPageDto} from "../dto/attendance-term-page.dto";
-import {InsertResult, IsNull} from "typeorm";
+import {InsertResult, IsNull, Not} from "typeorm";
 import {Constants} from "../utilities/constants";
 
 export class AttendanceRepository {
@@ -236,7 +236,7 @@ export class AttendanceRepository {
             .createQueryBuilder()
             .insert()
             .values(attendance)
-            .orIgnore()
+            .orUpdate(['attendanceId'], ['memberId', 'eventId'])
             .execute();
     }
 
@@ -264,26 +264,38 @@ export class AttendanceRepository {
         attendances.forEach(att => this.delete(att.attendanceId));
     }
 
-    public async findEmptyByMemberId(id: number): Promise<EventAttendance[]> {
+    public async findEmptyByMemberAndPepBandId(id: number, pepBandId: string): Promise<EventAttendance[]> {
         return await this.repo.find({
             where: {
                 member: { memberId: id },
+                mbEvent: {
+                    pepBand: { bandId: pepBandId }
+                },
                 attendance: IsNull()
             }
         });
     }
 
+    // used when changing pep attendances to not required
     public async findPepEventsByMemberId(id: number): Promise<EventAttendance[]> {
         return await this.repo.find({
             where: {
                 member: { memberId: id },
-                mbEvent: { type: Constants.EVENT_TYPE_PEP_EVENT }
+                mbEvent: {
+                    type: Constants.EVENT_TYPE_PEP_EVENT,
+                    pepBand: {
+                        bandId: Not(Constants.PEP_BAND_ID_VOLUNTEER)
+                    }
+                }
+            },
+            relations: {
+                mbEvent: true
             }
         });
     }
 
-    public async deleteEmptyAttendancesForMember(memberId: number): Promise<void> {
-        const attendances = await this.findEmptyByMemberId(memberId);
+    public async deleteEmptyPepAttendancesForMember(memberId: number, pepBandId: string): Promise<void> {
+        const attendances = await this.findEmptyByMemberAndPepBandId(memberId, pepBandId);
 
         attendances.forEach(att => this.delete(att.attendanceId));
     }
