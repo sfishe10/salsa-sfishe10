@@ -1,15 +1,11 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {MatButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {NgForOf, NgIf} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
 import {Constants} from '../utilities/constants';
 import {Section} from '../models/section';
-import {MemberService} from '../services/member.service';
 import {MemberStats} from '../models/member-stats';
 import {AttendanceService} from '../services/attendance.service';
-import {SectionService} from '../services/section.service';
 import {
   MatCell,
   MatCellDef,
@@ -19,9 +15,7 @@ import {
   MatHeaderRowDef,
   MatRow, MatRowDef, MatTable
 } from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
 import {MatAccordion, MatExpansionPanel, MatExpansionPanelHeader} from '@angular/material/expansion';
-import {EventsTableComponent} from '../admin/events-table/events-table.component';
 import {AttendanceTableComponent} from "../admin/attendance-table/attendance-table.component";
 import {Term} from '../models/term';
 import {Utilities} from '../utilities/utilities';
@@ -29,28 +23,27 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
+import {PepBand} from '../models/pep-band';
+import {PepBandService} from '../services/pep-band.service';
+import {MatDivider} from '@angular/material/divider';
+import {MatTab, MatTabGroup} from '@angular/material/tabs';
 
 @Component({
   selector: 'app-section-page',
   standalone: true,
   imports: [
-    MatButton,
-    MatIcon,
     NgIf,
-    DatePipe,
     MatCell,
     MatCellDef,
     MatColumnDef,
     MatHeaderCell,
     MatHeaderRow,
     MatHeaderRowDef,
-    MatPaginator,
     MatRow,
     MatRowDef,
     MatTable,
     MatHeaderCellDef,
     MatAccordion,
-    EventsTableComponent,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     AttendanceTableComponent,
@@ -59,7 +52,10 @@ import {FormsModule} from '@angular/forms';
     MatOption,
     MatSelect,
     NgForOf,
-    FormsModule
+    FormsModule,
+    MatDivider,
+    MatTabGroup,
+    MatTab
   ],
   templateUrl: './section-page.component.html',
   styleUrl: './section-page.component.css'
@@ -76,6 +72,10 @@ export class SectionPageComponent implements OnInit {
 
   public sectionOptions: Section[] = [];
 
+  public pepBands: PepBand[] = [];
+
+  memberColumns: string[] = ['email', 'name'];
+
   memberStats: MemberStats[] = [];
   statsColumns: string[] = ['member', 'numRehearsals', 'numWholeBandEvents', 'numPepEvents', 'numVolunteerEvents', 'numSubEvents'];
 
@@ -85,7 +85,7 @@ export class SectionPageComponent implements OnInit {
                private route: ActivatedRoute,
                public sessionCacheService: SessionCacheService,
                private attendanceService: AttendanceService,
-               private sectionService: SectionService) {
+               private pepBandService: PepBandService) {
   }
 
   ngOnInit() {
@@ -105,6 +105,10 @@ export class SectionPageComponent implements OnInit {
     this.attendanceService.getMemberStatsBySectionId(this.sectionId).subscribe(memberStats => {
       this.memberStats = memberStats;
     })
+
+    this.pepBandService.getAllWithSectionMembers(this.sectionId, this.term.termId).subscribe(pepBands => {
+      this.pepBands = pepBands.filter(band => band.bandId != Constants.PEP_BAND_ID_VOLUNTEER);
+    })
   }
 
   navigateToMember(memberId: number) {
@@ -120,6 +124,10 @@ export class SectionPageComponent implements OnInit {
 
     this.selectedSection = this.sectionOptions
       .find((s: Section) => s.sectionId == section.sectionId) ?? null;
+
+    this.pepBandService.getAllWithSectionMembers(this.sectionId, this.term.termId).subscribe(pepBands => {
+      this.pepBands = pepBands.filter(band => band.bandId != Constants.PEP_BAND_ID_VOLUNTEER);
+    })
 
     this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
       this.memberStats = memberStats;

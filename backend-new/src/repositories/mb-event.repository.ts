@@ -39,7 +39,7 @@ export class MbEventRepository {
                 pepBand: true,
             },
             order: {
-                date: 'DESC',
+                date: upcoming ? 'ASC' : 'DESC',
             },
         });
     }

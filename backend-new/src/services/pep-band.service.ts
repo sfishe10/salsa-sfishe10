@@ -22,9 +22,9 @@ export class PepBandService {
         return pepBand;
     }
 
-    public async getAll(): Promise<PepBandDto[]> {
+    public async getAll(sectionId?: number, termId?: number): Promise<PepBandDto[]> {
         const pepBands: PepBand[] =
-            await this.pepBandRepository.findAll();
+            await this.pepBandRepository.findAll(sectionId, termId);
 
         const pepBandDtos: PepBandDto[] = pepBands.map(band => toPepBandDto(band));
 

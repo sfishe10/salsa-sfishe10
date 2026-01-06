@@ -108,6 +108,7 @@ export class MemberPageComponent implements OnInit {
     } as Member
 
     this.memberService.updateMember(member).subscribe(updatedMember => {
+      this.member = member;
       this.openSnackBar("Member updated!", "Ok", 3000);
       this.editing = false;
     }, error => {
