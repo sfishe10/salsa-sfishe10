@@ -7,7 +7,7 @@
           {{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;
           <span style="color: dimgray">- {{member?.user?.email}}</span></a>
       </div>
-      <button *ngIf="!editing && sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader()"
+      <button *ngIf="!editing && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader())"
               mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
       <div *ngIf="editing">
         <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;

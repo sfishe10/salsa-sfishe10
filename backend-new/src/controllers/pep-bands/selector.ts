@@ -9,7 +9,15 @@ const pepBandService: PepBandService = new PepBandService();
 
 export const getAll = async (req: any, res: any) => {
     try {
-        const pepBands: PepBandDto[] = await pepBandService.getAll();
+        const sectionId = req.query.sectionId
+            ? Number(req.query.sectionId)
+            : undefined;
+
+        const termId = req.query.termId
+            ? Number(req.query.termId)
+            : undefined;
+
+        const pepBands: PepBandDto[] = await pepBandService.getAll(sectionId, termId);
 
         res.send(pepBands);
 

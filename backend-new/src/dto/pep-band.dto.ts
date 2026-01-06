@@ -13,7 +13,7 @@ export class PepBandDto {
     // @Type(() => MbEventDto)
     // events!: MbEventDto[];
     //
-    // @Expose()
-    // @Type(() => MemberDto)
-    // members!: MemberDto[];
+    @Expose()
+    @Type(() => MemberDto)
+    members!: MemberDto[];
 }
