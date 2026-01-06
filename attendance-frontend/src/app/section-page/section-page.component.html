@@ -3,7 +3,7 @@
     <span *ngIf="!(sessionCacheService.isAdmin()
                     || sessionCacheService.isOfficer()
                     || sessionCacheService.isDrumlineAttendanceTaker())"
-          style="margin-left: 10px; font-size: 1.4rem;"><b>{{sectionName}}</b></span>
+          style="margin-left: 10px; font-size: 1.4rem;"><b>{{selectedSection?.name}}</b></span>
     <mat-form-field subscriptSizing="dynamic"
                     *ngIf="sessionCacheService.isAdmin()
                     || sessionCacheService.isOfficer()
