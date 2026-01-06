@@ -125,6 +125,10 @@ export class SectionPageComponent implements OnInit {
     this.selectedSection = this.sectionOptions
       .find((s: Section) => s.sectionId == section.sectionId) ?? null;
 
+    this.pepBandService.getAllWithSectionMembers(this.sectionId, this.term.termId).subscribe(pepBands => {
+      this.pepBands = pepBands.filter(band => band.bandId != Constants.PEP_BAND_ID_VOLUNTEER);
+    })
+
     this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
       this.memberStats = memberStats;
     })
