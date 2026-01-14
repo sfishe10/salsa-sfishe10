@@ -100,22 +100,26 @@ export class MemberService {
 
     public async update(memberDto: MemberDto): Promise<Member> {
         const memberId: number = memberDto.memberId;
-        let newMember: Member = await this.getById(memberId);
+        let existingMember: Member = await this.getById(memberId);
 
-        newMember.rehearsalConflict = memberDto.rehearsalConflict;
+        existingMember.rehearsalConflict = memberDto.rehearsalConflict;
 
         // since we're using a lot of relations here, skip fetching the entire object
         // TypeOrm just needs the primary keys (the ID's) to link these tables when we save in the repository
-        newMember.user = { userId: memberDto.user.userId } as User;
-        newMember.term = { termId: memberDto.term.termId } as Term;
-        newMember.section = { sectionId: memberDto.section.sectionId } as Section;
+        existingMember.user = { userId: memberDto.user.userId } as User;
+        existingMember.term = { termId: memberDto.term.termId } as Term;
 
-        const oldPepBandId: string | null = newMember.pepBand ? newMember.pepBand.bandId : null;
+        const oldSectionId: number | null = existingMember.section ? existingMember.section.sectionId : null;
+        const newSectionId: number | null = memberDto.section ? memberDto.section.sectionId : null;
+
+        existingMember.section = { sectionId: memberDto.section.sectionId } as Section;
+
+        const oldPepBandId: string | null = existingMember.pepBand ? existingMember.pepBand.bandId : null;
         const newPepBandId: string | null = memberDto.pepBand ? memberDto.pepBand.bandId : null;
 
-        newMember.pepBand = { bandId: newPepBandId } as PepBand;
+        existingMember.pepBand = { bandId: newPepBandId } as PepBand;
 
-        newMember = await this.memberRepository.save(newMember);
+        existingMember = await this.memberRepository.save(existingMember);
 
         if (oldPepBandId && oldPepBandId != newPepBandId) {
             // delete empty pep attendances, change non-empty ones to non-required
@@ -125,12 +129,17 @@ export class MemberService {
 
         if (newPepBandId && oldPepBandId != newPepBandId) {
             // assign new attendances
-            await this.attendanceService.createPepAttendancesForMember(newMember);
+            await this.attendanceService.createPepAttendancesForMember(existingMember);
         }
 
-        newMember.attendances = await this.attendanceService.getByMemberId(memberId);
+        if (oldSectionId != newSectionId) {
+            // update the sectionId for all empty EventAttendances
+            await this.attendanceService.updateEmptyAttendancesSectionIdForMember(existingMember);
+        }
 
-        return newMember;
+        existingMember.attendances = await this.attendanceService.getByMemberId(memberId);
+
+        return existingMember;
     }
 
     public async delete(memberId: number) {

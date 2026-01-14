@@ -299,4 +299,21 @@ export class AttendanceRepository {
 
         attendances.forEach(att => this.delete(att.attendanceId));
     }
+
+    public async updateEmptyAttendancesSectionForMember(memberId: number): Promise<void> {
+        await this.repo
+            .createQueryBuilder()
+            .update(EventAttendance)
+            .set({
+                section: () => `
+                (SELECT m.sectionId 
+                 FROM Member m 
+                 WHERE m.memberId = EventAttendance.memberId)
+            `
+            })
+            .where("EventAttendance.memberId = :memberId", { memberId })
+            .andWhere("(EventAttendance.attendance IS NULL OR EventAttendance.attendance = '')")
+            .execute();
+    }
+
 }
