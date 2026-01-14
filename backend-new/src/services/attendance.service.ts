@@ -167,6 +167,10 @@ export class AttendanceService {
         }
     }
 
+    public async updateEmptyAttendancesSectionIdForMember(member: Member) {
+        await this.attendanceRepository.updateEmptyAttendancesSectionForMember(member.memberId);
+    }
+
     // used when adding members from the supplemental form
     public async createAttendancesForWholeTerm(termId: number) {
         let mbEvents: MBEvent[];
