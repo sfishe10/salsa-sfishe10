@@ -34,6 +34,7 @@ import {SessionCacheService} from '../services/session-cache.service';
 import {UserService} from '../services/user.service';
 import {Station} from '../models/station';
 import {StationsService} from '../services/stations.service';
+import {StationsTableComponent} from '../shared/stations-table/stations-table.component';
 
 @Component({
   selector: 'app-admin',
@@ -62,7 +63,8 @@ import {StationsService} from '../services/stations.service';
     MatExpansionPanelHeader,
     MatIcon,
     NgIf,
-    MatIconButton
+    MatIconButton,
+    StationsTableComponent
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
