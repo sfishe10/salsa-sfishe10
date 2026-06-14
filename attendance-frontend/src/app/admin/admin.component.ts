@@ -32,6 +32,8 @@ import {MatIcon} from '@angular/material/icon';
 import {Router} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
 import {UserService} from '../services/user.service';
+import {Station} from '../models/station';
+import {StationsService} from '../services/stations.service';
 
 @Component({
   selector: 'app-admin',
@@ -84,6 +86,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   userLastName: string = '';
   userRole: string = '';
 
+  stations: Station[] = [];
+
   @ViewChild('termDialog') termDialog!: TemplateRef<any>;
   termDialogRef!: MatDialogRef<any>;
 
@@ -116,6 +120,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   constructor(private adminService: AdminService,
               private userService: UserService,
+              private stationsService: StationsService,
               public sessionCacheService: SessionCacheService,
               private dialog: MatDialog,
               private router: Router) {
@@ -152,6 +157,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
       if (this.selectedTerm) {
         this.onTermChange(this.selectedTerm);
       }
+    })
+
+    this.stationsService.getAllStations().subscribe(stations => {
+      this.stations = stations;
     })
   }
 

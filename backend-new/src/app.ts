@@ -12,7 +12,6 @@ import {
 // Route imports
 
 // import groupsRoutes from './routes/groups';
-// import stationRoutes from './routes/stations';
 // import userRoutes from './routes/users';
 // import sectionRoutes from './routes/sections';
 // import evaluationRoutes from './routes/evaluations';
@@ -25,6 +24,7 @@ import attendanceTermRoutes from './routes/terms';
 import attendancePepBandRoutes from './routes/pep-bands';
 import attendanceSectionRoutes from './routes/sections';
 import attendanceUserRoutes from './routes/users';
+import stationsRoutes from './routes/stations';
 
 // Database import
 import {db} from "./data-source";
@@ -116,7 +116,6 @@ app.use(passport.initialize());
 
 // ----- Routes -----
 // app.use('/api/groups/', groupsRoutes);
-// app.use('/api/station/', stationRoutes);
 // app.use('/api/user/', userRoutes);
 // app.use('/api/section/', sectionRoutes);
 // app.use('/api/evaluations/', evaluationRoutes);
@@ -130,6 +129,7 @@ app.use('/api/mb-attendance/terms/', passport.authenticate('oauth-bearer', { ses
 app.use('/api/mb-attendance/pepBands/', passport.authenticate('oauth-bearer', { session: false }), attendancePepBandRoutes);
 app.use('/api/mb-attendance/sections/', passport.authenticate('oauth-bearer', { session: false }), attendanceSectionRoutes);
 app.use('/api/mb-attendance/users/', passport.authenticate('oauth-bearer', { session: false }), attendanceUserRoutes);
+app.use('/api/stations/', passport.authenticate('oauth-bearer', { session: false }), stationsRoutes);
 
 // ----- /api/me -----
 app.options('/api/me', cors({
