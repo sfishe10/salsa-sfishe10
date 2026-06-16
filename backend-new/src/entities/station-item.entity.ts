@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {StationGroup} from "./station-group.entity";
 
 @Entity('StationItem')
@@ -6,7 +6,8 @@ export class StationItem {
     @PrimaryGeneratedColumn()
     itemId!: number;
 
-    @ManyToOne(() => StationGroup, (group) => group.items)
+    @ManyToOne(() => StationGroup, (group) => group.items, {onDelete: 'CASCADE'})
+    @JoinColumn({ name: 'groupId' })
     group!: StationGroup;
 
     @Column({type: 'varchar', length: 90})
