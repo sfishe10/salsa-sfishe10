@@ -14,6 +14,7 @@ import {MainLayoutComponent} from './main-layout/main-layout.component';
 import {EventAttendancePageComponent} from './event-attendance-page/event-attendance-page.component';
 import {SectionPageComponent} from './section-page/section-page.component';
 import { AuthResponseComponent } from './utilities/auth-response.component';
+import {StationPageComponent} from './station-page/station-page.component';
 
 export const routes: Routes = [
   {
@@ -79,6 +80,11 @@ export const routes: Routes = [
         component: EventAttendancePageComponent,
         canActivate: [AuthzGuard]
       },
+      {
+        path: 'station/:id',
+        component: StationPageComponent,
+        canActivate: [AuthzGuard]
+      }
     ]
   },
   {

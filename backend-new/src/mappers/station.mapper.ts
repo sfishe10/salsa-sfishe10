@@ -6,6 +6,7 @@ import {StationDto} from "../dto/station.dto";
 export function toStationDto(station: Station) {
     const plainObj = {
         stationId: station.stationId,
+        title: station.title,
         description: station.description,
         maxFailed: station.maxFailed,
         level: station.level,

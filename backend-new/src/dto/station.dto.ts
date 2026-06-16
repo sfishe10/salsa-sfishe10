@@ -6,6 +6,9 @@ export class StationDto {
     stationId!: number;
 
     @Expose()
+    title!: string;
+
+    @Expose()
     description!: string;
 
     @Expose()
