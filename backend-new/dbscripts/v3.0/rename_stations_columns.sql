@@ -5,7 +5,7 @@ alter table StationGroup
     rename column groupID to groupId;
 
 alter table StationGroup
-    rename column stationID to stationID;
+    rename column stationID to stationId;
 
 alter table StationItem
     rename column itemID to itemId;
