@@ -1,4 +1,4 @@
-.member-name {
+.station-title {
   font-family: Roboto, sans-serif;
   font-size: 1.4rem;
   margin-bottom: 8px;
@@ -10,6 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .button:hover {

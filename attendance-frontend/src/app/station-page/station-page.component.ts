@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {Member} from '../models/member';
 import {FormsModule, NgForm} from '@angular/forms';
 import {SessionCacheService} from '../services/session-cache.service';
@@ -9,6 +9,8 @@ import {Station} from '../models/station';
 import {StationsService} from '../services/stations.service';
 import {NgIf} from '@angular/common';
 import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {StationEditComponent} from './station-edit/station-edit.component';
 
 @Component({
   selector: 'app-station-page',
@@ -16,7 +18,10 @@ import {MatButton} from '@angular/material/button';
   imports: [
     NgIf,
     FormsModule,
-    MatButton
+    MatButton,
+    MatIcon,
+    RouterLink,
+    StationEditComponent
   ],
   templateUrl: './station-page.component.html',
   styleUrl: './station-page.component.css'
@@ -25,7 +30,7 @@ export class StationPageComponent implements OnInit {
 
   private _snackBar = inject(MatSnackBar);
 
-  station: Station | null = null;
+  station!: Station;
 
   stationId!: number;
 
