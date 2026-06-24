@@ -13,17 +13,7 @@
     </div>
   </div>
 
-<!--    <div *ngIf="!editing" style="display: flex; flex-direction: column; gap: 20px; margin-top: 10px; margin-bottom: 10px; font-size: 1.2rem">-->
-<!--      <span>Term: <b>{{station?.term?.termName}}</b></span>-->
-<!--      <span>Section: <b>{{station?.section?.name}}</b></span>-->
-<!--      <span>Pep Band: <b>{{station?.pepBand?.displayName}}</b></span>-->
-<!--      <span>Rehearsal Conflict:-->
-<!--        <span *ngIf="station?.rehearsalConflict"><b>{{station?.rehearsalConflict}}</b></span>-->
-<!--        <span *ngIf="!station?.rehearsalConflict"><b>None</b></span>-->
-<!--      </span>-->
-<!--    </div>-->
-
-  <app-station-edit [station]="station" [editing]="editing"></app-station-edit>
+  <app-station-contents [station]="station" [editing]="editing"></app-station-contents>
 </div>
 
 

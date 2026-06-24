@@ -11,9 +11,11 @@ import {
 } from '@angular/cdk/drag-drop';
 import {StationGroup} from '../../models/station-group';
 import {StationItem} from '../../models/station-item';
+import {MatButton} from '@angular/material/button';
+import {Constants} from '../../utilities/constants';
 
 @Component({
-  selector: 'app-station-edit',
+  selector: 'app-station-contents',
   standalone: true,
   imports: [
     NgForOf,
@@ -21,12 +23,13 @@ import {StationItem} from '../../models/station-item';
     CdkDrag,
     CdkDropListGroup,
     NgIf,
-    NgStyle
+    NgStyle,
+    MatButton
   ],
-  templateUrl: './station-edit.component.html',
-  styleUrl: './station-edit.component.css'
+  templateUrl: './station-contents.component.html',
+  styleUrl: './station-contents.component.css'
 })
-export class StationEditComponent {
+export class StationContentsComponent {
   @Input('station') station!: Station;
 
   @Input('editing') editing!: boolean;
@@ -55,5 +58,13 @@ export class StationEditComponent {
         item.group = group;
       });
     });
+  }
+
+  addStationItem(groupId: number) {
+
+  }
+
+  addStationGroup() {
+
   }
 }

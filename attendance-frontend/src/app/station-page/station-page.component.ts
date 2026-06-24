@@ -1,6 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {Member} from '../models/member';
 import {FormsModule, NgForm} from '@angular/forms';
 import {SessionCacheService} from '../services/session-cache.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -10,7 +9,7 @@ import {StationsService} from '../services/stations.service';
 import {NgIf} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {StationEditComponent} from './station-edit/station-edit.component';
+import {StationContentsComponent} from '../shared/station-contents/station-contents.component';
 
 @Component({
   selector: 'app-station-page',
@@ -21,7 +20,7 @@ import {StationEditComponent} from './station-edit/station-edit.component';
     MatButton,
     MatIcon,
     RouterLink,
-    StationEditComponent
+    StationContentsComponent
   ],
   templateUrl: './station-page.component.html',
   styleUrl: './station-page.component.css'
