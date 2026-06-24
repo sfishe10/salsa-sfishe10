@@ -3,7 +3,7 @@ import {Station} from '../../models/station';
 import {NgForOf, NgIf, NgStyle} from '@angular/common';
 import {
   CdkDrag,
-  CdkDragDrop,
+  CdkDragDrop, CdkDragHandle,
   CdkDropList,
   CdkDropListGroup,
   moveItemInArray,
@@ -24,7 +24,8 @@ import {Constants} from '../../utilities/constants';
     CdkDropListGroup,
     NgIf,
     NgStyle,
-    MatButton
+    MatButton,
+    CdkDragHandle
   ],
   templateUrl: './station-contents.component.html',
   styleUrl: './station-contents.component.css'
@@ -34,7 +35,7 @@ export class StationContentsComponent {
 
   @Input('editing') editing!: boolean;
 
-  drop(event: CdkDragDrop<StationItem[]>) {
+  dropItem(event: CdkDragDrop<StationItem[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -50,6 +51,19 @@ export class StationContentsComponent {
       );
     }
   }
+
+  dropGroup(event: CdkDragDrop<StationGroup[]>) {
+    moveItemInArray(
+      this.station.groups,
+      event.previousIndex,
+      event.currentIndex
+    );
+
+    this.station.groups.forEach((group, index) => {
+      group.level = index;
+    });
+  }
+
 
   updateItemLevels() {
     this.station.groups.forEach(group => {
