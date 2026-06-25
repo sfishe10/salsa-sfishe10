@@ -26,9 +26,35 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  height: 2rem;
   background: white;
   font-size: 14px;
   font-family: sans-serif;
+}
+
+.item-box-edit {
+  padding: 10px 10px;
+  border-bottom: solid 1px #ccc;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 2rem;
+  background: white;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+.item-box-edit:hover .edit-button {
+  opacity: 1;
+  visibility: visible;
+}
+
+.edit-button {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .cdk-drag-preview {

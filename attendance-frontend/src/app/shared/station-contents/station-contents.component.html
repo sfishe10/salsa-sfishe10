@@ -23,8 +23,9 @@
          [cdkDropListData]="group.items"
          (cdkDropListDropped)="dropItem($event)"
          class="list">
-      <div *ngFor="let item of group.items" class="item-box" cdkDrag>
+      <div *ngFor="let item of group.items" [ngClass]="editing ? 'item-box-edit' : 'item-box'" cdkDrag>
         <span>{{item.item}}</span>
+        <button mat-icon-button *ngIf="editing" class="edit-button"><mat-icon class="material-icons-outlined" style="color: gray">edit</mat-icon></button>
       </div>
     </div>
 

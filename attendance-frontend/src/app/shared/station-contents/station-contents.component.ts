@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Station} from '../../models/station';
-import {NgForOf, NgIf, NgStyle} from '@angular/common';
+import {NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {
   CdkDrag,
   CdkDragDrop, CdkDragHandle,
@@ -11,8 +11,9 @@ import {
 } from '@angular/cdk/drag-drop';
 import {StationGroup} from '../../models/station-group';
 import {StationItem} from '../../models/station-item';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {Constants} from '../../utilities/constants';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-station-contents',
@@ -25,7 +26,10 @@ import {Constants} from '../../utilities/constants';
     NgIf,
     NgStyle,
     MatButton,
-    CdkDragHandle
+    CdkDragHandle,
+    MatIcon,
+    MatIconButton,
+    NgClass
   ],
   templateUrl: './station-contents.component.html',
   styleUrl: './station-contents.component.css'
