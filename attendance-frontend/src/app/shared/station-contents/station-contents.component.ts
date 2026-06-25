@@ -14,6 +14,8 @@ import {StationItem} from '../../models/station-item';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {Constants} from '../../utilities/constants';
 import {MatIcon} from '@angular/material/icon';
+import {FormsModule} from '@angular/forms';
+import {MatFormField, MatInput} from '@angular/material/input';
 
 @Component({
   selector: 'app-station-contents',
@@ -29,7 +31,10 @@ import {MatIcon} from '@angular/material/icon';
     CdkDragHandle,
     MatIcon,
     MatIconButton,
-    NgClass
+    NgClass,
+    FormsModule,
+    MatFormField,
+    MatInput
   ],
   templateUrl: './station-contents.component.html',
   styleUrl: './station-contents.component.css'
@@ -39,7 +44,10 @@ export class StationContentsComponent {
 
   @Input('editing') editing!: boolean;
 
-  dropItem(event: CdkDragDrop<StationItem[]>) {
+  editingItem: StationItem | null = null;
+  editingItemText = '';
+
+  dropItem(event: CdkDragDrop<StationItem[]> | any) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -56,7 +64,7 @@ export class StationContentsComponent {
     }
   }
 
-  dropGroup(event: CdkDragDrop<StationGroup[]>) {
+  dropGroup(event: CdkDragDrop<StationGroup[]> | any) {
     moveItemInArray(
       this.station.groups,
       event.previousIndex,
@@ -84,5 +92,27 @@ export class StationContentsComponent {
 
   addStationGroup() {
 
+  }
+
+  startEditingItem(item: StationItem) {
+    this.editingItem = item;
+    this.editingItemText = item.item;
+  }
+
+  saveEditingItem() {
+    if (!this.editingItem) return;
+
+    this.editingItem.item = this.editingItemText;
+    this.editingItem = null;
+    this.editingItemText = '';
+  }
+
+  cancelEditingItem() {
+    this.editingItem = null;
+    this.editingItemText = '';
+  }
+
+  isEditingItem(item: StationItem): boolean {
+    return this.editingItem === item;
   }
 }
