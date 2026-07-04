@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Station} from '../../models/station';
 import {NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {
@@ -12,7 +12,6 @@ import {
 import {StationGroup} from '../../models/station-group';
 import {StationItem} from '../../models/station-item';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {Constants} from '../../utilities/constants';
 import {MatIcon} from '@angular/material/icon';
 import {FormsModule} from '@angular/forms';
 import {MatFormField, MatInput} from '@angular/material/input';
@@ -44,6 +43,9 @@ export class StationContentsComponent {
 
   @Input('editing') editing!: boolean;
 
+  @Output() groupDeleted = new EventEmitter<number>();
+  @Output() itemDeleted = new EventEmitter<number>();
+
   editingItem: StationItem | null = null;
   editingItemText = '';
 
@@ -62,6 +64,8 @@ export class StationContentsComponent {
         event.currentIndex
       );
     }
+
+    this.updateItemLevels();
   }
 
   dropGroup(event: CdkDragDrop<StationGroup[]> | any) {
@@ -81,7 +85,6 @@ export class StationContentsComponent {
     this.station.groups.forEach(group => {
       group.items.forEach((item, index) => {
         item.level = index;
-        item.group = group;
       });
     });
   }
@@ -92,6 +95,19 @@ export class StationContentsComponent {
 
   addStationGroup() {
 
+  }
+
+  deleteItem(groupId: number, itemId: number) {
+    let group = this.station.groups.find((group) => group.groupId == groupId)
+    if (!group) return;
+
+    group.items = group.items.filter((item) => item.itemId != itemId);
+    this.itemDeleted.emit(itemId);
+  }
+
+  deleteGroup(groupId: number) {
+    this.station.groups = this.station.groups.filter((group) => group.groupId != groupId);
+    this.groupDeleted.emit(groupId);
   }
 
   startEditingItem(item: StationItem) {

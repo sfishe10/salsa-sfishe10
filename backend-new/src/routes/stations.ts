@@ -8,7 +8,7 @@ const router: Router = Router();
  */
 
 // router.post('/', stations.admin.create);
-// router.put('/:id', stations.admin.update);
+router.put('/:id', stations.admin.update);
 // router.delete('/:id', stations.admin.deleteTerm);
 
 /**

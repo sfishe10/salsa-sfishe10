@@ -1,9 +1,9 @@
-import {StationsService} from "../../services/stations.service";
+import {StationService} from "../../services/station.service";
 import {Station} from "../../entities/station.entity";
 import {toStationDto} from "../../mappers/station.mapper";
 import {NotFoundError} from "../../errors/not-found-error";
 
-const stationsService: StationsService = new StationsService();
+const stationsService: StationService = new StationService();
 
 /**
  * Stations selectors

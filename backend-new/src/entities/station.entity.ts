@@ -21,6 +21,8 @@ export class Station {
     @Column({type: 'int'})
     class!: number;
 
-    @OneToMany(() => StationGroup, (group) => group.station)
+    @OneToMany(() => StationGroup, (group) => group.station, {
+        cascade: true
+    })
     groups!: StationGroup[];
 }

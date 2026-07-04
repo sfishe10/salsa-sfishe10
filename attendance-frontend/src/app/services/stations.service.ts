@@ -21,4 +21,9 @@ export class StationsService {
     const url = this.baseUrl + `/stations/${id}`;
     return this.http.get<Station>(url);
   }
+
+  public updateStation(station: Station, deleteGroupIds: number[], deleteItemIds: number[]): Observable<Station> {
+    const url = this.baseUrl + `/stations/${station.stationId}`;
+    return this.http.put<Station>(url, {station, deleteGroupIds, deleteItemIds});
+  }
 }

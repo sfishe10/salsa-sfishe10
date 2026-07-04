@@ -35,6 +35,12 @@ export class StationPageComponent implements OnInit {
 
   editing: boolean = false;
 
+  editedStation!: Station;
+
+  deleteGroupIds: number[] = [];
+
+  deleteItemIds: number[] = [];
+
   // TODO: once we've added the ability to create new stations, implement this delete functionality
   // @ViewChild('confirmDeleteDialog') confirmDeleteDialog!: TemplateRef<any>;
   // confirmDeleteDialogRef!: MatDialogRef<any>;
@@ -53,39 +59,48 @@ export class StationPageComponent implements OnInit {
     this.stationId = Number(this.route.snapshot.paramMap.get('id'));
 
     this.stationService.getStationById(this.stationId).subscribe(station => {
-      console.log(station)
       this.station = station;
+      // use a deep copy so if edits are made, the original is not affected
+      this.editedStation = JSON.parse(JSON.stringify(station));
     })
   }
 
   edit() {
-
-
     this.editing = true;
   }
 
-  save(form: NgForm) {
+  addItemToDelete(itemId: number) {
+    this.deleteItemIds.push(itemId);
+  }
+
+  addGroupToDelete(groupId: number) {
+    this.deleteGroupIds.push(groupId);
+  }
+
+  save() {
     if (!this.station) {
       return;
     }
-    // let station = {
-    //
-    // } as Station
 
-    // this.stationService.updateStation(station).subscribe(updatedStation => {
-    //   this.station = station;
-    //   this.openSnackBar("Station updated!", "Ok", 3000);
-    //   this.editing = false;
-    // }, error => {
-    //   console.log(error);
-    //   this.openSnackBar("Error updating station", "Ok", 3000);
-    // })
+    this.stationService.updateStation(this.editedStation, this.deleteGroupIds, this.deleteItemIds).subscribe(updatedStation => {
+      this.station = updatedStation;
+      // use a deep copy so if edits are made, the original is not affected
+      this.editedStation = JSON.parse(JSON.stringify(updatedStation));
+      this.openSnackBar("Station updated!", "Ok", 3000);
+      this.editing = false;
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error updating station", "Ok", 3000);
+    })
   }
 
   cancel() {
+    this.editedStation = JSON.parse(JSON.stringify(this.station));
+    this.deleteGroupIds = [];
+    this.deleteItemIds = [];
     this.editing = false;
   }
-  //
+
   // openConfirmationDialog() {
   //   this.confirmDeleteDialogRef = this.dialog.open(this.confirmDeleteDialog);
   // }
@@ -98,12 +113,12 @@ export class StationPageComponent implements OnInit {
   //   this.dialog.closeAll();
   // }
 
-  // deleteMember() {
+  // deleteStation() {
   //   if (!this.station) {
   //     return;
   //   }
   //   this.cancelDialog();
-  //   this.stationService.deleteMember(this.station).subscribe(() => {
+  //   this.stationService.deleteStation(this.station).subscribe(() => {
   //     this.openSuccessDialog();
   //   }, error => {
   //     console.log(error);

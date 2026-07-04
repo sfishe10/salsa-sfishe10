@@ -1,6 +1,10 @@
-import {StationsService} from "../../services/stations.service";
+import {StationService} from "../../services/station.service";
+import {StationDto} from "../../dto/station.dto";
+import {plainToInstance} from "class-transformer";
+import {Station} from "../../entities/station.entity";
+import {toStationDto} from "../../mappers/station.mapper";
 
-const stationsService: StationsService = new StationsService();
+const stationService: StationService = new StationService();
 
 // TODO: fill these functions in for stations (I just copied them from the terms controller)
 // export const create = async (req: any, res: any) => {
@@ -16,18 +20,21 @@ const stationsService: StationsService = new StationsService();
 //     }
 // };
 
-// export const update = async (req: any, res: any) => {
-//     try {
-//         const termDto: TermDto = plainToInstance(TermDto, req.body);
-//
-//         const updatedTerm: Term = await termService.update(termDto);
-//
-//         res.send(toTermDto(updatedTerm));
-//     } catch (err: any) {
-//         console.error('A critical error occurred in terms.update():', err.message);
-//         return res.status(500).send(err.message);
-//     }
-// };
+export const update = async (req: any, res: any) => {
+    try {
+        const stationDto: StationDto = plainToInstance(StationDto, req.body.station);
+
+        const deleteGroupIds: number[] = req.body.deleteGroupIds;
+        const deleteItemIds: number[] = req.body.deleteItemIds;
+
+        const updatedStation: Station = await stationService.update(stationDto, deleteGroupIds, deleteItemIds);
+
+        res.send(toStationDto(updatedStation));
+    } catch (err: any) {
+        console.error('A critical error occurred in stations.update():', err.message);
+        return res.status(500).send(err.message);
+    }
+};
 
 // export const deleteTerm = async (req: any, res: any) => {
 //     try {

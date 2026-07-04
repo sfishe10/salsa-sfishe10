@@ -9,11 +9,15 @@
             mat-flat-button type="button" color="primary"  (click)="edit()">Edit Station</button>
     <div *ngIf="editing">
       <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
-      <button mat-flat-button type="submit" color="primary">Save Changes</button>
+      <button mat-flat-button color="primary" (click)="save()">Save Changes</button>
     </div>
   </div>
 
-  <app-station-contents [station]="station" [editing]="editing"></app-station-contents>
+  <app-station-contents
+    [station]="editedStation"
+    [editing]="editing"
+    (groupDeleted)="addGroupToDelete($event)"
+    (itemDeleted)="addItemToDelete($event)"></app-station-contents>
 </div>
 
 

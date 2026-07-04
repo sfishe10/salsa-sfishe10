@@ -7,7 +7,9 @@ export class StationGroup {
     @PrimaryGeneratedColumn()
     groupId!: number;
 
-    @ManyToOne(() => Station, (station: Station) => station.groups, {onDelete: 'CASCADE'})
+    @ManyToOne(() => Station, (station: Station) => station.groups, {
+        onDelete: 'CASCADE',
+        nullable: false})
     @JoinColumn({ name: 'stationId' })
     station!: Station;
 
@@ -17,6 +19,6 @@ export class StationGroup {
     @Column({type: 'int'})
     level!: number;
 
-    @OneToMany(() => StationItem, (item) => item.group)
+    @OneToMany(() => StationItem, (item) => item.group, {cascade: true})
     items!: StationItem[];
 }
