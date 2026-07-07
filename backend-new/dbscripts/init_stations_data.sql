@@ -47,7 +47,7 @@ insert into StationGroup values (NULL, 6, "Cal Poly High Step Forward March", 2)
 insert into StationGroup values (NULL, 6, "Run On", 3);
 
 
-INSERT INTO StationItem (itemID, groupID, item, level, required)
+INSERT INTO StationItem (itemId, groupId, item, level, required)
 VALUES
     (NULL, 44, 'Right arch on dot', 0, 1),
     (NULL, 45, 'Executed in Time', 0, 1),
@@ -82,7 +82,7 @@ VALUES
     (NULL, 53, 'Horn placement correct', 0, 1);
 
 
-INSERT INTO StationItem (itemID, groupID, item, level, required)
+INSERT INTO StationItem (itemId, groupId, item, level, required)
 VALUES
     (NULL, 19, 'Executed in Time with Verbal', 0, 1),
     (NULL, 19, 'Clean Pivot', 1, 1),
@@ -109,7 +109,7 @@ VALUES
     (NULL, 25, 'Rotated to correct position', 2, 1),
     (NULL, 25, 'Returned to Attention position', 3, 1);
 
-INSERT INTO StationItem (itemID, groupID, item, level, required)
+INSERT INTO StationItem (itemId, groupId, item, level, required)
 VALUES
     (NULL, 26, 'Horn Up on 1 with Verbal', 0, 1),
     (NULL, 26, 'Feet in Time for Duration', 1, 1),
@@ -136,7 +136,7 @@ VALUES
     (NULL, 30, 'Returned to Attention', 1, 1),
     (NULL, 30, 'Horn Down (if stated)', 2, 1);
 
-INSERT INTO StationItem (itemID, groupID, item, level, required)
+INSERT INTO StationItem (itemId, groupId, item, level, required)
 VALUES
     (NULL, 31, 'Horn Up on 1 with Verbal', 0, 1),
     (NULL, 31, 'Feet in Time for Duration', 1, 1),
@@ -160,7 +160,7 @@ VALUES
     (NULL, 34, 'Body Stable Throughout', 2, 1),
     (NULL, 34, '12-5 is a step (not a shuffle)', 3, 1);
 
-INSERT INTO StationItem (itemID, groupID, item, level, required)
+INSERT INTO StationItem (itemId, groupId, item, level, required)
 VALUES
     (NULL, 35, 'Upper Body and Hips rotated', 0, 1),
     (NULL, 35, 'Clean pivot with verbal', 1, 1),
@@ -196,7 +196,7 @@ VALUES
     (NULL, 39, 'Horn Down (if stated)', 3, 1);
 
 
-INSERT INTO StationItem (itemID, groupID, item, level, required)
+INSERT INTO StationItem (itemId, groupId, item, level, required)
 VALUES
     (NULL, 40, 'Verbal loud and clear (“1-2-3”) (Band Ten Hut)', 0, 1),
     (NULL, 40, 'Executed in Time with Tempo', 1, 1),

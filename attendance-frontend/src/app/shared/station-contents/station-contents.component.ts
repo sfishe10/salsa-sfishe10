@@ -46,6 +46,9 @@ export class StationContentsComponent {
   @Output() groupDeleted = new EventEmitter<number>();
   @Output() itemDeleted = new EventEmitter<number>();
 
+  @Output() groupAdded = new EventEmitter<number>();
+  @Output() itemAdded = new EventEmitter<number>();
+
   editingItem: StationItem | null = null;
   editingItemText = '';
 
@@ -64,8 +67,6 @@ export class StationContentsComponent {
         event.currentIndex
       );
     }
-
-    this.updateItemLevels();
   }
 
   dropGroup(event: CdkDragDrop<StationGroup[]> | any) {
@@ -80,21 +81,12 @@ export class StationContentsComponent {
     });
   }
 
-
-  updateItemLevels() {
-    this.station.groups.forEach(group => {
-      group.items.forEach((item, index) => {
-        item.level = index;
-      });
-    });
-  }
-
   addStationItem(groupId: number) {
-
+    this.itemAdded.emit(groupId);
   }
 
-  addStationGroup() {
-
+  addStationGroup(position: number) {
+    this.groupAdded.emit(position);
   }
 
   deleteItem(groupId: number, itemId: number) {

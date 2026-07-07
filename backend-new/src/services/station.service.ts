@@ -69,4 +69,24 @@ export class StationService {
 
         return await this.stationRepository.getStation(stationId);
     }
+
+    public async addGroup(stationId: number): Promise<StationGroup> {
+        const newGroup: StationGroup = new StationGroup();
+        newGroup.station = {stationId} as Station;
+        newGroup.title = '';
+        newGroup.level = -1;
+        newGroup.items = [];
+
+        return await this.stationGroupRepository.save(newGroup);
+    }
+
+    public async addItem(groupId: number): Promise<StationItem> {
+        const newItem: StationItem = new StationItem();
+        newItem.group = {groupId} as StationGroup;
+        newItem.item = '';
+        newItem.level = -1;
+        newItem.required = true;
+
+        return await this.stationItemRepository.save(newItem);
+    }
 }

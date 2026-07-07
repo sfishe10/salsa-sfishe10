@@ -3,6 +3,10 @@ import {StationDto} from "../../dto/station.dto";
 import {plainToInstance} from "class-transformer";
 import {Station} from "../../entities/station.entity";
 import {toStationDto} from "../../mappers/station.mapper";
+import {StationGroup} from "../../entities/station-group.entity";
+import {toStationGroupDto} from "../../mappers/station-group.mapper";
+import {StationItem} from "../../entities/station-item.entity";
+import {toStationItemDto} from "../../mappers/station-item.mapper";
 
 const stationService: StationService = new StationService();
 
@@ -32,6 +36,32 @@ export const update = async (req: any, res: any) => {
         res.send(toStationDto(updatedStation));
     } catch (err: any) {
         console.error('A critical error occurred in stations.update():', err.message);
+        return res.status(500).send(err.message);
+    }
+};
+
+export const addGroup = async (req: any, res: any) => {
+    try {
+        const stationId: number = req.params.id;
+
+        const group: StationGroup = await stationService.addGroup(stationId);
+
+        res.send(toStationGroupDto(group));
+    } catch (err: any) {
+        console.error('A critical error occurred in stations.addGroup():', err.message);
+        return res.status(500).send(err.message);
+    }
+};
+
+export const addItem = async (req: any, res: any) => {
+    try {
+        const groupId: number = req.params.id;
+
+        const item: StationItem = await stationService.addItem(groupId);
+
+        res.send(toStationItemDto(item));
+    } catch (err: any) {
+        console.error('A critical error occurred in stations.addItem():', err.message);
         return res.status(500).send(err.message);
     }
 };
