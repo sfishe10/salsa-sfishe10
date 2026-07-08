@@ -38,8 +38,7 @@ export class StationService {
             maxFailed: stationDto.maxFailed,
         });
 
-
-        // update the groups within the station
+        // update the groups and items within the station
         for (const groupDto of stationDto.groups) {
             const group = await this.stationGroupRepository.save({
                 groupId: groupDto.groupId,
@@ -60,33 +59,27 @@ export class StationService {
         }
 
         for (const groupId of deleteGroupIds) {
-            await this.stationGroupRepository.delete(groupId);
+            await this.deleteGroup(groupId);
         }
 
         for (const itemId of deleteItemIds) {
-            await this.stationItemRepository.delete(itemId);
+            await this.deleteItem(itemId);
         }
 
         return await this.stationRepository.getStation(stationId);
     }
 
-    public async addGroup(stationId: number): Promise<StationGroup> {
-        const newGroup: StationGroup = new StationGroup();
-        newGroup.station = {stationId} as Station;
-        newGroup.title = '';
-        newGroup.level = -1;
-        newGroup.items = [];
+    private async deleteGroup(groupId: number) {
+        const group = await this.stationGroupRepository.getById(groupId);
 
-        return await this.stationGroupRepository.save(newGroup);
+        for (const item of group.items) {
+            await this.deleteItem(item.itemId);
+        }
+
+        await this.stationGroupRepository.delete(group.groupId);
     }
 
-    public async addItem(groupId: number): Promise<StationItem> {
-        const newItem: StationItem = new StationItem();
-        newItem.group = {groupId} as StationGroup;
-        newItem.item = '';
-        newItem.level = -1;
-        newItem.required = true;
-
-        return await this.stationItemRepository.save(newItem);
+    private async deleteItem(itemId: number) {
+        await this.stationItemRepository.delete(itemId);
     }
 }

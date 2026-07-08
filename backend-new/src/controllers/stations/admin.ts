@@ -40,32 +40,6 @@ export const update = async (req: any, res: any) => {
     }
 };
 
-export const addGroup = async (req: any, res: any) => {
-    try {
-        const stationId: number = req.params.id;
-
-        const group: StationGroup = await stationService.addGroup(stationId);
-
-        res.send(toStationGroupDto(group));
-    } catch (err: any) {
-        console.error('A critical error occurred in stations.addGroup():', err.message);
-        return res.status(500).send(err.message);
-    }
-};
-
-export const addItem = async (req: any, res: any) => {
-    try {
-        const groupId: number = req.params.id;
-
-        const item: StationItem = await stationService.addItem(groupId);
-
-        res.send(toStationItemDto(item));
-    } catch (err: any) {
-        console.error('A critical error occurred in stations.addItem():', err.message);
-        return res.status(500).send(err.message);
-    }
-};
-
 // export const deleteTerm = async (req: any, res: any) => {
 //     try {
 //         const termId = req.params.id;

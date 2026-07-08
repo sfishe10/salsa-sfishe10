@@ -9,8 +9,6 @@ const router: Router = Router();
 
 // router.post('/', stations.admin.create);
 router.put('/:id', stations.admin.update);
-router.put('/:id/addGroup', stations.admin.addGroup)
-router.put('/group/:id/addItem', stations.admin.addItem)
 // router.delete('/:id', stations.admin.deleteTerm);
 
 /**

@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {FormsModule, NgForm} from '@angular/forms';
 import {SessionCacheService} from '../services/session-cache.service';
@@ -38,7 +38,6 @@ export class StationPageComponent implements OnInit {
   editedStation!: Station;
 
   deleteGroupIds: number[] = [];
-
   deleteItemIds: number[] = [];
 
   // TODO: once we've added the ability to create new stations, implement this delete functionality
@@ -47,6 +46,8 @@ export class StationPageComponent implements OnInit {
   //
   // @ViewChild('successDialog') successDialog!: TemplateRef<any>;
   // successDialogRef!: MatDialogRef<any>;
+
+  @ViewChild(StationContentsComponent) contentsComponent!: StationContentsComponent;
 
   constructor(private route: ActivatedRoute,
               private stationService: StationsService,
@@ -77,42 +78,12 @@ export class StationPageComponent implements OnInit {
     this.deleteGroupIds.push(groupId);
   }
 
-  addNewItem(groupId: number) {
-    this.stationService.addStationItem(groupId).subscribe(item => {
-      const group = this.editedStation.groups.find(group => group.groupId == groupId);
-      if (!group) return;
-
-      group.items.push(item);
-    }, error => {
-      console.log(error);
-      this.openSnackBar("Error adding item", "Ok", 3000);
-    })
-  }
-
-  addNewGroup(position: number) {
-    this.stationService.addStationGroup(this.stationId).subscribe(group => {
-      this.editedStation.groups.splice(position, 0, group);
-    }, error => {
-      console.log(error);
-      this.openSnackBar("Error adding group", "Ok", 3000);
-    })
-  }
-
-  updateLevels() {
-    this.editedStation.groups.forEach((group, index) => {
-      group.level = index;
-      group.items.forEach((item, index) => {
-        item.level = index;
-      });
-    });
-  }
-
   save() {
     if (!this.station) {
       return;
     }
 
-    this.updateLevels();
+    this.contentsComponent.updateLevels();
 
     this.stationService.updateStation(this.editedStation, this.deleteGroupIds, this.deleteItemIds).subscribe(updatedStation => {
       this.station = updatedStation;

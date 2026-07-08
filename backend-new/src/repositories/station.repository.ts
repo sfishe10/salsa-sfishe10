@@ -55,6 +55,19 @@ export class StationGroupRepository {
     public async delete(groupId: number) {
         return await this.repo.delete(groupId);
     }
+
+    public async getById(groupId: number) {
+        const group: StationGroup | null = await this.repo.findOne({
+            where: {groupId},
+            relations: {items: true}
+        })
+
+        if (!group) {
+            throw new NotFoundError('Group not found');
+        }
+
+        return group;
+    }
 }
 
 export class StationItemRepository {

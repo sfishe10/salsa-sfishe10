@@ -28,14 +28,4 @@ export class StationsService {
     const url = this.baseUrl + `/stations/${station.stationId}`;
     return this.http.put<Station>(url, {station, deleteGroupIds, deleteItemIds});
   }
-
-  public addStationGroup(stationId: number): Observable<StationGroup> {
-    const url = this.baseUrl + `/stations/${stationId}/addGroup`;
-    return this.http.put<StationGroup>(url, {})
-  }
-
-  public addStationItem(groupId: number): Observable<StationItem> {
-    const url = this.baseUrl + `/stations/group/${groupId}/addItem`;
-    return this.http.put<StationItem>(url, {})
-  }
 }
