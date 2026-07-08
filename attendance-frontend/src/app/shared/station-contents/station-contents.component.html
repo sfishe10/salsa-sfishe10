@@ -12,7 +12,38 @@
 
     <div class="group" cdkDrag *ngFor="let group of station.groups; index as groupIndex">
       <div style="width: 500px;">
-        <div cdkDragHandle class="item-box" style="background-color: var(--primary-color); color: white; border-bottom: 0">{{group.title}}</div>
+        <ng-container *ngIf="group.editing; else displayGroupTitle">
+          <div class="item-box-typing" style="background-color: var(--primary-color); color: white;">
+            <mat-form-field subscriptSizing="dynamic">
+              <input matInput
+                     [(ngModel)]="editingGroupText"
+                     name="editingGroupText"
+                     (keydown.enter)="saveGroupTitle(group)"
+                     (keydown.escape)="cancelEditingGroupTitle(group, groupIndex)"
+              />
+            </mat-form-field>
+
+            <button mat-icon-button type="button" (click)="saveGroupTitle(group)">
+              <mat-icon>check</mat-icon>
+            </button>
+
+            <button mat-icon-button type="button" (click)="cancelEditingGroupTitle(group, groupIndex)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-template #displayGroupTitle>
+          <div cdkDragHandle
+               [ngClass]="editing ? 'item-box-edit' : 'item-box'"
+               style="background-color: var(--primary-color); color: white; border-bottom: 0">
+            <span>{{group.title}}</span>
+            <button mat-icon-button
+                    class="edit-button"
+                    (click)="startEditingGroupTitle(group)" style="height: 2rem; width: 2rem; padding: 5px;">
+              <mat-icon class="material-icons-outlined" style="color: white">edit</mat-icon></button>
+          </div>
+        </ng-template>
 
         <div cdkDropList
              [cdkDropListData]="group.items"
@@ -26,12 +57,12 @@
                   <input matInput
                          [(ngModel)]="editingItemText"
                          name="editingItemText"
-                         (keydown.enter)="saveEditingItem(item)"
+                         (keydown.enter)="saveItem(item)"
                          (keydown.escape)="cancelEditingItem(item, groupIndex, itemIndex)"
                   />
                 </mat-form-field>
 
-                <button mat-icon-button type="button" (click)="saveEditingItem(item)">
+                <button mat-icon-button type="button" (click)="saveItem(item)">
                   <mat-icon>check</mat-icon>
                 </button>
 

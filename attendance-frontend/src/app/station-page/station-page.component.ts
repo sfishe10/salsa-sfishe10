@@ -7,9 +7,11 @@ import {MatDialog} from '@angular/material/dialog';
 import {Station} from '../models/station';
 import {StationsService} from '../services/stations.service';
 import {NgIf} from '@angular/common';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {StationContentsComponent} from '../shared/station-contents/station-contents.component';
+import {MatFormField, MatInput} from '@angular/material/input';
+import {StationGroup} from '../models/station-group';
 
 @Component({
   selector: 'app-station-page',
@@ -20,7 +22,10 @@ import {StationContentsComponent} from '../shared/station-contents/station-conte
     MatButton,
     MatIcon,
     RouterLink,
-    StationContentsComponent
+    StationContentsComponent,
+    MatFormField,
+    MatInput,
+    MatIconButton
   ],
   templateUrl: './station-page.component.html',
   styleUrl: './station-page.component.css'
@@ -39,6 +44,9 @@ export class StationPageComponent implements OnInit {
 
   deleteGroupIds: number[] = [];
   deleteItemIds: number[] = [];
+
+  editingTitle: boolean = false;
+  stationTitleText: string = '';
 
   // TODO: once we've added the ability to create new stations, implement this delete functionality
   // @ViewChild('confirmDeleteDialog') confirmDeleteDialog!: TemplateRef<any>;
@@ -68,6 +76,22 @@ export class StationPageComponent implements OnInit {
 
   edit() {
     this.editing = true;
+  }
+
+  startEditingTitle() {
+    this.editingTitle = true;
+    this.stationTitleText = this.editedStation.title;
+  }
+
+  saveTitle() {
+    this.editedStation.title = this.stationTitleText;
+    this.stationTitleText = '';
+    this.editingTitle = false;
+  }
+
+  cancelEditingTitle() {
+    this.editedStation.title = this.station.title;
+    this.editingTitle = false;
   }
 
   addItemToDelete(itemId: number) {

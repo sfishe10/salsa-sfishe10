@@ -146,7 +146,7 @@ export class StationContentsComponent {
     this.editingItemText = item.item;
   }
 
-  saveEditingItem(item: StationItem) {
+  saveItem(item: StationItem) {
     item.item = this.editingItemText;
     this.editingItemText = '';
     item.editing = false;
@@ -159,6 +159,26 @@ export class StationContentsComponent {
 
     item.editing = false;
     this.editingItemText = '';
+  }
+
+  startEditingGroupTitle(group: StationGroup) {
+    group.editing = true;
+    this.editingGroupText = group.title;
+  }
+
+  saveGroupTitle(group: StationGroup) {
+    group.title = this.editingGroupText;
+    this.editingGroupText = '';
+    group.editing = false;
+  }
+
+  cancelEditingGroupTitle(group: StationGroup, groupIndex: number) {
+    if (this.editingGroupText.trim() == '') {
+      this.deleteGroup(groupIndex)
+    }
+
+    group.editing = false;
+    this.editingGroupText = '';
   }
 
   updateLevels() {
