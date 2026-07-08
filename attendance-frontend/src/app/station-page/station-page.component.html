@@ -1,0 +1,62 @@
+<div *ngIf="station && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin())">
+  <div class="top-row">
+    <div class="station-title">
+      <mat-icon class="button" (click)="goBack()" style="margin-right: 10px;">arrow_back</mat-icon>
+      <ng-container *ngIf="editingTitle; else displayStationTitle">
+        <mat-form-field subscriptSizing="dynamic" style="width: 500px;">
+          <input matInput
+                 [(ngModel)]="stationTitleText"
+                 name="stationTitleText"
+                 (keydown.enter)="saveTitle()"
+                 (keydown.escape)="cancelEditingTitle()"
+          />
+        </mat-form-field>
+        <button mat-icon-button type="button" style="height: 2rem; width: 2rem; padding: 5px;" (click)="saveTitle()">
+          <mat-icon>check</mat-icon>
+        </button>
+
+        <button mat-icon-button type="button" style="height: 2rem; width: 2rem; padding: 5px;" (click)="cancelEditingTitle()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </ng-container>
+
+      <ng-template #displayStationTitle>
+        <div style="display: flex; align-items: center;">
+          <span>{{editedStation?.title}}</span>
+          <button *ngIf="editing" mat-icon-button
+                  class="edit-button"
+                  (click)="startEditingTitle()" style="height: 2rem; width: 2rem; padding: 5px; margin-left: 5px;">
+            <mat-icon class="material-icons-outlined" style="color: gray">edit</mat-icon></button>
+        </div>
+      </ng-template>
+    </div>
+    <button *ngIf="!editing && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin())"
+            mat-flat-button type="button" color="primary"  (click)="edit()">Edit Station</button>
+    <div *ngIf="editing">
+      <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
+      <button mat-flat-button color="primary" (click)="save()">Save Changes</button>
+    </div>
+  </div>
+
+  <app-station-contents
+    [station]="editedStation"
+    [editing]="editing"
+    (groupDeleted)="addGroupToDelete($event)"
+    (itemDeleted)="addItemToDelete($event)"></app-station-contents>
+</div>
+
+
+<!--<ng-template #confirmDeleteDialog>-->
+<!--  <h2 mat-dialog-title>Delete Member?</h2>-->
+<!--  <mat-dialog-actions align="end">-->
+<!--    <button mat-button (click)="cancelDialog()">Cancel</button>-->
+<!--    <button mat-button (click)="deleteMember()">Delete</button>-->
+<!--  </mat-dialog-actions>-->
+<!--</ng-template>-->
+
+<!--<ng-template #successDialog>-->
+<!--  <h2 mat-dialog-title>Member successfully deleted!</h2>-->
+<!--  <mat-dialog-actions align="end">-->
+<!--    <button mat-button (click)="goBack()">Ok</button>-->
+<!--  </mat-dialog-actions>-->
+<!--</ng-template>-->

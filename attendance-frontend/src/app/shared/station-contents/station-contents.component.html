@@ -1,0 +1,113 @@
+<form *ngIf="station">
+  <div class="container"
+       cdkDropListGroup
+       [ngStyle]="{'cursor': editing ? 'move' : 'default'}"
+       cdkDropList
+       [cdkDropListData]="station?.groups"
+       (cdkDropListDropped)="dropGroup($event)">
+
+    <button *ngIf="editing" mat-flat-button (click)="addStationGroup(0)"
+            style="margin-bottom: 20px; background-color: dimgray; color: white; width: 100%; height: 4rem;">Add Group
+    </button>
+
+    <div class="group" cdkDrag *ngFor="let group of station.groups; index as groupIndex">
+      <div style="width: 500px;">
+        <ng-container *ngIf="group.editing; else displayGroupTitle">
+          <div class="item-box-typing" style="background-color: var(--primary-color); color: white;">
+            <mat-form-field subscriptSizing="dynamic">
+              <input matInput
+                     [(ngModel)]="editingGroupText"
+                     name="editingGroupText"
+                     (keydown.enter)="saveGroupTitle(group)"
+                     (keydown.escape)="cancelEditingGroupTitle(group, groupIndex)"
+              />
+            </mat-form-field>
+
+            <button mat-icon-button type="button" (click)="saveGroupTitle(group)">
+              <mat-icon>check</mat-icon>
+            </button>
+
+            <button mat-icon-button type="button" (click)="cancelEditingGroupTitle(group, groupIndex)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-template #displayGroupTitle>
+          <div cdkDragHandle
+               [ngClass]="editing ? 'item-box-edit' : 'item-box'"
+               style="background-color: var(--primary-color); color: white; border-bottom: 0">
+            <span>{{group.title}}</span>
+            <button mat-icon-button
+                    class="edit-button"
+                    (click)="startEditingGroupTitle(group)" style="height: 2rem; width: 2rem; padding: 5px;">
+              <mat-icon class="material-icons-outlined" style="color: white">edit</mat-icon></button>
+          </div>
+        </ng-template>
+
+        <div cdkDropList
+             [cdkDropListData]="group.items"
+             (cdkDropListDropped)="dropItem($event)"
+             class="list">
+
+          <div class="listed-items" *ngFor="let item of group.items, index as itemIndex" cdkDrag [cdkDragDisabled]="item.editing">
+            <ng-container *ngIf="item.editing; else displayItem">
+              <div class="item-box-typing">
+                <mat-form-field subscriptSizing="dynamic">
+                  <input matInput
+                         [(ngModel)]="editingItemText"
+                         name="editingItemText"
+                         (keydown.enter)="saveItem(item)"
+                         (keydown.escape)="cancelEditingItem(item, groupIndex, itemIndex)"
+                  />
+                </mat-form-field>
+
+                <button mat-icon-button type="button" (click)="saveItem(item)">
+                  <mat-icon>check</mat-icon>
+                </button>
+
+                <button mat-icon-button type="button" (click)="cancelEditingItem(item, groupIndex, itemIndex)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </ng-container>
+
+
+            <ng-template #displayItem>
+              <div [ngClass]="editing ? 'item-box-edit' : 'item-box'">
+                <span>{{item.item}}</span>
+                <div>
+                  <button mat-icon-button
+                          class="edit-button"
+                          (click)="startEditingItem(item)" style="height: 2rem; width: 2rem; padding: 5px;">
+                    <mat-icon class="material-icons-outlined" style="color: gray">edit</mat-icon></button>
+                  <button mat-icon-button
+                          class="edit-button"
+                          (click)="deleteItem(groupIndex, itemIndex)" style="height: 2rem; width: 2rem; padding: 5px;">
+                    <mat-icon class="material-icons-outlined" style="color: gray">delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+        </div>
+
+        <button *ngIf="editing" mat-flat-button (click)="addStationItem(groupIndex)"
+                style="margin-top: 5px; background-color: lightgray; width: 100%; font-size: 14px; box-sizing: border-box;">Add Item
+        </button>
+      </div>
+
+      <button *ngIf="editing" mat-icon-button type="button" (click)="deleteGroup(groupIndex)" style="height: 2rem; width: 2rem; padding: 0">
+        <mat-icon class="material-icons-outlined">delete</mat-icon>
+      </button>
+
+    </div>
+
+    <button *ngIf="editing" mat-flat-button (click)="addStationGroup(station.groups.length)"
+            style="margin-bottom: 20px; background-color: dimgray; color: white; width: 100%; height: 4rem;">Add Group
+    </button>
+
+  </div>
+</form>
+
