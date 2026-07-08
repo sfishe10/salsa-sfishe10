@@ -264,23 +264,23 @@ export class AdminComponent implements OnInit, AfterViewInit {
     })
   }
 
-  updateUserRole(form: NgForm) {
-    const user = {
-      email: form.value.userEmail,
-      role: form.value.userRole
-    } as User;
-    this.userService.updateUser(user).subscribe(() => {
-      this.userTables.forEach(table => {
-        table.fetchUsers();
-      })
-      this.openSnackBar("User updated!", "Ok", 3000);
-      form.reset();
-      this.roleDialogRef.close();
-    }, error => {
-      console.log(error);
-      this.openSnackBar("Error assigning role", "Ok", 3000);
-    })
-  }
+  // updateUserRole(form: NgForm) {
+  //   const user = {
+  //     email: form.value.userEmail,
+  //     role: form.value.userRole
+  //   } as User;
+  //   this.userService.updateUser(user).subscribe(() => {
+  //     this.userTables.forEach(table => {
+  //       table.fetchUsers();
+  //     })
+  //     this.openSnackBar("User updated!", "Ok", 3000);
+  //     form.reset();
+  //     this.roleDialogRef.close();
+  //   }, error => {
+  //     console.log(error);
+  //     this.openSnackBar("Error assigning role", "Ok", 3000);
+  //   })
+  // }
 
   goToAttendance() {
     this.router.navigate(['/attendance/term', this.selectedTerm?.termId])
