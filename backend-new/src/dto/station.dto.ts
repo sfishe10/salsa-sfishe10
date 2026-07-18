@@ -1,5 +1,6 @@
 import {Expose, Type} from "class-transformer";
 import {StationGroupDto} from "./station-group.dto";
+import {StationPacketDto} from "./station-packet.dto";
 
 export class StationDto {
     @Expose()
@@ -24,4 +25,7 @@ export class StationDto {
     @Type(() => StationGroupDto)
     groups!: StationGroupDto[]
 
+    @Expose()
+    @Type(() => StationPacketDto)
+    packets!: StationPacketDto[];
 }

@@ -1,4 +1,5 @@
 import {StationGroup} from './station-group';
+import {StationPacket} from './station-packet';
 
 export interface Station {
   stationId: number;
@@ -8,4 +9,5 @@ export interface Station {
   level: number;
   class: number;
   groups: StationGroup[];
+  packets: StationPacket[];
 }
