@@ -1,4 +1,9 @@
-import {StationGroupRepository, StationItemRepository, StationRepository} from "../repositories/station.repository";
+import {
+    StationGroupRepository,
+    StationItemRepository,
+    StationPacketRepository,
+    StationRepository
+} from "../repositories/station.repository";
 import {Station} from "../entities/station.entity";
 import {StationDto} from "../dto/station.dto";
 import {StationGroup} from "../entities/station-group.entity";
@@ -8,13 +13,16 @@ export class StationService {
     private stationRepository: StationRepository;
     private stationGroupRepository: StationGroupRepository;
     private stationItemRepository: StationItemRepository;
+    private stationPacketRepository: StationPacketRepository;
 
     constructor(stationsRepository?: StationRepository,
                 stationGroupRepository?: StationGroupRepository,
-                stationItemRepository?: StationItemRepository) {
+                stationItemRepository?: StationItemRepository,
+                stationPacketRepository?: StationPacketRepository) {
         this.stationRepository = stationsRepository ?? new StationRepository();
         this.stationGroupRepository = stationGroupRepository ?? new StationGroupRepository();
         this.stationItemRepository = stationItemRepository ?? new StationItemRepository();
+        this.stationPacketRepository = stationPacketRepository ?? new StationPacketRepository();
     }
 
     public async getById(id: number): Promise<Station> {
@@ -64,6 +72,14 @@ export class StationService {
 
         for (const itemId of deleteItemIds) {
             await this.deleteItem(itemId);
+        }
+
+        for (const packetDto of stationDto.packets) {
+            // from the Station update page, the only thing that might be updated is the order of the station packets
+            await this.stationPacketRepository.save({
+                packetId: packetDto.packetId,
+                level: packetDto.level
+            })
         }
 
         return await this.stationRepository.getStation(stationId);

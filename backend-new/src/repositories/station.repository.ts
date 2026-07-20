@@ -3,6 +3,7 @@ import {Station} from "../entities/station.entity";
 import {NotFoundError} from "../errors/not-found-error";
 import {StationGroup} from "../entities/station-group.entity";
 import {StationItem} from "../entities/station-item.entity";
+import {StationPacket} from "../entities/station-packet.entity";
 
 export class StationRepository {
     private repo = db.getRepository(Station);
@@ -29,6 +30,9 @@ export class StationRepository {
                         level: 'ASC'
                     }
                 },
+                packets: {
+                    level: 'ASC'
+                }
             }
         })
 
@@ -80,5 +84,30 @@ export class StationItemRepository {
 
     public async delete(itemId: number) {
         return await this.repo.delete(itemId);
+    }
+}
+
+export class StationPacketRepository {
+    private repo = db.getRepository(StationPacket);
+
+    public async save(stationPacket: Partial<StationPacket>) {
+        return await this.repo.save(stationPacket);
+    }
+
+    public async delete(packetId: number) {
+        return await this.repo.delete(packetId);
+    }
+
+    public async getById(packetId: number) {
+        const packet: StationPacket | null = await this.repo.findOne({
+            where: {packetId},
+            relations: {station: true}
+        })
+
+        if (!packet) {
+            throw new NotFoundError('Packet not found');
+        }
+
+        return packet;
     }
 }
