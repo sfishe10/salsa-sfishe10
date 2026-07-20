@@ -1,0 +1,11 @@
+<div class="list"
+     [ngStyle]="{'cursor': editing ? 'move' : 'default'}"
+     cdkDropList
+     [cdkDropListData]="station.packets"
+     (cdkDropListDropped)="dropPacket($event)">
+  <div class="listed-items" *ngFor="let packet of station.packets" cdkDrag [cdkDragDisabled]="!editing">
+    <div class="item-box">
+      <span>{{packet.title}}</span>
+    </div>
+  </div>
+</div>
