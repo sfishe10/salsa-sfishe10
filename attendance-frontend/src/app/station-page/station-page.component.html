@@ -38,15 +38,17 @@
     </div>
   </div>
 
-  <app-station-packet-list
-    [station]="editedStation"
-    [editing]="editing"></app-station-packet-list><br/>
+  <div style="display: flex; flex-direction: row;">
+    <app-station-contents
+      [station]="editedStation"
+      [editing]="editing"
+      (groupDeleted)="addGroupToDelete($event)"
+      (itemDeleted)="addItemToDelete($event)"></app-station-contents>
 
-  <app-station-contents
-    [station]="editedStation"
-    [editing]="editing"
-    (groupDeleted)="addGroupToDelete($event)"
-    (itemDeleted)="addItemToDelete($event)"></app-station-contents>
+    <app-station-packet-list
+      [station]="editedStation"
+      [editing]="editing"></app-station-packet-list>
+  </div>
 </div>
 
 
