@@ -23,4 +23,7 @@ export class StationPacket {
 
     @Column({type: 'varchar', length: 4000})
     content!: string;
+
+    @Column({type: 'int'})
+    level!: number;
 }

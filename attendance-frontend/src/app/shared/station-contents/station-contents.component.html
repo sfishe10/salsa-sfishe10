@@ -50,7 +50,7 @@
              (cdkDropListDropped)="dropItem($event)"
              class="list">
 
-          <div class="listed-items" *ngFor="let item of group.items, index as itemIndex" cdkDrag [cdkDragDisabled]="item.editing">
+          <div class="listed-items" *ngFor="let item of group.items, index as itemIndex" cdkDrag [cdkDragDisabled]="!editing || item.editing">
             <ng-container *ngIf="item.editing; else displayItem">
               <div class="item-box-typing">
                 <mat-form-field subscriptSizing="dynamic">

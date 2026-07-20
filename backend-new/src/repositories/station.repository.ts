@@ -19,7 +19,8 @@ export class StationRepository {
             relations: {
                 groups: {
                     items: true
-                }
+                },
+                packets: true
             },
             order: {
                 groups: {

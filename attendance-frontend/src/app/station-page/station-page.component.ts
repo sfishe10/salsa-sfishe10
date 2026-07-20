@@ -12,6 +12,7 @@ import {MatIcon} from '@angular/material/icon';
 import {StationContentsComponent} from '../shared/station-contents/station-contents.component';
 import {MatFormField, MatInput} from '@angular/material/input';
 import {StationGroup} from '../models/station-group';
+import {StationPacketListComponent} from '../shared/station-packet-list/station-packet-list.component';
 
 @Component({
   selector: 'app-station-page',
@@ -25,7 +26,8 @@ import {StationGroup} from '../models/station-group';
     StationContentsComponent,
     MatFormField,
     MatInput,
-    MatIconButton
+    MatIconButton,
+    StationPacketListComponent
   ],
   templateUrl: './station-page.component.html',
   styleUrl: './station-page.component.css'

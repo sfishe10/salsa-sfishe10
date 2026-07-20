@@ -10,6 +10,7 @@ export function toStationPacketDto(packet: StationPacket): StationPacketDto {
         role: packet.role,
         info: packet.info,
         content: packet.content,
+        level: packet.level,
 
         station: packet.station ? toStationDto(packet.station) : null
     }

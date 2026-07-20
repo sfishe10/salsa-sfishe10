@@ -20,4 +20,7 @@ export class StationPacketDto {
 
     @Expose()
     content!: string;
+
+    @Expose()
+    level!: number;
 }

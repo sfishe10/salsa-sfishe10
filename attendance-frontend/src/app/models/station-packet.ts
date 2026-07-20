@@ -4,5 +4,6 @@ export interface StationPacket {
   title: string,
   role: string,
   info: string,
-  content: string
+  content: string,
+  level: number
 }
