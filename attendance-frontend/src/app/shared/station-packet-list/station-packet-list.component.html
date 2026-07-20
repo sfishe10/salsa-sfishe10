@@ -1,11 +1,40 @@
-<div class="list"
-     [ngStyle]="{'cursor': editing ? 'move' : 'default'}"
-     cdkDropList
-     [cdkDropListData]="station.packets"
-     (cdkDropListDropped)="dropPacket($event)">
-  <div class="listed-items" *ngFor="let packet of station.packets" cdkDrag [cdkDragDisabled]="!editing">
-    <div class="item-box">
-      <span>{{packet.title}}</span>
+<div style="width: 500px;">
+  <div class="list"
+       [ngStyle]="{'cursor': editing ? 'move' : 'default'}"
+       cdkDropList
+       [cdkDropListData]="station.packets"
+       (cdkDropListDropped)="dropPacket($event)">
+    <div class="listed-items" *ngFor="let packet of station.packets" cdkDrag [cdkDragDisabled]="!editing">
+      <ng-container *ngIf="packet.editing; else displayPacket">
+        <div class="item-box-typing">
+          <mat-form-field subscriptSizing="dynamic">
+            <input matInput
+                   [(ngModel)]="editingPacketTitleText"
+                   name="editingPacketTitleText"
+                   (keydown.enter)="savePacketTitle(packet)"
+                   (keydown.escape)="cancelEditingPacketTitle(packet)"
+            />
+          </mat-form-field>
+
+          <button mat-icon-button type="button" (click)="savePacketTitle(packet)">
+            <mat-icon>check</mat-icon>
+          </button>
+
+          <button mat-icon-button type="button" (click)="cancelEditingPacketTitle(packet)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #displayPacket>
+        <div class="item-box">
+          <span>{{packet.title}}</span>
+        </div>
+      </ng-template>
     </div>
   </div>
+
+  <button *ngIf="editing" mat-flat-button (click)="addPacket()"
+          style="background-color: lightgray; width: 100%; font-size: 14px; box-sizing: border-box;">Add Packet
+  </button>
 </div>

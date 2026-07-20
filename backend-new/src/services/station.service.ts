@@ -76,8 +76,11 @@ export class StationService {
 
         for (const packetDto of stationDto.packets) {
             // from the Station update page, the only thing that might be updated is the order of the station packets
+            // or the title, if this is a new packet being added
             await this.stationPacketRepository.save({
                 packetId: packetDto.packetId,
+                station: { stationId } as Station,
+                title: packetDto.title,
                 level: packetDto.level
             })
         }
