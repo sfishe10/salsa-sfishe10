@@ -67,7 +67,7 @@ export class StationPacketListComponent {
     packet.editing = false;
   }
 
-  cancelEditingPacketTitle(packet: StationPacket) {
+  cancelEditingPacketTitle() {
     // since this is only called if the user is adding a new packet (not in the database), we can just remove it from the array
     // it will always be the last item in the array
     const currentLength = this.station.packets.length;

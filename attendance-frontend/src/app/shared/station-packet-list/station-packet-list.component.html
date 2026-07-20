@@ -12,7 +12,7 @@
                    [(ngModel)]="editingPacketTitleText"
                    name="editingPacketTitleText"
                    (keydown.enter)="savePacketTitle(packet)"
-                   (keydown.escape)="cancelEditingPacketTitle(packet)"
+                   (keydown.escape)="cancelEditingPacketTitle()"
             />
           </mat-form-field>
 
@@ -20,7 +20,7 @@
             <mat-icon>check</mat-icon>
           </button>
 
-          <button mat-icon-button type="button" (click)="cancelEditingPacketTitle(packet)">
+          <button mat-icon-button type="button" (click)="cancelEditingPacketTitle()">
             <mat-icon>close</mat-icon>
           </button>
         </div>
