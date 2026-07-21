@@ -5,7 +5,7 @@ import {SessionCacheService} from '../services/session-cache.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog} from '@angular/material/dialog';
 import {Station} from '../models/station';
-import {StationsService} from '../services/stations.service';
+import {StationService} from '../services/station.service';
 import {NgIf} from '@angular/common';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -60,7 +60,7 @@ export class StationPageComponent implements OnInit {
   @ViewChild(StationContentsComponent) contentsComponent!: StationContentsComponent;
 
   constructor(private route: ActivatedRoute,
-              private stationService: StationsService,
+              private stationService: StationService,
               private router: Router,
               public sessionCacheService: SessionCacheService,
               private dialog: MatDialog) {
@@ -109,6 +109,8 @@ export class StationPageComponent implements OnInit {
       return;
     }
 
+    this.editingTitle = false;
+
     this.contentsComponent.updateLevels();
 
     this.stationService.updateStation(this.editedStation, this.deleteGroupIds, this.deleteItemIds).subscribe(updatedStation => {
@@ -127,6 +129,7 @@ export class StationPageComponent implements OnInit {
     this.editedStation = JSON.parse(JSON.stringify(this.station));
     this.deleteGroupIds = [];
     this.deleteItemIds = [];
+    this.cancelEditingTitle();
     this.editing = false;
   }
 

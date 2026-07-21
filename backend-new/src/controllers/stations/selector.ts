@@ -2,6 +2,8 @@ import {StationService} from "../../services/station.service";
 import {Station} from "../../entities/station.entity";
 import {toStationDto} from "../../mappers/station.mapper";
 import {NotFoundError} from "../../errors/not-found-error";
+import {StationPacket} from "../../entities/station-packet.entity";
+import {toStationPacketDto} from "../../mappers/station-packet.mapper";
 
 const stationsService: StationService = new StationService();
 
@@ -36,3 +38,21 @@ export const getById = async (req: any, res: any) => {
         res.status(500).send('Query failed');
     }
 };
+
+export const getPacketById = async (req: any, res: any) => {
+    try {
+        const packetId = req.params.id;
+
+        const packet: StationPacket = await stationsService.getPacketById(packetId);
+
+        res.send(toStationPacketDto(packet));
+    } catch (err) {
+        if (err instanceof NotFoundError) {
+            return res.status(404).send('StationPacket not found');
+        }
+
+        console.error(err);
+        res.status(500).send('Query failed');
+    }
+};
+

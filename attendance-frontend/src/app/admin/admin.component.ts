@@ -33,7 +33,7 @@ import {Router} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
 import {UserService} from '../services/user.service';
 import {Station} from '../models/station';
-import {StationsService} from '../services/stations.service';
+import {StationService} from '../services/station.service';
 import {StationsTableComponent} from '../shared/stations-table/stations-table.component';
 
 @Component({
@@ -122,7 +122,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   constructor(private adminService: AdminService,
               private userService: UserService,
-              private stationsService: StationsService,
+              private stationsService: StationService,
               public sessionCacheService: SessionCacheService,
               private dialog: MatDialog,
               private router: Router) {

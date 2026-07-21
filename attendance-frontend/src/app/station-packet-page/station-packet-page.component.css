@@ -1,0 +1,30 @@
+.title {
+  font-family: Roboto, sans-serif;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  max-height: 2rem;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+#packetTitleInput ::ng-deep .mdc-text-field .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {
+  min-height: auto !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+}
+
+#packetTitleInput ::ng-deep .mat-mdc-text-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

@@ -7,6 +7,9 @@ import {StationGroup} from "../../entities/station-group.entity";
 import {toStationGroupDto} from "../../mappers/station-group.mapper";
 import {StationItem} from "../../entities/station-item.entity";
 import {toStationItemDto} from "../../mappers/station-item.mapper";
+import {StationPacketDto} from "../../dto/station-packet.dto";
+import {StationPacket} from "../../entities/station-packet.entity";
+import {toStationPacketDto} from "../../mappers/station-packet.mapper";
 
 const stationService: StationService = new StationService();
 
@@ -52,3 +55,29 @@ export const update = async (req: any, res: any) => {
 //         return res.status(500).send(err.message);
 //     }
 // };
+
+export const updatePacket = async (req: any, res: any) => {
+    try {
+        const packetDto: StationPacketDto = plainToInstance(StationPacketDto, req.body);
+
+        const updatedPacket: StationPacket = await stationService.updatePacket(packetDto);
+
+        res.send(toStationPacketDto(updatedPacket));
+    } catch (err: any) {
+        console.error('A critical error occurred in stations.updatePacket():', err.message);
+        return res.status(500).send(err.message);
+    }
+};
+
+export const deletePacket = async (req: any, res: any) => {
+    try {
+        const packetId = req.params.id;
+
+        await stationService.deletePacket(packetId);
+
+        res.status(200).send(null);
+    } catch (err: any) {
+        console.error('A critical error occurred in terms.deletePacket():', err.message);
+        return res.status(500).send(err.message);
+    }
+};

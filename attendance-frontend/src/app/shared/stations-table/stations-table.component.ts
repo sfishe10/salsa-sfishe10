@@ -7,7 +7,7 @@ import {
 } from "@angular/material/table";
 import {SessionCacheService} from '../../services/session-cache.service';
 import {Router} from '@angular/router';
-import {StationsService} from '../../services/stations.service';
+import {StationService} from '../../services/station.service';
 import {Station} from '../../models/station';
 import {NgIf} from '@angular/common';
 
@@ -37,7 +37,7 @@ export class StationsTableComponent implements OnInit {
   stationsColumns: string[] = ['rank', 'title'];
   stationsDataSource: MatTableDataSource<Station> = new MatTableDataSource<Station>(this.stations);
 
-  constructor(private stationsService: StationsService,
+  constructor(private stationsService: StationService,
               private router: Router) {
   }
 

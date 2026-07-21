@@ -1,0 +1,79 @@
+<p *ngIf="sessionCacheService.isMember()">You do not have access to view this page.</p>
+
+<div *ngIf="packet && !sessionCacheService.isMember()">
+  <form #packetForm="ngForm" (ngSubmit)="save(packetForm)">
+    <div class="top-row">
+      <div class="title">
+        <mat-icon class="button" (click)="goBack()">arrow_back</mat-icon>
+        <span style="margin-left: 10px"><b>{{packet?.station?.title}}</b> - </span>&nbsp;
+        <ng-container *ngIf="editingTitle; else displayPacketTitle">
+          <mat-form-field id="packetTitleInput" subscriptSizing="dynamic" style="width: 500px">
+            <input matInput
+                   [(ngModel)]="title"
+                   id="title"
+                   name="title"
+                   (keydown.enter)="saveTitle()"
+                   (keydown.escape)="cancelEditingTitle()"
+            />
+          </mat-form-field>
+          <button mat-icon-button type="button" style="height: 2rem; width: 2rem; padding: 5px;" (click)="saveTitle()">
+            <mat-icon>check</mat-icon>
+          </button>
+
+          <button mat-icon-button type="button" style="height: 2rem; width: 2rem; padding: 5px;" (click)="cancelEditingTitle()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </ng-container>
+
+        <ng-template #displayPacketTitle>
+          <div style="display: flex; align-items: center;">
+            <span>{{title}}</span>
+            <button *ngIf="editing" mat-icon-button
+                    class="edit-button" type="button"
+                    (click)="startEditingTitle()" style="height: 2rem; width: 2rem; padding: 5px; margin-left: 5px;">
+              <mat-icon class="material-icons-outlined" style="color: gray">edit</mat-icon></button>
+          </div>
+        </ng-template>
+      </div>
+      <button *ngIf="!editing && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin())"
+              mat-flat-button type="button" color="primary" (click)="edit()">Edit Packet</button>
+      <div *ngIf="editing">
+        <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
+        <button mat-flat-button type="submit" color="primary">Save Changes</button>
+      </div>
+    </div><br/>
+
+    <div style="max-width: 100%">
+      <mat-form-field *ngIf="editing" subscriptSizing="dynamic" style="width: 80%">
+        <textarea [(ngModel)]="content"
+                  name="content"
+                  matInput
+                  cdkTextareaAutosize
+                  cdkAutosizeMinRows="3"
+                  (keydown.tab)="insertTab($event)"></textarea>
+      </mat-form-field>
+
+      <div *ngIf="!editing" style="white-space: pre-wrap; padding: 15px; width: 80%">
+        <span *ngIf="content.trim().length">{{content}}</span>
+        <span *ngIf="!content.trim().length" style="color: gray">No content has been entered yet.</span>
+      </div>
+    </div>
+
+    <button *ngIf="editing" style="margin-top: 20px;" mat-flat-button color="warn" type="button" (click)="openConfirmationDialog()">Delete Packet</button>
+  </form>
+</div>
+
+<ng-template #confirmDeleteDialog>
+  <h2 mat-dialog-title>Delete Packet?</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancelDialog()">Cancel</button>
+    <button mat-button (click)="deletePacket()">Delete</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #successDialog>
+  <h2 mat-dialog-title>Packet successfully deleted!</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="goBack()">Ok</button>
+  </mat-dialog-actions>
+</ng-template>

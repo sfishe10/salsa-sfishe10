@@ -8,6 +8,8 @@ import {Station} from "../entities/station.entity";
 import {StationDto} from "../dto/station.dto";
 import {StationGroup} from "../entities/station-group.entity";
 import {StationItem} from "../entities/station-item.entity";
+import {StationPacket} from "../entities/station-packet.entity";
+import {StationPacketDto} from "../dto/station-packet.dto";
 
 export class StationService {
     private stationRepository: StationRepository;
@@ -100,5 +102,29 @@ export class StationService {
 
     private async deleteItem(itemId: number) {
         await this.stationItemRepository.delete(itemId);
+    }
+
+    public async getPacketById(id: number): Promise<StationPacket> {
+        const packet: StationPacket = await this.stationPacketRepository.getById(id);
+
+        return packet;
+    }
+
+    public async updatePacket(packetDto: StationPacketDto): Promise<StationPacket> {
+        const packetId: number = packetDto.packetId;
+
+        await this.stationPacketRepository.save({
+            packetId,
+            title: packetDto.title,
+            role: packetDto.role,
+            info: packetDto.info,
+            content: packetDto.content
+        })
+
+        return this.getPacketById(packetId);
+    }
+
+    public async deletePacket(packetId: number) {
+        await this.stationPacketRepository.delete(packetId)
     }
 }

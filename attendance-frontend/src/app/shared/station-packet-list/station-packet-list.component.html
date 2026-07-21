@@ -4,7 +4,7 @@
        cdkDropList
        [cdkDropListData]="station.packets"
        (cdkDropListDropped)="dropPacket($event)">
-    <div class="listed-items" *ngFor="let packet of station.packets" cdkDrag [cdkDragDisabled]="!editing">
+    <div class="listed-items" *ngFor="let packet of station.packets" cdkDrag [cdkDragDisabled]="!editing" (click)="navigateToPacket(packet.packetId)">
       <ng-container *ngIf="packet.editing; else displayPacket">
         <div class="item-box-typing">
           <mat-form-field subscriptSizing="dynamic">

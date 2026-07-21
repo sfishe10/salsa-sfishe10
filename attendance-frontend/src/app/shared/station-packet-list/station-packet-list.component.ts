@@ -9,6 +9,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {StationPacket} from '../../models/station-packet';
 import {StationItem} from '../../models/station-item';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-station-packet-list',
@@ -35,6 +36,9 @@ export class StationPacketListComponent {
   @Input('editing') editing!: boolean;
 
   editingPacketTitleText: string = '';
+
+  constructor(private router: Router) {
+  }
 
   dropPacket(event: CdkDragDrop<StationPacket[]> | any) {
     moveItemInArray(
@@ -75,5 +79,9 @@ export class StationPacketListComponent {
     this.station.packets = [...this.station.packets];
 
     this.editingPacketTitleText = '';
+  }
+
+  navigateToPacket(packetId: number) {
+    this.router.navigate(['/packet', packetId]);
   }
 }
