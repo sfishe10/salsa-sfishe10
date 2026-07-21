@@ -1,5 +1,6 @@
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {StationGroup} from "./station-group.entity";
+import {StationPacket} from "./station-packet.entity";
 
 @Entity('Station')
 export class Station {
@@ -25,4 +26,9 @@ export class Station {
         cascade: true
     })
     groups!: StationGroup[];
+
+    @OneToMany(() => StationPacket, (packet) => packet.station, {
+        cascade: true
+    })
+    packets!: StationPacket[];
 }

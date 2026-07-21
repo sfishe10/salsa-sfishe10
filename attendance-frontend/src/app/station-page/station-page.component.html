@@ -2,6 +2,7 @@
   <div class="top-row">
     <div class="station-title">
       <mat-icon class="button" (click)="goBack()" style="margin-right: 10px;">arrow_back</mat-icon>
+      <span style="margin-left: 10px"><b>Station {{station.level + 1}}: </b></span>&nbsp;
       <ng-container *ngIf="editingTitle; else displayStationTitle">
         <mat-form-field subscriptSizing="dynamic" style="width: 500px;">
           <input matInput
@@ -38,11 +39,17 @@
     </div>
   </div>
 
-  <app-station-contents
-    [station]="editedStation"
-    [editing]="editing"
-    (groupDeleted)="addGroupToDelete($event)"
-    (itemDeleted)="addItemToDelete($event)"></app-station-contents>
+  <div style="display: flex; flex-direction: row;">
+    <app-station-contents
+      [station]="editedStation"
+      [editing]="editing"
+      (groupDeleted)="addGroupToDelete($event)"
+      (itemDeleted)="addItemToDelete($event)"></app-station-contents>
+
+    <app-station-packet-list
+      [station]="editedStation"
+      [editing]="editing"></app-station-packet-list>
+  </div>
 </div>
 
 

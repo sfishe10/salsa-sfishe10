@@ -1,20 +1,11 @@
-.container {
-  max-width: 500px;
-  margin: 0 25px 25px 0;
+.list {
+  width: 100%;
+  margin-bottom: 5px;
   display: inline-block;
   vertical-align: top;
-}
-
-.group {
-  margin-bottom: 20px;
-  display: flex;
-}
-
-.list {
   border: solid 1px #ccc;
-  background: white;
+  border-radius: 4px;
   overflow: hidden;
-  display: block;
   font-family: sans-serif;
 }
 
@@ -26,48 +17,25 @@
   justify-content: space-between;
   box-sizing: border-box;
   height: 2rem;
-  background: white;
   font-size: 14px;
   font-family: sans-serif;
+
+  background-color: #f0f0f0;
 }
 
-.item-box-edit {
-  padding: 10px 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  height: 2rem;
-  background: white;
-  font-size: 14px;
-  font-family: sans-serif;
+.item-box:hover {
+  filter: brightness(90%);
 }
 
-.item-box-typing {
-  padding-left: 5px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  height: 2rem;
-  background: white;
-  font-size: 14px;
-  font-family: sans-serif;
+.listed-items {
+  border-bottom: solid 1px #ccc;
 }
 
-.item-box-edit:hover .edit-button {
-  opacity: 1;
-  visibility: visible;
+.listed-items:last-child {
+  border: none;
 }
 
-.edit-button {
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-}
-
+/* stuff for cdk drag/drop */
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
@@ -85,20 +53,22 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.listed-items {
-  border-bottom: solid 1px #ccc;
-}
-
-.listed-items:last-child {
-  border: none;
-}
-
 .list.cdk-drop-list-dragging .item-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.container.cdk-drop-list-dragging .group:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+/* stuff for when the text field is active */
+.item-box-typing {
+  padding-left: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 2rem;
+  background: white;
+  font-size: 14px;
+  font-family: sans-serif;
 }
 
 ::ng-deep .mdc-text-field .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {

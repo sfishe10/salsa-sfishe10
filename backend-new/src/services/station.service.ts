@@ -1,20 +1,30 @@
-import {StationGroupRepository, StationItemRepository, StationRepository} from "../repositories/station.repository";
+import {
+    StationGroupRepository,
+    StationItemRepository,
+    StationPacketRepository,
+    StationRepository
+} from "../repositories/station.repository";
 import {Station} from "../entities/station.entity";
 import {StationDto} from "../dto/station.dto";
 import {StationGroup} from "../entities/station-group.entity";
 import {StationItem} from "../entities/station-item.entity";
+import {StationPacket} from "../entities/station-packet.entity";
+import {StationPacketDto} from "../dto/station-packet.dto";
 
 export class StationService {
     private stationRepository: StationRepository;
     private stationGroupRepository: StationGroupRepository;
     private stationItemRepository: StationItemRepository;
+    private stationPacketRepository: StationPacketRepository;
 
     constructor(stationsRepository?: StationRepository,
                 stationGroupRepository?: StationGroupRepository,
-                stationItemRepository?: StationItemRepository) {
+                stationItemRepository?: StationItemRepository,
+                stationPacketRepository?: StationPacketRepository) {
         this.stationRepository = stationsRepository ?? new StationRepository();
         this.stationGroupRepository = stationGroupRepository ?? new StationGroupRepository();
         this.stationItemRepository = stationItemRepository ?? new StationItemRepository();
+        this.stationPacketRepository = stationPacketRepository ?? new StationPacketRepository();
     }
 
     public async getById(id: number): Promise<Station> {
@@ -66,6 +76,17 @@ export class StationService {
             await this.deleteItem(itemId);
         }
 
+        for (const packetDto of stationDto.packets) {
+            // from the Station update page, the only thing that might be updated is the order of the station packets
+            // or the title, if this is a new packet being added
+            await this.stationPacketRepository.save({
+                packetId: packetDto.packetId,
+                station: { stationId } as Station,
+                title: packetDto.title,
+                level: packetDto.level
+            })
+        }
+
         return await this.stationRepository.getStation(stationId);
     }
 
@@ -81,5 +102,29 @@ export class StationService {
 
     private async deleteItem(itemId: number) {
         await this.stationItemRepository.delete(itemId);
+    }
+
+    public async getPacketById(id: number): Promise<StationPacket> {
+        const packet: StationPacket = await this.stationPacketRepository.getById(id);
+
+        return packet;
+    }
+
+    public async updatePacket(packetDto: StationPacketDto): Promise<StationPacket> {
+        const packetId: number = packetDto.packetId;
+
+        await this.stationPacketRepository.save({
+            packetId,
+            title: packetDto.title,
+            role: packetDto.role,
+            info: packetDto.info,
+            content: packetDto.content
+        })
+
+        return this.getPacketById(packetId);
+    }
+
+    public async deletePacket(packetId: number) {
+        await this.stationPacketRepository.delete(packetId)
     }
 }

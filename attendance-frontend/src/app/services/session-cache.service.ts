@@ -106,6 +106,14 @@ export class SessionCacheService {
     return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_SECTION_LEADER;
   }
 
+  public isLeadership() {
+    return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_LEADERSHIP;
+  }
+
+  public isMember() {
+    return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_MEMBER;
+  }
+
   public isDrumlineAttendanceTaker() {
     return this.get(Constants.STORAGE_KEY_IS_DRUMLINE_ATTENDANCE_TAKER);
   }

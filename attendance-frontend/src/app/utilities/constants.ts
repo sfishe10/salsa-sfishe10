@@ -33,6 +33,7 @@ export class Constants {
   static readonly ROLE_SECTION_LEADER = 'Section Leader';
   static readonly ROLE_ATTENDANCE_TAKER = 'Attendance Taker';
   static readonly ROLE_MEMBER = 'Member';
+  static readonly ROLE_LEADERSHIP = 'Leadership'
 
   static readonly SECTION_BASS_DRUM = 'Bass Drum';
   static readonly SECTION_TENOR_DRUMS = 'Tenor Drums';
