@@ -48,8 +48,7 @@
         <textarea [(ngModel)]="content"
                   name="content"
                   matInput
-                  cdkTextareaAutosize
-                  cdkAutosizeMinRows="3"
+                  style="min-height: 600px; resize: vertical;"
                   (keydown.tab)="insertTab($event)"></textarea>
       </mat-form-field>
 
