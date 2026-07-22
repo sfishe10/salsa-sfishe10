@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component,OnInit, ViewChild} from '@angular/core';
 import {MatDivider} from "@angular/material/divider";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
@@ -6,10 +6,8 @@ import {MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/mater
 import {MatToolbar} from "@angular/material/toolbar";
 import {NgIf} from "@angular/common";
 import {ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet} from "@angular/router";
-import {filter, Subject, takeUntil} from 'rxjs';
-import {MSAL_GUARD_CONFIG, MsalBroadcastService, MsalGuardConfiguration, MsalService} from '@azure/msal-angular';
+import {filter} from 'rxjs';
 import {SessionCacheService} from '../services/session-cache.service';
-import {AuthenticationResult, EventMessage, EventType, InteractionStatus, RedirectRequest} from '@azure/msal-browser';
 import {environment} from '../../environments/environment';
 import {Constants} from '../utilities/constants';
 
@@ -34,8 +32,6 @@ import {Constants} from '../utilities/constants';
 export class MainLayoutComponent implements OnInit{
 
   @ViewChild('sidenav') sidenav: any;
-
-  reactUrl = environment.reactAppUrl;
 
   eventType: string = 'upcoming'; // default
 
@@ -77,4 +73,5 @@ export class MainLayoutComponent implements OnInit{
     this.router.navigate(['/section', sectionId]);
   }
 
+  protected readonly STORAGE_KEY_SECTION = Constants.STORAGE_KEY_SECTION;
 }
