@@ -5,6 +5,7 @@ import { Section } from './section.entity';
 import { Term } from './term.entity';
 import { EventAttendance } from './event-attendance.entity';
 import {Expose} from "class-transformer";
+import {Evaluation} from "./evaluation.entity";
 
 @Entity('Member')
 export class Member {
@@ -38,6 +39,12 @@ export class Member {
 
     @OneToMany(() => EventAttendance, (ea) => ea.sub)
     subs!: EventAttendance[];
+
+    @OneToMany(() => Evaluation, (evaluation) => evaluation.member)
+    evalsReceived!: Evaluation[];
+
+    @OneToMany(() => Evaluation, (evaluation) => evaluation.evaluator)
+    evalsGiven!: Evaluation[];
 
     @Expose()
     get allAttendances(): EventAttendance[] {
