@@ -11,4 +11,10 @@ const router: Router = Router();
 router.post('/', evaluations.admin.create);
 
 
+/**
+ * selectors
+ */
+router.get('/:id', evaluations.selector.getById);
+
+
 export default router;
