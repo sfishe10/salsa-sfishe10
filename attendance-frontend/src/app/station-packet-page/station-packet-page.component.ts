@@ -1,16 +1,17 @@
 import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
-import {NgIf} from '@angular/common';
+import {NgForOf, NgIf, TitleCasePipe} from '@angular/common';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {MatFormField, MatInput} from '@angular/material/input';
+import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {StationPacket} from '../models/station-packet';
 import {StationService} from '../services/station.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
-import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+import {MatOption} from '@angular/material/core';
+import {MatSelect} from '@angular/material/select';
 
 @Component({
   selector: 'app-station-packet-page',
@@ -24,8 +25,12 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
     MatDialogActions,
     MatDialogTitle,
     MatInput,
-    CdkTextareaAutosize,
-    MatIconButton
+    MatIconButton,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    NgForOf,
+    TitleCasePipe
   ],
   templateUrl: './station-packet-page.component.html',
   styleUrl: './station-packet-page.component.css'
@@ -51,6 +56,9 @@ export class StationPacketPageComponent implements OnInit {
   role: string = '';
   info: string = '';
 
+  roleOptions: string[] = ['instructor', 'evaluator', 'teacher'];
+  showRoleRequiredError: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               public sessionCacheService: SessionCacheService,
@@ -65,6 +73,7 @@ export class StationPacketPageComponent implements OnInit {
       this.packet = packet;
       this.title = packet.title;
       this.content = packet.content;
+      this.role = packet.role;
     })
   }
 
@@ -86,7 +95,14 @@ export class StationPacketPageComponent implements OnInit {
   }
 
   save(form: NgForm) {
+    this.showRoleRequiredError = false;
+
     if (!this.packet) {
+      return;
+    }
+
+    if (!this.role || !this.role.length) {
+      this.showRoleRequiredError = true;
       return;
     }
 
@@ -109,6 +125,7 @@ export class StationPacketPageComponent implements OnInit {
   }
 
   cancel() {
+    this.showRoleRequiredError = false;
     this.content = this.packet?.content ?? '';
     this.cancelEditingTitle();
     this.editing = false;
