@@ -110,18 +110,19 @@ export class StationService {
         return packet;
     }
 
-    public async updatePacket(packetDto: StationPacketDto): Promise<StationPacket> {
-        const packetId: number = packetDto.packetId;
-
-        await this.stationPacketRepository.save({
-            packetId,
+    public async savePacket(packetDto: StationPacketDto): Promise<StationPacket> {
+        let packet = {
+            packetId: packetDto.packetId,
+            station: {stationId: packetDto.station.stationId} as Station,
             title: packetDto.title,
             role: packetDto.role,
-            info: packetDto.info,
-            content: packetDto.content
-        })
+            info: packetDto.info ?? '',
+            content: packetDto.content ?? ''
+        }
 
-        return this.getPacketById(packetId);
+        await this.stationPacketRepository.save(packet)
+
+        return this.getPacketById(packet.packetId);
     }
 
     public async deletePacket(packetId: number) {

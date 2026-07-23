@@ -158,7 +158,7 @@ export class StationPacketPageComponent implements OnInit {
 
   goBack() {
     this.cancelDialog();
-    this.router.navigate(['/station', this.packet?.station?.stationId]);
+    this.router.navigate(['/station', this.packet?.station?.stationId, 'packets']);
   }
 
   openSnackBar(message: string, action: string, duration: number) {

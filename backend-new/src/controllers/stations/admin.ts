@@ -56,11 +56,24 @@ export const update = async (req: any, res: any) => {
 //     }
 // };
 
+export const createPacket = async (req: any, res: any) => {
+    try {
+        const packetDto: StationPacketDto = plainToInstance(StationPacketDto, req.body);
+
+        const packet: StationPacket = await stationService.savePacket(packetDto);
+
+        res.send(toStationPacketDto(packet));
+    } catch (err: any) {
+        console.error('A critical error occurred in stations.createPacket():', err.message);
+        return res.status(500).send(err.message);
+    }
+};
+
 export const updatePacket = async (req: any, res: any) => {
     try {
         const packetDto: StationPacketDto = plainToInstance(StationPacketDto, req.body);
 
-        const updatedPacket: StationPacket = await stationService.updatePacket(packetDto);
+        const updatedPacket: StationPacket = await stationService.savePacket(packetDto);
 
         res.send(toStationPacketDto(updatedPacket));
     } catch (err: any) {

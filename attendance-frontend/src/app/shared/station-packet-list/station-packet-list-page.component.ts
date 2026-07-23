@@ -45,11 +45,10 @@ export class StationPacketListPageComponent implements OnInit{
   stationId!: number;
   station!: Station;
 
-  titleText: string = '';
+  title: string = '';
   role: string = '';
 
   roleOptions: string[] = ['instructor', 'evaluator', 'teacher'];
-  showRoleRequiredError: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -83,6 +82,15 @@ export class StationPacketListPageComponent implements OnInit{
   }
 
   submitPacket(form: NgForm) {
+    let packet = {
+      role: form.value.role,
+      title: form.value.title,
+      station: this.station
+    } as StationPacket;
 
+    this.stationService.createPacket(packet).subscribe(newPacket => {
+      this.router.navigate(['/packet', newPacket.packetId]);
+      this.dialog.closeAll();
+    })
   }
 }
