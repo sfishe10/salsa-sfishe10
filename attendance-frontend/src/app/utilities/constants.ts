@@ -13,6 +13,10 @@ export class Constants {
   static readonly EVENT_TYPE_PEP_EVENT = "Pep Event";
   static readonly EVENT_TYPE_REHEARSAL = "Rehearsal";
 
+  static readonly STATION_OPTION_TEACH = 'Teach Station';
+  static readonly STATION_OPTION_EVALUATE = 'Evaluate Member';
+  static readonly STATION_OPTION_LEAD = 'Lead Station Evaluation'
+
   static readonly REHEARSAL_CONFLICT_TUES = 'Tuesday Conflict';
   static readonly REHEARSAL_CONFLICT_THURS = 'Thursday Conflict';
   static readonly REHEARSAL_CONFLICT_LEAVING_EARLY = 'Leaving Early (both days)';
