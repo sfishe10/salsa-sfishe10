@@ -4,10 +4,10 @@ import {StationItem} from "./station-item.entity";
 
 @Entity('EvaluationItem')
 export class EvaluationItem {
-    @PrimaryColumn()
+    @PrimaryColumn({type: 'int'})
     evalId!: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({type: 'int'})
     itemId!: number;
 
     @ManyToOne(() => Evaluation, (evaluation: Evaluation) => evaluation.items, {
