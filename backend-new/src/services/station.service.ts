@@ -28,13 +28,13 @@ export class StationService {
     }
 
     public async getById(id: number): Promise<Station> {
-        const station: Station = await this.stationRepository.getStation(id);
+        const station: Station = await this.stationRepository.findById(id);
 
         return station;
     }
 
     public async getAll(): Promise<Station[]> {
-        return await this.stationRepository.getAllStations();
+        return await this.stationRepository.findAll();
     }
 
     public async update(stationDto: StationDto, deleteGroupIds: number[], deleteItemIds: number[]): Promise<Station> {
@@ -87,11 +87,11 @@ export class StationService {
             })
         }
 
-        return await this.stationRepository.getStation(stationId);
+        return await this.stationRepository.findById(stationId);
     }
 
     private async deleteGroup(groupId: number) {
-        const group = await this.stationGroupRepository.getById(groupId);
+        const group = await this.stationGroupRepository.findById(groupId);
 
         for (const item of group.items) {
             await this.deleteItem(item.itemId);
@@ -105,7 +105,7 @@ export class StationService {
     }
 
     public async getPacketById(id: number): Promise<StationPacket> {
-        const packet: StationPacket = await this.stationPacketRepository.getById(id);
+        const packet: StationPacket = await this.stationPacketRepository.findById(id);
 
         return packet;
     }

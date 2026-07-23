@@ -26,8 +26,8 @@ export class Evaluation {
     @JoinColumn({ name: 'stationId' })
     station!: Station;
 
-    @Column({type: 'tinyint'})
-    passed!: boolean;
+    @Column({type: 'tinyint', nullable: true})
+    passed!: boolean | null;
 
     @Column({type: 'datetime'})
     evalTime!: Date;
