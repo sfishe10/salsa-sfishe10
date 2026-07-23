@@ -11,6 +11,7 @@ const router: Router = Router();
 router.put('/:id', stations.admin.update);
 // router.delete('/:id', stations.admin.deleteTerm);
 
+router.post('/packets', stations.admin.createPacket)
 router.put('/packets/:id', stations.admin.updatePacket);
 router.delete('/packets/:id', stations.admin.deletePacket)
 

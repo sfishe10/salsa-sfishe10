@@ -8,13 +8,13 @@ import {StationPacket} from "../entities/station-packet.entity";
 export class StationRepository {
     private repo = db.getRepository(Station);
 
-    public async getAllStations(): Promise<Station[]> {
+    public async findAll(): Promise<Station[]> {
         return this.repo.find({
             order: { class: 'ASC', level: 'ASC'}
         })
     }
 
-    public async getStation(id: number): Promise<Station> {
+    public async findById(id: number): Promise<Station> {
         const station: Station | null = await this.repo.findOne({
             where: { stationId: id },
             relations: {
@@ -61,7 +61,7 @@ export class StationGroupRepository {
         return await this.repo.delete(groupId);
     }
 
-    public async getById(groupId: number) {
+    public async findById(groupId: number) {
         const group: StationGroup | null = await this.repo.findOne({
             where: {groupId},
             relations: {items: true}
@@ -98,7 +98,7 @@ export class StationPacketRepository {
         return await this.repo.delete(packetId);
     }
 
-    public async getById(packetId: number) {
+    public async findById(packetId: number) {
         const packet: StationPacket | null = await this.repo.findOne({
             where: {packetId},
             relations: {station: true}

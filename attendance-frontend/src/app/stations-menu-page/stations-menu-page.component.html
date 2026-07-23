@@ -1,0 +1,5 @@
+<div class="container">
+  <app-station-option *ngFor="let option of stationsOptions"
+                      [option]="option"
+                      (buttonClicked)="navigateToAction($event)"></app-station-option>
+</div>

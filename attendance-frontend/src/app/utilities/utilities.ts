@@ -81,4 +81,9 @@ export class Utilities {
       || sectionName === Constants.SECTION_TENOR_DRUMS
       || sectionName === Constants.SECTION_BASS_DRUM;
   }
+
+  public static getStationsOptions() {
+    return [Constants.STATION_OPTION_EVALUATE,
+      Constants.STATION_OPTION_LEAD];
+  }
 }

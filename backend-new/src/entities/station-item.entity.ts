@@ -1,5 +1,6 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {StationGroup} from "./station-group.entity";
+import {EvaluationItem} from "./evaluation-item.entity";
 
 @Entity('StationItem')
 export class StationItem {
@@ -20,4 +21,8 @@ export class StationItem {
 
     @Column({type: 'tinyint'})
     required!: boolean;
+
+    // needed for typeORM relationship definition (probably won't be used)
+    @OneToMany(() => EvaluationItem, (item) => item.stationItem, {cascade: true})
+    evalItems!: EvaluationItem[];
 }

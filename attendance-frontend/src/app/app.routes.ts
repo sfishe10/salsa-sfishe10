@@ -16,6 +16,10 @@ import {SectionPageComponent} from './section-page/section-page.component';
 import { AuthResponseComponent } from './utilities/auth-response.component';
 import {StationPageComponent} from './station-page/station-page.component';
 import {StationPacketPageComponent} from './station-packet-page/station-packet-page.component';
+import {StationsMenuPageComponent} from './stations-menu-page/stations-menu-page.component';
+import {MemberListPageComponent} from './member-list-page/member-list-page.component';
+import {StationListPageComponent} from './station-list-page/station-list-page.component';
+import {StationPacketListPageComponent} from './shared/station-packet-list/station-packet-list-page.component';
 
 export const routes: Routes = [
   {
@@ -34,6 +38,21 @@ export const routes: Routes = [
       {
         path: 'events',
         component: EventListComponent,
+        canActivate: [AuthzGuard]
+      },
+      {
+        path: 'stations',
+        component: StationsMenuPageComponent,
+        canActivate: [AuthzGuard]
+      },
+      {
+        path: 'stations/evaluate',
+        component: MemberListPageComponent,
+        canActivate: [AuthzGuard]
+      },
+      {
+        path: 'stations-list',
+        component: StationListPageComponent,
         canActivate: [AuthzGuard]
       },
       {
@@ -84,6 +103,11 @@ export const routes: Routes = [
       {
         path: 'station/:id',
         component: StationPageComponent,
+        canActivate: [AuthzGuard]
+      },
+      {
+        path: 'station/:id/packets',
+        component: StationPacketListPageComponent,
         canActivate: [AuthzGuard]
       },
       {

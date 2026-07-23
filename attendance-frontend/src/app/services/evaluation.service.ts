@@ -1,0 +1,31 @@
+import {Injectable} from '@angular/core';
+import {environment} from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Evaluation} from '../models/evaluation';
+import {NewEvaluation} from '../models/new-evaluation';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class EvaluationService {
+  baseUrl = environment.apiURL;
+
+  constructor(private http: HttpClient) {}
+
+  public startNewEval(newEval: NewEvaluation): Observable<Evaluation> {
+    const url = this.baseUrl + `/evaluations`;
+    return this.http.post<Evaluation>(url, {newEval})
+  }
+
+  public getEvalById(id: number): Observable<Evaluation> {
+    const url = this.baseUrl + `/evaluations/${id}`;
+    return this.http.get<Evaluation>(url);
+  }
+
+  public submitEval(evaluation: Evaluation): Observable<Evaluation> {
+    const url = this.baseUrl + `/evaluations/${evaluation.evalId}`;
+    return this.http.put<Evaluation>(url, {evaluation});
+  }
+
+}

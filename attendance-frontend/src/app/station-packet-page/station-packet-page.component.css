@@ -28,3 +28,13 @@
   flex-direction: column;
   justify-content: center;
 }
+
+.form-label {
+  font-size: .8rem;
+  color: gray;
+}
+
+.error-message {
+  font-size: .9rem;
+  color: red;
+}

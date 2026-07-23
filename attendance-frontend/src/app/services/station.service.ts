@@ -28,6 +28,11 @@ export class StationService {
     return this.http.put<Station>(url, {station, deleteGroupIds, deleteItemIds});
   }
 
+  public createPacket(packet: StationPacket): Observable<StationPacket> {
+    const url = this.baseUrl + `/stations/packets`;
+    return this.http.post<StationPacket>(url, packet);
+  }
+
   public getPacketById(id: number): Observable<StationPacket> {
     const url = this.baseUrl + `/stations/packets/${id}`;
     return this.http.get<StationPacket>(url);

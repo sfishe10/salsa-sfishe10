@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {FormsModule, NgForm} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {FormsModule} from '@angular/forms';
 import {SessionCacheService} from '../services/session-cache.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog} from '@angular/material/dialog';
@@ -11,8 +11,6 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {StationContentsComponent} from '../shared/station-contents/station-contents.component';
 import {MatFormField, MatInput} from '@angular/material/input';
-import {StationGroup} from '../models/station-group';
-import {StationPacketListComponent} from '../shared/station-packet-list/station-packet-list.component';
 
 @Component({
   selector: 'app-station-page',
@@ -22,12 +20,10 @@ import {StationPacketListComponent} from '../shared/station-packet-list/station-
     FormsModule,
     MatButton,
     MatIcon,
-    RouterLink,
     StationContentsComponent,
     MatFormField,
     MatInput,
     MatIconButton,
-    StationPacketListComponent
   ],
   templateUrl: './station-page.component.html',
   styleUrl: './station-page.component.css'
@@ -161,6 +157,10 @@ export class StationPageComponent implements OnInit {
   goBack() {
     // this.cancelDialog();
     this.router.navigate(['/admin']);
+  }
+
+  navigateToPackets() {
+    this.router.navigate(['/station', this.stationId, 'packets'])
   }
 
   openSnackBar(message: string, action: string, duration: number) {

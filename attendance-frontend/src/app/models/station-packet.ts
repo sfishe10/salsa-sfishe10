@@ -8,7 +8,4 @@ export interface StationPacket {
   info: string,
   content: string,
   level: number
-
-  // only frontend - determines whether to display the editable text box
-  editing: boolean;
 }
