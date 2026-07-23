@@ -1,11 +1,9 @@
 import {Component, Input} from '@angular/core';
 import {
   MatCard,
-  MatCardContent,
   MatCardHeader,
   MatCardTitle,
 } from '@angular/material/card';
-import {MatDivider} from '@angular/material/divider';
 import {MatIcon} from '@angular/material/icon';
 import {Router} from '@angular/router';
 
@@ -15,8 +13,6 @@ import {Router} from '@angular/router';
   imports: [
     MatCard,
     MatCardHeader,
-    MatDivider,
-    MatCardContent,
     MatCardTitle,
     MatIcon,
   ],
