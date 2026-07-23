@@ -39,17 +39,16 @@
     </div>
   </div>
 
-  <div style="display: flex; flex-direction: row;">
-    <app-station-contents
-      [station]="editedStation"
-      [editing]="editing"
-      (groupDeleted)="addGroupToDelete($event)"
-      (itemDeleted)="addItemToDelete($event)"></app-station-contents>
+  <button mat-raised-button color="accent" class="packets-nav-button" (click)="navigateToPackets()">
+    <span>View station packets</span>
+    <mat-icon iconPositionEnd class="material-symbols-outlined">arrow_right_alt</mat-icon>
+  </button>
 
-    <app-station-packet-list
-      [station]="editedStation"
-      [editing]="editing"></app-station-packet-list>
-  </div>
+  <app-station-contents
+    [station]="editedStation"
+    [editing]="editing"
+    (groupDeleted)="addGroupToDelete($event)"
+    (itemDeleted)="addItemToDelete($event)"></app-station-contents>
 </div>
 
 

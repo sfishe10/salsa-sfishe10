@@ -15,3 +15,22 @@
 .button:hover {
   cursor: pointer;
 }
+
+.packets-nav-button {
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.material-symbols-outlined {
+  font-size: 36px;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 200,
+    'GRAD' 0,
+    'opsz' 24
+}
+

@@ -1,0 +1,59 @@
+.station-title {
+  font-family: Roboto, sans-serif;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.list {
+  width: 100%;
+  margin-bottom: 5px;
+  display: inline-block;
+  vertical-align: top;
+  border: solid 1px #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+.item-box {
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 2rem;
+  font-size: 14px;
+  font-family: sans-serif;
+
+  background-color: #f0f0f0;
+}
+
+.item-box:hover {
+  filter: brightness(90%);
+}
+
+.listed-items {
+  border-bottom: solid 1px #ccc;
+}
+
+.listed-items:last-child {
+  border: none;
+}
+
+
+mat-form-field {
+  margin-bottom: 10px;
+}
