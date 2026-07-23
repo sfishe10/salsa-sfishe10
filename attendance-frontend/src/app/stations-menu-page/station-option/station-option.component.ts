@@ -1,11 +1,10 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {
   MatCard,
   MatCardHeader,
   MatCardTitle,
 } from '@angular/material/card';
 import {MatIcon} from '@angular/material/icon';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-station-option',
@@ -21,16 +20,13 @@ import {Router} from '@angular/router';
 })
 export class StationOptionComponent {
 
-  constructor(private router: Router) {
-  }
-
   @Input()
   option: string = '';
 
+  @Output() buttonClicked = new EventEmitter<string>();
+
   navigateToAction() {
-    // this.router.navigate()
-    // if evaluating, go to list of members
-    // if leading, go to list of stations
+    this.buttonClicked.emit(this.option);
   }
 
 }

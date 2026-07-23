@@ -1,5 +1,5 @@
 <div class="container">
-  <app-station-option [option]="STATION_OPTION_TEACH"></app-station-option>
-  <app-station-option [option]="STATION_OPTION_EVALUATE"></app-station-option>
-  <app-station-option [option]="STATION_OPTION_LEAD"></app-station-option>
+  <app-station-option *ngFor="let option of stationsOptions"
+                      [option]="option"
+                      (buttonClicked)="navigateToAction($event)"></app-station-option>
 </div>
