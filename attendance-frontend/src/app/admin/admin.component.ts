@@ -335,6 +335,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.onCancelDialog();
   }
 
+  navigateToStation(stationId: number) {
+    this.router.navigate(['/station', stationId]);
+  }
+
   openSnackBar(message: string, action: string, duration: number) {
     this._snackBar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});
   }

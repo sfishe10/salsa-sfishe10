@@ -54,7 +54,7 @@ export class MainLayoutComponent implements OnInit{
     if (this.router.url.startsWith('/events')) {
       return this.eventType === 'upcoming' ? 'Upcoming Events' : 'Recent Events';
     }
-    if (this.router.url === '/stations') return 'Stations';
+    if (this.router.url === '/stations' || this.router.url.includes('/stations-list')) return 'Stations';
     if (this.router.url === '/profile') return 'Profile';
     if (this.router.url.includes('/attendance-form')) return 'Enter Attendance';
     if (this.router.url.includes('/member')) return 'Member';

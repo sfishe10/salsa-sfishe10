@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
 import {NgForOf, NgIf, TitleCasePipe} from '@angular/common';
 import {FormsModule, NgForm} from '@angular/forms';
@@ -12,6 +12,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-station-packet-page',
@@ -59,21 +60,30 @@ export class StationPacketPageComponent implements OnInit {
   roleOptions: string[] = ['instructor', 'evaluator', 'teacher'];
   showRoleRequiredError: boolean = false;
 
+  action: string = '';
+
+  showEditButton: boolean = false;
+
   constructor(private route: ActivatedRoute,
-              private router: Router,
               public sessionCacheService: SessionCacheService,
               private stationService: StationService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private location: Location) {
   }
 
   ngOnInit() {
     this.packetId = Number(this.route.snapshot.paramMap.get('id'));
+    this.action = this.route.snapshot.queryParams['action'];
 
     this.stationService.getPacketById(this.packetId).subscribe(packet => {
       this.packet = packet;
       this.title = packet.title;
       this.content = packet.content;
       this.role = packet.role;
+
+      if (this.action === 'edit') {
+        this.showEditButton = true;
+      }
     })
   }
 
@@ -158,7 +168,7 @@ export class StationPacketPageComponent implements OnInit {
 
   goBack() {
     this.cancelDialog();
-    this.router.navigate(['/station', this.packet?.station?.stationId, 'packets']);
+    this.location.back();
   }
 
   openSnackBar(message: string, action: string, duration: number) {

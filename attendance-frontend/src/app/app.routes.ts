@@ -19,7 +19,7 @@ import {StationPacketPageComponent} from './station-packet-page/station-packet-p
 import {StationsMenuPageComponent} from './stations-menu-page/stations-menu-page.component';
 import {MemberListPageComponent} from './member-list-page/member-list-page.component';
 import {StationListPageComponent} from './station-list-page/station-list-page.component';
-import {StationPacketListPageComponent} from './shared/station-packet-list/station-packet-list-page.component';
+import {StationPacketListPageComponent} from './shared/station-packet-list-page/station-packet-list-page.component';
 
 export const routes: Routes = [
   {

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -30,6 +30,8 @@ export class StationsTableComponent implements OnInit {
 
   @Input('editing') editing: boolean = false;
 
+  @Output() stationClicked = new EventEmitter<number>
+
   stations: Station[] = [];
 
   stationsLoaded: boolean = false;
@@ -50,8 +52,8 @@ export class StationsTableComponent implements OnInit {
     })
   }
 
-  navigateToStation(stationId: number) {
-    this.router.navigate(['/station', stationId]);
+  selectStation(stationId: number) {
+    this.stationClicked.emit(stationId)
   }
 
 }

@@ -8,14 +8,14 @@
 
   <div style="max-width: 500px;">
     <div class="list">
-      <div class="listed-items" *ngFor="let packet of station.packets" (click)="navigateToPacket(packet.packetId)">
+      <div class="listed-items" *ngFor="let packet of packets" (click)="navigateToPacket(packet.packetId)">
         <div class="item-box">
           <span>{{packet.title}}</span>
         </div>
       </div>
     </div>
 
-    <button mat-flat-button (click)="addPacket()"
+    <button *ngIf="showAddButton" mat-flat-button (click)="addPacket()"
             style="background-color: var(--primary-color); color: white; width: 100%; font-size: 14px; box-sizing: border-box;">Add Packet
     </button>
   </div>
@@ -38,7 +38,7 @@
       </mat-form-field><br/>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+      <button mat-button type="button" (click)="cancelDialog()">Cancel</button>
       <button mat-button type="submit" [disabled]="!title || !role">Submit</button>
     </mat-dialog-actions>
   </form>

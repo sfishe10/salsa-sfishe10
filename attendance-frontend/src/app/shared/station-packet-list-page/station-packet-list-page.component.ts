@@ -1,7 +1,5 @@
-import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
-import {NgForOf, NgIf, NgStyle, TitleCasePipe} from '@angular/common';
-import {StationGroup} from '../../models/station-group';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {NgForOf, NgIf, TitleCasePipe} from '@angular/common';
 import {Station} from '../../models/station';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
@@ -13,6 +11,7 @@ import {StationService} from '../../services/station.service';
 import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-station-packet-list-page',
@@ -22,7 +21,6 @@ import {MatSelect} from '@angular/material/select';
     FormsModule,
     MatFormField,
     MatIcon,
-    MatIconButton,
     MatInput,
     NgIf,
     MatButton,
@@ -44,24 +42,39 @@ export class StationPacketListPageComponent implements OnInit{
 
   stationId!: number;
   station!: Station;
+  action: string = '';
+
+  packets: StationPacket[] = [];
 
   title: string = '';
   role: string = '';
 
   roleOptions: string[] = ['instructor', 'evaluator', 'teacher'];
 
+  showAddButton: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private stationService: StationService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private location: Location) {
   }
 
   ngOnInit() {
     this.stationId = Number(this.route.snapshot.paramMap.get('id'));
 
+    this.action = this.route.snapshot.queryParams['action'];
+
     this.stationService.getStationById(this.stationId).subscribe(station => {
       this.station = station;
-    })
+      this.packets = station.packets;
+
+      if (this.action === 'lead') {
+        this.packets = this.packets.filter(packet => packet.role === 'instructor');
+      } else if (this.action === 'edit') {
+        this.showAddButton = true;
+      }
+    });
   }
 
   addPacket() {
@@ -69,15 +82,15 @@ export class StationPacketListPageComponent implements OnInit{
   }
 
   navigateToPacket(packetId: number) {
-    this.router.navigate(['/packet', packetId]);
+    this.router.navigate(['/packet', packetId], {queryParams: {action: this.action}});
   }
 
   goBack() {
-    // this.cancelDialog();
-    this.router.navigate(['/station', this.station.stationId]);
+    this.cancelDialog();
+    this.location.back();
   }
 
-  onCancelDialog() {
+  cancelDialog() {
     this.dialog.closeAll();
   }
 
