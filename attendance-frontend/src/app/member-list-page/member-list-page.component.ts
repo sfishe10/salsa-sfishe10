@@ -60,4 +60,7 @@ export class MemberListPageComponent implements OnInit {
     })
   }
 
+  startEvaluation(memberId: number) {
+
+  }
 }
