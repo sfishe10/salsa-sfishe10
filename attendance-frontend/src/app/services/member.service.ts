@@ -18,6 +18,11 @@ export class MemberService {
     return this.http.get<Member>(url);
   }
 
+  public getMembersByTermId(id: number): Observable<Member[]> {
+    const url = this.baseUrl + `/members/term/${id}`;
+    return this.http.get<Member[]>(url);
+  }
+
   public updateMember(member: Member): Observable<Member> {
     const url = this.baseUrl + `/members/${member.memberId}`;
     return this.http.put<Member>(url, member);
