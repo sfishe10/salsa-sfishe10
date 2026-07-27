@@ -23,6 +23,8 @@ export class EvaluationService {
     }
 
     public async create(newEvalDto: NewEvaluationDto): Promise<Evaluation> {
+        // TODO: instead of just creating a new evaluation, first check if there's an unfinished one (passed == null)
+
         let newEvaluation = new Evaluation();
 
         newEvaluation.member = {memberId: newEvalDto.memberId} as Member;

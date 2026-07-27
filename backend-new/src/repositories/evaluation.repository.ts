@@ -15,7 +15,9 @@ export class EvaluationRepository {
                 evaluator: true,
                 station: true,
                 items: {
-                    stationItem: true
+                    stationItem: {
+                        group: true
+                    }
                 }
             },
             order: {
