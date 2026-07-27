@@ -20,6 +20,7 @@ import {StationsMenuPageComponent} from './stations-menu-page/stations-menu-page
 import {MemberListPageComponent} from './member-list-page/member-list-page.component';
 import {StationListPageComponent} from './station-list-page/station-list-page.component';
 import {StationPacketListPageComponent} from './shared/station-packet-list-page/station-packet-list-page.component';
+import {EvaluationPageComponent} from './evaluation-page/evaluation-page.component';
 
 export const routes: Routes = [
   {
@@ -113,6 +114,11 @@ export const routes: Routes = [
       {
         path: 'packet/:id',
         component: StationPacketPageComponent,
+        canActivate: [AuthzGuard]
+      },
+      {
+        path: 'evaluation/:id',
+        component: EvaluationPageComponent,
         canActivate: [AuthzGuard]
       }
     ]

@@ -20,4 +20,9 @@
 .member-row {
   height: 2.5rem;
   font-size: 1rem;
+  cursor: pointer;
+}
+
+.member-row:hover {
+  filter: brightness(90%);
 }

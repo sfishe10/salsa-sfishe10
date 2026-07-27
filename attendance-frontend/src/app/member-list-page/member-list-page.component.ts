@@ -13,6 +13,7 @@ import {
   MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
   MatTable
 } from '@angular/material/table';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-member-list-page',
@@ -40,7 +41,8 @@ export class MemberListPageComponent implements OnInit {
   membersLoaded: boolean = false;
 
   constructor(private sessionCacheService: SessionCacheService,
-              private memberService: MemberService) {
+              private memberService: MemberService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -64,7 +66,7 @@ export class MemberListPageComponent implements OnInit {
     })
   }
 
-  startEvaluation(memberId: number) {
-
+  goToStationsList(memberId: number) {
+    this.router.navigate(['stations-list'], {queryParams: {action: 'evaluate', evalMember: memberId}});
   }
 }
