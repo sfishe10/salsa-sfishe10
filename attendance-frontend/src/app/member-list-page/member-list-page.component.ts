@@ -35,7 +35,7 @@ import {
   styleUrl: './member-list-page.component.css'
 })
 export class MemberListPageComponent implements OnInit {
-  sectionMemberMap = new Map<string, Member[]>();
+  sectionGroups: Array<[string, Member[]]> = [];
 
   membersLoaded: boolean = false;
 
@@ -49,13 +49,17 @@ export class MemberListPageComponent implements OnInit {
     const termId = 7
 
     this.memberService.getMembersByTermId(termId).subscribe(members => {
+      const map = new Map<string, Member[]>();
+
       for (let member of members) {
         let section = member.section?.name ?? '';
-        let members = this.sectionMemberMap.get(section) ?? [];
+        let members = map.get(section) ?? [];
+
         members.push(member);
-        this.sectionMemberMap.set(section, members);
+        map.set(section, members);
       }
 
+      this.sectionGroups = Array.from(map.entries());
       this.membersLoaded = true;
     })
   }
