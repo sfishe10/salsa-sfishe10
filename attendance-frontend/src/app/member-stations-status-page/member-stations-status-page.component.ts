@@ -11,6 +11,7 @@ import {StationsTableComponent} from '../shared/stations-table/stations-table.co
 import {MemberService} from '../services/member.service';
 import {NgIf, UpperCasePipe} from '@angular/common';
 import {MatDivider} from '@angular/material/divider';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-member-stations-status-page',
@@ -19,7 +20,8 @@ import {MatDivider} from '@angular/material/divider';
     StationsTableComponent,
     NgIf,
     UpperCasePipe,
-    MatDivider
+    MatDivider,
+    MatIcon
   ],
   templateUrl: './member-stations-status-page.component.html',
   styleUrl: './member-stations-status-page.component.css'
@@ -68,6 +70,10 @@ export class MemberStationsStatusPageComponent implements OnInit {
       console.log(error);
       this.openSnackBar("Error starting evaluation", "Ok", 3000);
     })
+  }
+
+  goBack() {
+    this.router.navigate(['/stations/evaluate']);
   }
 
   openSnackBar(message: string, action: string, duration: number) {
