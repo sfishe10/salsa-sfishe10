@@ -10,7 +10,7 @@ import {VolunteerRosterMemberCount} from '../models/volunteer-roster-member-coun
   providedIn: 'root'
 })
 export class EventService {
-  baseUrl = environment.apiURL + '/mb-attendance';
+  baseUrl = environment.apiURL;
 
   constructor(private http: HttpClient) {}
 

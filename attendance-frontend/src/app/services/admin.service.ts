@@ -14,7 +14,7 @@ import {VolunteerRosterMemberCount} from '../models/volunteer-roster-member-coun
 })
 export class AdminService {
 
-  baseUrl = environment.apiURL + '/mb-attendance';
+  baseUrl = environment.apiURL;
 
   constructor(private http: HttpClient) {}
 

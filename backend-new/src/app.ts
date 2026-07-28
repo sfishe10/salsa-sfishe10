@@ -11,21 +11,15 @@ import {
 
 // Route imports
 
-// import groupsRoutes from './routes/groups';
-// import userRoutes from './routes/users';
-// import sectionRoutes from './routes/sections';
-// import evaluationRoutes from './routes/evaluations';
-// import eventRoutes from './routes/events';
-
 import attendanceRoutes from './routes/attendance';
-import attendanceEventRoutes from './routes/events';
-import attendanceMemberRoutes from './routes/members';
-import attendanceTermRoutes from './routes/terms';
-import attendancePepBandRoutes from './routes/pep-bands';
-import attendanceSectionRoutes from './routes/sections';
-import attendanceUserRoutes from './routes/users';
+import eventRoutes from './routes/events';
+import memberRoutes from './routes/members';
+import termRoutes from './routes/terms';
+import pepBandRoutes from './routes/pep-bands';
+import sectionRoutes from './routes/sections';
+import userRoutes from './routes/users';
 import stationsRoutes from './routes/stations';
-import evaluationsRoutes from './routes/evaluations';
+import evaluationRoutes from './routes/evaluations';
 
 // Database import
 import {db} from "./data-source";
@@ -116,22 +110,16 @@ passport.use(new BearerStrategy(bearerOptions, (token: any, done: VerifyCallback
 app.use(passport.initialize());
 
 // ----- Routes -----
-// app.use('/api/groups/', groupsRoutes);
-// app.use('/api/user/', userRoutes);
-// app.use('/api/section/', sectionRoutes);
-// app.use('/api/evaluations/', evaluationRoutes);
-// app.use('/api/event/', eventRoutes);
-// app.use('/api/attendance/', attendanceRoutes);
 
-app.use('/api/mb-attendance/attendance/', attendanceRoutes);
-app.use('/api/mb-attendance/events/', passport.authenticate('oauth-bearer', { session: false }), attendanceEventRoutes);
-app.use('/api/mb-attendance/members/', passport.authenticate('oauth-bearer', { session: false }), attendanceMemberRoutes);
-app.use('/api/mb-attendance/terms/', passport.authenticate('oauth-bearer', { session: false }), attendanceTermRoutes);
-app.use('/api/mb-attendance/pepBands/', passport.authenticate('oauth-bearer', { session: false }), attendancePepBandRoutes);
-app.use('/api/mb-attendance/sections/', passport.authenticate('oauth-bearer', { session: false }), attendanceSectionRoutes);
-app.use('/api/mb-attendance/users/', passport.authenticate('oauth-bearer', { session: false }), attendanceUserRoutes);
+app.use('/api/attendance/', attendanceRoutes);
+app.use('/api/events/', passport.authenticate('oauth-bearer', { session: false }), eventRoutes);
+app.use('/api/members/', passport.authenticate('oauth-bearer', { session: false }), memberRoutes);
+app.use('/api/terms/', passport.authenticate('oauth-bearer', { session: false }), termRoutes);
+app.use('/api/pepBands/', passport.authenticate('oauth-bearer', { session: false }), pepBandRoutes);
+app.use('/api/sections/', passport.authenticate('oauth-bearer', { session: false }), sectionRoutes);
+app.use('/api/users/', passport.authenticate('oauth-bearer', { session: false }), userRoutes);
 app.use('/api/stations/', passport.authenticate('oauth-bearer', { session: false }), stationsRoutes);
-app.use('/api/evaluations/', passport.authenticate('oauth-bearer', { session: false }), evaluationsRoutes);
+app.use('/api/evaluations/', passport.authenticate('oauth-bearer', { session: false }), evaluationRoutes);
 
 // ----- /api/me -----
 app.options('/api/me', cors({
