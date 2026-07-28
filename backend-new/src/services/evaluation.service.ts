@@ -5,6 +5,7 @@ import {Station} from "../entities/station.entity";
 import {EvaluationItem} from "../entities/evaluation-item.entity";
 import {StationRepository} from "../repositories/station.repository";
 import {NewEvaluationDto} from "../dto/new-evaluation.dto";
+import {MemberStationStatusDto} from "../dto/member-station-status.dto";
 
 export class EvaluationService {
     private evaluationRepository: EvaluationRepository;
@@ -20,6 +21,12 @@ export class EvaluationService {
         const evaluation: Evaluation = await this.evaluationRepository.findById(id);
 
         return evaluation;
+    }
+
+    public async getMemberStationsStatus(memberId: number): Promise<MemberStationStatusDto[]> {
+        const statuses: MemberStationStatusDto[] = await this.evaluationRepository.getMemberStationsStatus(memberId);
+
+        return statuses;
     }
 
     public async create(newEvalDto: NewEvaluationDto): Promise<Evaluation> {

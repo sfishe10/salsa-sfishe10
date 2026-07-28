@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Evaluation} from '../models/evaluation';
 import {NewEvaluation} from '../models/new-evaluation';
+import {MemberStationStatus} from '../models/member-station-status';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,11 @@ export class EvaluationService {
   public getEvalById(id: number): Observable<Evaluation> {
     const url = this.baseUrl + `/evaluations/${id}`;
     return this.http.get<Evaluation>(url);
+  }
+
+  public getMemberStationsStatus(memberId: number): Observable<MemberStationStatus[]> {
+    const url = this.baseUrl + `/evaluations/member/${memberId}`;
+    return this.http.get<MemberStationStatus[]>(url);
   }
 
   public submitEval(evaluation: Evaluation): Observable<Evaluation> {

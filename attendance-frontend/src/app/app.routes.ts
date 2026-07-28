@@ -21,6 +21,7 @@ import {MemberListPageComponent} from './member-list-page/member-list-page.compo
 import {StationListPageComponent} from './station-list-page/station-list-page.component';
 import {StationPacketListPageComponent} from './shared/station-packet-list-page/station-packet-list-page.component';
 import {EvaluationPageComponent} from './evaluation-page/evaluation-page.component';
+import {MemberStationsStatusPageComponent} from './member-stations-status-page/member-stations-status-page.component';
 
 export const routes: Routes = [
   {
@@ -79,6 +80,11 @@ export const routes: Routes = [
       {
         path: 'member/:id',
         component: MemberPageComponent,
+        canActivate: [AuthzGuard]
+      },
+      {
+        path: 'member/:id/stations',
+        component: MemberStationsStatusPageComponent,
         canActivate: [AuthzGuard]
       },
       {

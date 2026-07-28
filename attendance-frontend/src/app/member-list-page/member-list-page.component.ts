@@ -67,6 +67,6 @@ export class MemberListPageComponent implements OnInit {
   }
 
   goToStationsList(memberId: number) {
-    this.router.navigate(['stations-list'], {queryParams: {action: 'evaluate', evalMember: memberId}});
+    this.router.navigate(['/member', memberId, 'stations']);
   }
 }

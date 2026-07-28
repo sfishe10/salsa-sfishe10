@@ -26,6 +26,15 @@ export class Utilities {
     }
   }
 
+  public static getStationStatusColor(status: string): string {
+    switch (status) {
+      case Constants.STATION_STATUS_PASSED: return 'passed';
+      case Constants.STATION_STATUS_FAILED: return 'failed';
+      case Constants.STATION_STATUS_IN_PROGRESS: return 'in-progress';
+      default: return '';
+    }
+  }
+
   public static getRehearsalConflictOptions(): string[] {
     let rehearsalConflicts = [
       Constants.REHEARSAL_CONFLICT_TUES,
