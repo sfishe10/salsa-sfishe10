@@ -46,11 +46,9 @@ export class MemberListPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    // const term = this.sessionCacheService.get(Constants.STORAGE_KEY_TERM)
+    const term = this.sessionCacheService.get(Constants.STORAGE_KEY_TERM);
 
-    const termId = 7
-
-    this.memberService.getMembersByTermId(termId).subscribe(members => {
+    this.memberService.getMembersByTermId(term.termId).subscribe(members => {
       const map = new Map<string, Member[]>();
 
       for (let member of members) {
