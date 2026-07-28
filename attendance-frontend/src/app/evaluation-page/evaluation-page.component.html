@@ -7,5 +7,12 @@
       Station {{evaluation.station.level + 1}}: {{evaluation.station.title}}</span>
   </div>
 
-  <app-evaluation-contents [evaluation]="evaluation"></app-evaluation-contents>
+  <app-evaluation-contents [readonly]="readonly" [evaluation]="evaluation"></app-evaluation-contents>
+
+  <div style="display: flex; justify-content: end; align-items: center;">
+    <button *ngIf="!readonly" (click)="submit()"
+            mat-flat-button
+            color="primary"
+            style="margin-top: 10px; margin-bottom: 20px;">Submit</button>
+  </div>
 </div>

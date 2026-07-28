@@ -30,7 +30,7 @@ export class EvaluationService {
   }
 
   public submitEval(evaluation: Evaluation): Observable<Evaluation> {
-    const url = this.baseUrl + `/evaluations/${evaluation.evalId}`;
+    const url = this.baseUrl + `/evaluations/submit`;
     return this.http.put<Evaluation>(url, evaluation);
   }
 
