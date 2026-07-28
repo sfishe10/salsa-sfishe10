@@ -4,5 +4,5 @@
     <mat-divider style="flex: 1;"></mat-divider>
     <span style="font-size: 1.4rem; width: max-content">{{member.user.firstName | uppercase}} {{member.user.lastName | uppercase}}</span>
   </div>
-  <app-stations-table [memberStationsStatus]="stationsStatuses"></app-stations-table>
+  <app-stations-table [memberStationsStatus]="stationsStatuses" (stationClicked)="startEvaluation($event)"></app-stations-table>
 </div>

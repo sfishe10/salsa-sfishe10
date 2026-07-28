@@ -4,6 +4,7 @@ import {NotFoundError} from "../errors/not-found-error";
 import {EvaluationItem} from "../entities/evaluation-item.entity";
 import {MemberStationStatusDto} from "../dto/member-station-status.dto";
 import {plainToInstance} from "class-transformer";
+import {IsNull} from "typeorm";
 
 export class EvaluationRepository {
     private repo = db.getRepository(Evaluation);
@@ -37,6 +38,22 @@ export class EvaluationRepository {
 
         return evaluation;
 
+    }
+
+    public async findByMemberAndStationId(memberId: number, stationId: number): Promise<Evaluation | null> {
+        const evaluation: Evaluation | null = await this.repo.findOne({
+            where: {
+                member: {
+                    memberId
+                },
+                station: {
+                    stationId
+                },
+                passed: IsNull()
+            }
+        })
+
+        return evaluation;
     }
 
     public async getMemberStationsStatus(memberId: number): Promise<MemberStationStatusDto[]> {

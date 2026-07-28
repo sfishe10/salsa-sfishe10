@@ -14,7 +14,7 @@ export class EvaluationService {
 
   constructor(private http: HttpClient) {}
 
-  public startNewEval(newEval: NewEvaluation): Observable<Evaluation> {
+  public startEval(newEval: NewEvaluation): Observable<Evaluation> {
     const url = this.baseUrl + `/evaluations`;
     return this.http.post<Evaluation>(url, newEval)
   }

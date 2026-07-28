@@ -56,13 +56,13 @@ export class MemberStationsStatusPageComponent implements OnInit {
   }
 
   startEvaluation(stationId: number) {
-    // start a new evaluation and navigate to that page
+    // start a new evaluation, or get an existing evaluation if one is in progress, and navigate to that page
     const newEval = {
       memberId: this.memberId,
       evaluatorId: this.sessionCacheService.get(Constants.STORAGE_KEY_ME).member.memberId,
       stationId
     } as NewEvaluation
-    this.evalService.startNewEval(newEval).subscribe(savedEval => {
+    this.evalService.startEval(newEval).subscribe(savedEval => {
       this.router.navigate(['/evaluation', savedEval.evalId]);
     }, error => {
       console.log(error);

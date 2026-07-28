@@ -10,7 +10,7 @@ export const create = async (req: any, res: any) => {
     try {
         const evalDto: NewEvaluationDto = plainToInstance(NewEvaluationDto, req.body);
 
-        const savedEval: Evaluation = await evalService.create(evalDto);
+        const savedEval: Evaluation = await evalService.startEvaluation(evalDto);
 
         res.send(toEvaluationDto(savedEval));
     } catch (err: any) {

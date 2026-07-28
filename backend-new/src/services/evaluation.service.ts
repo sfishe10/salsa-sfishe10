@@ -29,9 +29,14 @@ export class EvaluationService {
         return statuses;
     }
 
-    public async create(newEvalDto: NewEvaluationDto): Promise<Evaluation> {
-        // TODO: instead of just creating a new evaluation, first check if there's an unfinished one (passed == null)
+    public async startEvaluation(newEvalDto: NewEvaluationDto): Promise<Evaluation> {
+        // first check if there's an unfinished evaluation (passed == null)
+        const existingEval = await this.evaluationRepository.findByMemberAndStationId(newEvalDto.memberId, newEvalDto.stationId);
+        if (existingEval) {
+            return existingEval;
+        }
 
+        // there are no unfinished evaluations, so start a new one
         let newEvaluation = new Evaluation();
 
         newEvaluation.member = {memberId: newEvalDto.memberId} as Member;
