@@ -6,6 +6,8 @@ import {EvaluationItem} from "../entities/evaluation-item.entity";
 import {StationRepository} from "../repositories/station.repository";
 import {NewEvaluationDto} from "../dto/new-evaluation.dto";
 import {MemberStationStatusDto} from "../dto/member-station-status.dto";
+import {EvaluationDto} from "../dto/evaluation.dto";
+import {StationItem} from "../entities/station-item.entity";
 
 export class EvaluationService {
     private evaluationRepository: EvaluationRepository;
@@ -61,5 +63,32 @@ export class EvaluationService {
         }
 
         return newEvaluation;
+    }
+
+    public async submitEvaluation(evalDto: EvaluationDto): Promise<Evaluation> {
+        let numFailed = 0;
+
+        for (const item of evalDto.items) {
+            let updatedItem = new EvaluationItem();
+
+            updatedItem.evalId = evalDto.evalId;
+            updatedItem.itemId = item.stationItem.itemId;
+            updatedItem.status = item.status;
+
+            await this.evaluationRepository.saveItem(updatedItem);
+
+            if (!item.status) numFailed++;
+        }
+
+        const evaluation = await this.evaluationRepository.findById(evalDto.evalId);
+
+        // in case the person who finished the evaluation is different from the person who started it
+        evaluation.evaluator = {memberId: evalDto.evaluator.memberId} as Member;
+
+        evaluation.passed = numFailed <= evaluation.station.maxFailed;
+
+        await this.evaluationRepository.save(evaluation);
+
+        return evaluation;
     }
 }

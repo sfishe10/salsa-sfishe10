@@ -9,6 +9,7 @@ const router: Router = Router();
  */
 
 router.post('/', evaluations.admin.create);
+router.post('/submit', evaluations.admin.submit);
 
 
 /**
