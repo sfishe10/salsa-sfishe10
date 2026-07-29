@@ -6,7 +6,7 @@ import {MatIcon} from '@angular/material/icon';
 import {FormsModule, NgForm} from '@angular/forms';
 import {NgForOf, NgIf} from '@angular/common';
 import {MemberAttendanceTableComponent} from '../shared/member-attendance-table/member-attendance-table.component';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
@@ -34,7 +34,8 @@ import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angula
     NgForOf,
     MatDialogActions,
     MatDialogTitle,
-    RouterLink
+    RouterLink,
+    MatIconButton
   ],
   templateUrl: './member-page.component.html',
   styleUrl: './member-page.component.css'

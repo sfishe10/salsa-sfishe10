@@ -71,9 +71,8 @@
       <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>
       <button *ngIf="selectedFile"
               mat-icon-button
-              aria-label="Remove file"
               (click)="clearFile(fileInput)">
-        <mat-icon>close</mat-icon>
+        <mat-icon class="material-symbols-outlined">close</mat-icon>
       </button>
     </div>
     <div *ngIf="showMissingTermError" style="color: red">Select or create a term to upload members.</div>

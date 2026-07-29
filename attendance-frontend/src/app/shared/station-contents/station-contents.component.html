@@ -24,11 +24,11 @@
             </mat-form-field>
 
             <button mat-icon-button type="button" (click)="saveGroupTitle(group)">
-              <mat-icon>check</mat-icon>
+              <mat-icon class="material-symbols-outlined">check</mat-icon>
             </button>
 
             <button mat-icon-button type="button" (click)="cancelEditingGroupTitle(group, groupIndex)">
-              <mat-icon>close</mat-icon>
+              <mat-icon class="material-symbols-outlined">close</mat-icon>
             </button>
           </div>
         </ng-container>
@@ -41,7 +41,7 @@
             <button mat-icon-button
                     class="edit-button"
                     (click)="startEditingGroupTitle(group)" style="height: 2rem; width: 2rem; padding: 5px;">
-              <mat-icon class="material-icons-outlined" style="color: white">edit</mat-icon></button>
+              <mat-icon class="material-symbols-outlined" style="color: white">edit</mat-icon></button>
           </div>
         </ng-template>
 
@@ -63,11 +63,11 @@
                 </mat-form-field>
 
                 <button mat-icon-button type="button" (click)="saveItem(item)">
-                  <mat-icon>check</mat-icon>
+                  <mat-icon class="material-symbols-outlined">check</mat-icon>
                 </button>
 
                 <button mat-icon-button type="button" (click)="cancelEditingItem(item, groupIndex, itemIndex)">
-                  <mat-icon>close</mat-icon>
+                  <mat-icon class="material-symbols-outlined">close</mat-icon>
                 </button>
               </div>
             </ng-container>
@@ -80,11 +80,11 @@
                   <button mat-icon-button
                           class="edit-button"
                           (click)="startEditingItem(item)" style="height: 2rem; width: 2rem; padding: 5px;">
-                    <mat-icon class="material-icons-outlined" style="color: gray">edit</mat-icon></button>
+                    <mat-icon class="material-symbols-outlined" style="color: gray">edit</mat-icon></button>
                   <button mat-icon-button
                           class="edit-button"
                           (click)="deleteItem(groupIndex, itemIndex)" style="height: 2rem; width: 2rem; padding: 5px;">
-                    <mat-icon class="material-icons-outlined" style="color: gray">delete</mat-icon>
+                    <mat-icon class="material-symbols-outlined" style="color: gray">delete</mat-icon>
                   </button>
                 </div>
               </div>
@@ -99,7 +99,7 @@
       </div>
 
       <button *ngIf="editing" mat-icon-button type="button" (click)="deleteGroup(groupIndex)" style="height: 2rem; width: 2rem; padding: 0">
-        <mat-icon class="material-icons-outlined">delete</mat-icon>
+        <mat-icon class="material-symbols-outlined">delete</mat-icon>
       </button>
 
     </div>

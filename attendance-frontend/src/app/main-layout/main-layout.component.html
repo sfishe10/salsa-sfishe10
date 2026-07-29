@@ -1,6 +1,6 @@
 <mat-sidenav-container style="height:100%">
   <mat-sidenav #sidenav [mode]="'over'" class="navbar">
-    <button mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
+    <button mat-icon-button (click)="sidenav.toggle()"><mat-icon class="material-symbols-outlined">menu</mat-icon></button>
     <a routerLink="/events" [queryParams]="{ type: 'upcoming' }" (click)="sidenav.toggle()">Upcoming Events</a>
     <a routerLink="/events" [queryParams]="{ type: 'recent' }" (click)="sidenav.toggle()">Recent Events</a>
     <a *ngIf="sessionCacheService.getLoggedInMember() && !sessionCacheService.isMember()" routerLink="/stations" (click)="sidenav.toggle()">Stations</a>
@@ -12,7 +12,7 @@
 
   <mat-sidenav-content>
     <mat-toolbar style="padding-left:0">
-      <button mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
+      <button mat-icon-button (click)="sidenav.toggle()"><mat-icon class="material-symbols-outlined">menu</mat-icon></button>
       <span class="app-title">{{ pageTitle }}</span>
     </mat-toolbar>
     <mat-divider></mat-divider>

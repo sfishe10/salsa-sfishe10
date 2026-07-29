@@ -2,7 +2,7 @@
   <form #memberForm="ngForm" (ngSubmit)="save(memberForm)">
     <div class="top-row">
       <div class="member-name">
-        <mat-icon class="button" (click)="goBack()">arrow_back</mat-icon>
+        <mat-icon class="button" fontSet="material-symbols-outlined" (click)="goBack()">arrow_back</mat-icon>
         <a [routerLink]="['/user', this.member?.user?.userId]" style="margin-left: 10px; color: inherit; text-decoration: none;">
           {{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;
           <span style="color: dimgray">- {{member?.user?.email}}</span></a>

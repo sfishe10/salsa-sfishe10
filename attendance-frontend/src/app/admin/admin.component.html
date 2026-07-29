@@ -14,9 +14,9 @@
           </mat-form-field>
           <button mat-flat-button color="primary" (click)="openTermDialog(false)">Create Term</button>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px">
+        <div style="display: flex; align-items: center;">
           <p align="right">{{selectedTerm?.startDate | date: 'MMMM d, yyyy'}} - {{selectedTerm?.endDate | date: 'MMMM d, yyyy'}}</p>
-          <button mat-icon-button (click)="openTermDialog(true)"><mat-icon>edit_square</mat-icon></button>
+          <button mat-icon-button (click)="openTermDialog(true)"><mat-icon class="material-symbols-outlined">edit_square</mat-icon></button>
         </div>
       </div>
       <mat-accordion multi>
@@ -36,7 +36,7 @@
       <div (click)="goToAttendance()" class="back-button"
         style="display: flex; flex-direction: row; align-items: center; gap: 6px; padding-left: 10px; width: max-content;">
         <h4 style="text-decoration: underline">View Attendance</h4>
-        <mat-icon>arrow_right_alt</mat-icon>
+        <mat-icon class="material-symbols-outlined">arrow_right_alt</mat-icon>
       </div>
     </div>
   </mat-tab>
@@ -177,24 +177,22 @@
 <!--  </form>-->
 <!--</ng-template>-->
 
-<ng-template #uploadCsvDialog>
-  <h2 mat-dialog-title>Upload CSV File</h2>
-  <mat-dialog-content style="padding-bottom:0">
-    <div style="display:flex; align-items:center">
-      <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>
-      <button *ngIf="selectedFile"
-              mat-icon-button
-              aria-label="Remove file"
-              (click)="clearFile(fileInput)">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
-    <button mat-flat-button color="primary" (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
-  </mat-dialog-actions>
-</ng-template>
+<!--<ng-template #uploadCsvDialog>-->
+<!--  <h2 mat-dialog-title>Upload CSV File</h2>-->
+<!--  <mat-dialog-content style="padding-bottom:0">-->
+<!--    <div style="display:flex; align-items:center">-->
+<!--      <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>-->
+<!--      <button mat-icon-button-->
+<!--              (click)="clearFile(fileInput)">-->
+<!--        <mat-icon class="material-symbols-outlined">close</mat-icon>-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </mat-dialog-content>-->
+<!--  <mat-dialog-actions align="end">-->
+<!--    <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>-->
+<!--    <button mat-flat-button color="primary" (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>-->
+<!--  </mat-dialog-actions>-->
+<!--</ng-template>-->
 
 <ng-template #missingEmailsConfirmationDialog>
   <h2 mat-dialog-title>The following emails are not associated with a user:</h2>
