@@ -42,7 +42,14 @@ export class MemberRepository {
                 pepBand: true,
                 term: true,
             },
-            order: { section: { sectionId: 'ASC' } }
+            order: {
+                section: {
+                    sectionId: 'ASC'
+                },
+                user: {
+                    lastName: 'ASC'
+                }
+            }
         });
     }
 
