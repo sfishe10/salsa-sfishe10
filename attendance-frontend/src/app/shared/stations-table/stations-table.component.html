@@ -15,7 +15,7 @@
     <ng-container matColumnDef="title">
       <td mat-cell *matCellDef="let station; let i = index">
         <div style="padding-top: 10px; padding-bottom: 10px;">
-          <span [ngStyle]="memberStationsStatus ? {'font-size': '1.1rem', 'font-weight': 'bold'} : {}">{{station.title}}</span>
+          <span [ngStyle]="memberStationsStatus ? {'font-size': '1.1rem', 'font-weight': 'bold'} : {'font-size': '1rem'}">{{station.title}}</span>
 
           <div *ngIf="memberStationsStatus" style="font-size: 1rem; font-weight: lighter;">
             <span *ngIf="memberStationsStatus[i].attemptCount == 0"><i>{{Constants.STATION_STATUS_NO_ATTEMPTS}}</i></span>
