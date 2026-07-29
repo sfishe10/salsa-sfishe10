@@ -161,7 +161,7 @@ export class MemberService {
         );
 
         const invalidSections: Set<string> = new Set(rows
-            .map(row => row['Section']?.trim().toLowerCase())
+            .map(row => row['section']?.trim().toLowerCase())
             .filter((s): s is string => !!s)
             .filter(sectionName => !(sectionMap.has(sectionName))));
 
@@ -175,13 +175,13 @@ export class MemberService {
         const members: Member[] = [];
 
         for (const row of rows) {
-            const lastName = row['Last Name']?.trim() ?? '';
-            const firstName = row['First Name']?.trim() ?? '';
+            const lastName = row['last name']?.trim() ?? '';
+            const firstName = row['first name']?.trim() ?? '';
             // for extended ed students without a CP email, use their preferred email for now -
             // they will not be needing to log in, so it won't cause problems
-            const email = row['CP Email']!.trim() !== '' ? row['CP Email']!.trim() : row['Preferred Email Address']!.trim();
+            const email = row['cp email']!.trim() !== '' ? row['cp email']!.trim() : row['preferred email address']!.trim();
 
-            const sectionName = row['Section']!.trim().toLowerCase() ?? '';
+            const sectionName = row['section']!.trim().toLowerCase() ?? '';
             // ! = non-null assertion, since we already checked for invalid section names
             const section: Section = sectionMap.get(sectionName)!;
 

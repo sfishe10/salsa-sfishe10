@@ -19,7 +19,7 @@ export class Utilities {
             rows.push(
                 Object.fromEntries(
                     Object.entries(row).map(([key, value]) => [
-                      key.trim(),
+                      key.trim().toLowerCase(),
                       value == null ? '' : String(value).trim(),
                     ])
                 )
