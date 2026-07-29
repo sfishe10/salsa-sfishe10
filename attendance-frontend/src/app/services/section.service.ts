@@ -10,7 +10,7 @@ import {Section} from '../models/section';
   providedIn: 'root'
 })
 export class SectionService {
-  baseUrl = environment.apiURL + '/mb-attendance';
+  baseUrl = environment.apiURL;
 
   constructor(private http: HttpClient) {}
 

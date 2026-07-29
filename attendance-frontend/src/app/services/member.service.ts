@@ -9,13 +9,18 @@ import {environment} from '../../environments/environment';
   providedIn: 'root'
 })
 export class MemberService {
-  baseUrl = environment.apiURL + '/mb-attendance';
+  baseUrl = environment.apiURL;
 
   constructor(private http: HttpClient) {}
 
   public getMemberById(id: number): Observable<Member> {
     const url = this.baseUrl + `/members/${id}`;
     return this.http.get<Member>(url);
+  }
+
+  public getMembersByTermId(id: number): Observable<Member[]> {
+    const url = this.baseUrl + `/members/term/${id}`;
+    return this.http.get<Member[]>(url);
   }
 
   public updateMember(member: Member): Observable<Member> {

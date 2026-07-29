@@ -148,7 +148,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
         }
         // Track the term with start date closest to now
         const diff = Math.abs(start.getTime() - now.getTime());
-        if ((!closestDiff || diff < closestDiff) && start > now) {
+        if ((!closestDiff || diff < closestDiff)) {
           closestDiff = diff;
           closestTerm = term;
         }
@@ -333,6 +333,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
   closeDialogAndClearEmails() {
     this.emailsMissingUsers = [];
     this.onCancelDialog();
+  }
+
+  navigateToStation(stationId: number) {
+    this.router.navigate(['/station', stationId]);
   }
 
   openSnackBar(message: string, action: string, duration: number) {

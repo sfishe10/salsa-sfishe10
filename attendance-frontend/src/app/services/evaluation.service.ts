@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Evaluation} from '../models/evaluation';
 import {NewEvaluation} from '../models/new-evaluation';
+import {MemberStationStatus} from '../models/member-station-status';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,9 @@ export class EvaluationService {
 
   constructor(private http: HttpClient) {}
 
-  public startNewEval(newEval: NewEvaluation): Observable<Evaluation> {
+  public startEval(newEval: NewEvaluation): Observable<Evaluation> {
     const url = this.baseUrl + `/evaluations`;
-    return this.http.post<Evaluation>(url, {newEval})
+    return this.http.post<Evaluation>(url, newEval)
   }
 
   public getEvalById(id: number): Observable<Evaluation> {
@@ -23,9 +24,14 @@ export class EvaluationService {
     return this.http.get<Evaluation>(url);
   }
 
+  public getMemberStationsStatus(memberId: number): Observable<MemberStationStatus[]> {
+    const url = this.baseUrl + `/evaluations/member/${memberId}`;
+    return this.http.get<MemberStationStatus[]>(url);
+  }
+
   public submitEval(evaluation: Evaluation): Observable<Evaluation> {
-    const url = this.baseUrl + `/evaluations/${evaluation.evalId}`;
-    return this.http.put<Evaluation>(url, {evaluation});
+    const url = this.baseUrl + `/evaluations/submit`;
+    return this.http.put<Evaluation>(url, evaluation);
   }
 
 }

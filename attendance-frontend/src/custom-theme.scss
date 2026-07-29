@@ -109,4 +109,7 @@ $client-theme: mat.define-light-theme((
   --partial-unexcused-color: lightsalmon;
   --absent-excused-color: lightyellow;
   --absent-unexcused-color: lightcoral;
+  --passed-color: lightgreen;
+  --failed-color: lightcoral;
+  --in-progress-color: lightyellow;
 }

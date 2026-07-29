@@ -11,7 +11,7 @@ import {Utilities} from '../utilities/utilities';
   providedIn: 'root'
 })
 export class SessionCacheService {
-  baseUrl = environment.apiURL + '/mb-attendance';
+  baseUrl = environment.apiURL;
 
   constructor(private http: HttpClient) {}
 
@@ -19,7 +19,7 @@ export class SessionCacheService {
     try {
       // Fetch current user info
       const response: any = await firstValueFrom(
-        this.http.get(`${environment.apiURL}/me`, {
+        this.http.get(`${this.baseUrl}/me`, {
           withCredentials: true
         }).pipe(
           tap((res: any) => {

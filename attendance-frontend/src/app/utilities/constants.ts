@@ -15,7 +15,12 @@ export class Constants {
 
   static readonly STATION_OPTION_TEACH = 'Teach Station';
   static readonly STATION_OPTION_EVALUATE = 'Evaluate Member';
-  static readonly STATION_OPTION_LEAD = 'Lead Station Evaluation'
+  static readonly STATION_OPTION_LEAD = 'Lead Station Evaluation';
+
+  static readonly STATION_STATUS_PASSED = 'passed';
+  static readonly STATION_STATUS_FAILED = 'failed';
+  static readonly STATION_STATUS_NO_ATTEMPTS = 'No Attempts Yet'
+  static readonly STATION_STATUS_IN_PROGRESS = 'in progress';
 
   static readonly REHEARSAL_CONFLICT_TUES = 'Tuesday Conflict';
   static readonly REHEARSAL_CONFLICT_THURS = 'Thursday Conflict';

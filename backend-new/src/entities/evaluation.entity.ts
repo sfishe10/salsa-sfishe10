@@ -17,7 +17,7 @@ export class Evaluation {
     @ManyToOne(() => Member, (member: Member) => member.evalsGiven, {
         onDelete: 'CASCADE',
         nullable: false})
-    @JoinColumn({ name: 'memberId' })
+    @JoinColumn({ name: 'evaluatorId' })
     evaluator!: Member;
 
     @ManyToOne(() => Station, (station: Station) => station.evaluations, {

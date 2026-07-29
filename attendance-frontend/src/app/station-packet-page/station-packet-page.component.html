@@ -35,7 +35,7 @@
           </div>
         </ng-template>
       </div>
-      <button *ngIf="!editing && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin())"
+      <button *ngIf="!editing && showEditButton && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin())"
               mat-flat-button type="button" color="primary" (click)="edit()">Edit Packet</button>
       <div *ngIf="editing">
         <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;

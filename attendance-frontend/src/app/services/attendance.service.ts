@@ -9,7 +9,7 @@ import {MemberStats} from '../models/member-stats';
   providedIn: 'root'
 })
 export class AttendanceService {
-  baseUrl = environment.apiURL + '/mb-attendance';
+  baseUrl = environment.apiURL;
 
   constructor(private http: HttpClient) { }
 

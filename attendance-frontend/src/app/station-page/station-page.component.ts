@@ -160,7 +160,7 @@ export class StationPageComponent implements OnInit {
   }
 
   navigateToPackets() {
-    this.router.navigate(['/station', this.stationId, 'packets'])
+    this.router.navigate(['/station', this.stationId, 'packets'], {queryParams: {action: 'edit'}})
   }
 
   openSnackBar(message: string, action: string, duration: number) {

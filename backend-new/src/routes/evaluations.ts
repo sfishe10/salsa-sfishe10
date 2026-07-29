@@ -9,12 +9,14 @@ const router: Router = Router();
  */
 
 router.post('/', evaluations.admin.create);
+router.put('/submit', evaluations.admin.submit);
 
 
 /**
  * selectors
  */
 router.get('/:id', evaluations.selector.getById);
+router.get('/member/:id', evaluations.selector.getMemberStationsStatus);
 
 
 export default router;

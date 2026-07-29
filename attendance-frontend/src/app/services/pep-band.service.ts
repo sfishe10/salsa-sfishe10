@@ -8,7 +8,7 @@ import {PepBand} from '../models/pep-band';
   providedIn: 'root'
 })
 export class PepBandService {
-  baseUrl = environment.apiURL + '/mb-attendance';
+  baseUrl = environment.apiURL;
 
   constructor(private http: HttpClient) {}
 

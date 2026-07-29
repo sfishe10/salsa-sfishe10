@@ -1,0 +1,13 @@
+<p *ngIf="memberLoaded && !member"></p>
+<div *ngIf="member && stationsStatuses">
+  <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 10px;">
+    <mat-divider style="flex: 1;"></mat-divider>
+    <span style="font-size: 1.4rem; width: max-content">{{member.user.firstName | uppercase}} {{member.user.lastName | uppercase}}</span>
+  </div>
+  <app-stations-table [memberStationsStatus]="stationsStatuses" (stationClicked)="startEvaluation($event)"></app-stations-table>
+  <div (click)="goBack()" class="back-button"
+       style="display: flex; flex-direction: row; align-items: center; gap: 0; width: max-content;">
+    <mat-icon>arrow_left_alt</mat-icon>
+    <h4 style="text-decoration: underline">Back to Members</h4>
+  </div>
+</div>

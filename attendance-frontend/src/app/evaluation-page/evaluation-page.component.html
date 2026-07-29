@@ -1,1 +1,18 @@
-<p>evaluation-page works!</p>
+<p *ngIf="evalLoaded && !evaluation">Evaluation not found.</p>
+
+<div *ngIf="evalLoaded && evaluation">
+  <div style="margin-bottom: 20px;">
+    <span style="font-size: 1.5rem;"><b>{{evaluation.member.user.firstName}} {{evaluation.member.user.lastName}}</b></span><br/>
+    <span style="font-size: 1.2rem; font-weight: lighter">
+      Station {{evaluation.station.level + 1}}: {{evaluation.station.title}}</span>
+  </div>
+
+  <app-evaluation-contents [readonly]="readonly" [evaluation]="evaluation"></app-evaluation-contents>
+
+  <div style="display: flex; justify-content: end; align-items: center;">
+    <button *ngIf="!readonly" (click)="submit()"
+            mat-flat-button
+            color="primary"
+            style="margin-top: 10px; margin-bottom: 20px;">Submit</button>
+  </div>
+</div>

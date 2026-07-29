@@ -89,7 +89,7 @@
   </mat-tab>
   <mat-tab label="Stations">
     <div style="padding: 10px">
-      <app-stations-table></app-stations-table>
+      <app-stations-table (stationClicked)="navigateToStation($event)"></app-stations-table>
     </div>
   </mat-tab>
 </mat-tab-group >
