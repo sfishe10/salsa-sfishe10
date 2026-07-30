@@ -109,15 +109,19 @@ export class MemberService {
         existingMember.user = { userId: memberDto.user.userId } as User;
         existingMember.term = { termId: memberDto.term.termId } as Term;
 
-        const oldSectionId: number | null = existingMember.section ? existingMember.section.sectionId : null;
-        const newSectionId: number | null = memberDto.section ? memberDto.section.sectionId : null;
+        const oldSectionId: number | null = existingMember.section ? existingMember.section?.sectionId : null;
+        const newSectionId: number | null = memberDto.section ? memberDto.section?.sectionId : null;
 
-        existingMember.section = { sectionId: memberDto.section.sectionId } as Section;
+        existingMember.section = { sectionId: newSectionId } as Section;
 
-        const oldPepBandId: string | null = existingMember.pepBand ? existingMember.pepBand.bandId : null;
-        const newPepBandId: string | null = memberDto.pepBand ? memberDto.pepBand.bandId : null;
+        const oldPepBandId: string | null = existingMember.pepBand ? existingMember.pepBand?.bandId : null;
+        const newPepBandId: string | null = memberDto.pepBand ? memberDto.pepBand?.bandId : null;
 
-        existingMember.pepBand = { bandId: newPepBandId } as PepBand;
+        if (newPepBandId) {
+            existingMember.pepBand = { bandId: newPepBandId } as PepBand;
+        } else {
+            existingMember.pepBand = null;
+        }
 
         existingMember = await this.memberRepository.save(existingMember);
 
