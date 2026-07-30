@@ -17,6 +17,17 @@
   cursor: pointer;
 }
 
+.mobile-top-row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.title-text {
+  font-family: Roboto, sans-serif;
+  font-size: 1.4rem;
+}
+
 #packetTitleInput ::ng-deep .mdc-text-field .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {
   min-height: auto !important;
   padding-bottom: 0 !important;

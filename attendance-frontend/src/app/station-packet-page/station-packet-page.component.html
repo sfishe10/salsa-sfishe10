@@ -2,72 +2,95 @@
 
 <div *ngIf="packet && !sessionCacheService.isMember()">
   <form #packetForm="ngForm" (ngSubmit)="save(packetForm)">
-    <div class="top-row">
-      <div class="title">
-        <mat-icon class="button" fontSet="material-symbols-outlined" (click)="goBack()">arrow_back</mat-icon>
-        <span style="margin-left: 10px"><b>{{packet?.station?.title}}</b> - </span>&nbsp;
-        <ng-container *ngIf="editingTitle; else displayPacketTitle">
-          <mat-form-field id="packetTitleInput" subscriptSizing="dynamic" style="width: 500px">
-            <input matInput
-                   [(ngModel)]="title"
-                   id="title"
-                   name="title"
-                   (keydown.enter)="saveTitle()"
-                   (keydown.escape)="cancelEditingTitle()"
-            />
-          </mat-form-field>
-          <button mat-icon-button type="button" style="height: 2rem; width: 2rem; padding: 5px;" (click)="saveTitle()">
-            <mat-icon fontSet="material-symbols-outlined">check</mat-icon>
-          </button>
-
-          <button mat-icon-button type="button" style="height: 2rem; width: 2rem; padding: 5px;" (click)="cancelEditingTitle()">
-            <mat-icon fontSet="material-symbols-outlined">close</mat-icon>
-          </button>
-        </ng-container>
-
-        <ng-template #displayPacketTitle>
-          <div style="display: flex; align-items: center;">
-            <span>{{title}}</span>
-            <button *ngIf="editing" mat-icon-button
-                    class="edit-button" type="button"
-                    (click)="startEditingTitle()" style="height: 2rem; width: 2rem; padding: 5px; margin-left: 5px;">
-              <mat-icon fontSet="material-symbols-outlined" style="color: gray">edit</mat-icon></button>
-          </div>
-        </ng-template>
+    <ng-container *ngIf="isMobile; else desktopView">
+      <div class="mobile-top-row">
+<!--        <mat-icon class="button" fontSet="material-symbols-outlined" (click)="goBack()">arrow_back</mat-icon>-->
+        <button type="button" (click)="goBack()" mat-flat-button style="background-color: lightgray">Back</button>
+        <div style="display: flex; flex-direction: column; align-items: end;" class="title-text">
+          <span style="margin-left: 10px"><b>{{packet?.station?.title}}</b></span>
+          <span style="color: dimgray;">{{title}}</span>
+        </div>
       </div>
-      <button *ngIf="!editing && showEditButton"
-              mat-flat-button type="button" color="primary" (click)="edit()">Edit Packet</button>
-      <div *ngIf="editing">
-        <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
-        <button mat-flat-button type="submit" color="primary">Save Changes</button>
+
+      <mat-divider style="width: 100%; margin-top: 15px; margin-bottom: 10px;"></mat-divider>
+
+      <div style="white-space: pre-wrap; padding: 15px;">
+        <span *ngIf="content.trim().length">{{content}}</span>
+        <span *ngIf="!content.trim().length" style="color: gray">No content has been entered yet.</span>
       </div>
-    </div>
+    </ng-container>
 
-    <mat-form-field *ngIf="editing" subscriptSizing="dynamic">
-      <mat-label class="form-label">Select Role</mat-label>
-      <mat-select [(ngModel)]="role" name="role">
-        <mat-option *ngFor="let option of roleOptions" [value]="option">{{option | titlecase}}</mat-option>
-      </mat-select>
-    </mat-form-field>
 
-    <p *ngIf="showRoleRequiredError" class="error-message">Please specify a role.</p>
+    <ng-template #desktopView>
+      <div class="top-row">
+        <div class="title">
+          <mat-icon class="button" fontSet="material-symbols-outlined" (click)="goBack()">arrow_back</mat-icon>
+          <span style="margin-left: 10px"><b>{{packet?.station?.title}}</b> - </span>&nbsp;
+          <ng-container *ngIf="editingTitle; else displayPacketTitle">
+            <mat-form-field id="packetTitleInput" subscriptSizing="dynamic" style="width: 500px">
+              <input matInput
+                     [(ngModel)]="title"
+                     id="title"
+                     name="title"
+                     (keydown.enter)="saveTitle()"
+                     (keydown.escape)="cancelEditingTitle()"
+              />
+            </mat-form-field>
+            <button mat-icon-button type="button" style="height: 2rem; width: 2rem; padding: 5px;" (click)="saveTitle()">
+              <mat-icon fontSet="material-symbols-outlined">check</mat-icon>
+            </button>
 
-    <div style="max-width: 100%; margin-top: 20px;">
-      <mat-form-field *ngIf="editing" subscriptSizing="dynamic" style="width: 80%">
+            <button mat-icon-button type="button" style="height: 2rem; width: 2rem; padding: 5px;" (click)="cancelEditingTitle()">
+              <mat-icon fontSet="material-symbols-outlined">close</mat-icon>
+            </button>
+          </ng-container>
+
+          <ng-template #displayPacketTitle>
+            <div style="display: flex; align-items: center;">
+              <span>{{title}}</span>
+              <button *ngIf="editing" mat-icon-button
+                      class="edit-button" type="button"
+                      (click)="startEditingTitle()" style="height: 2rem; width: 2rem; padding: 5px; margin-left: 5px;">
+                <mat-icon fontSet="material-symbols-outlined" style="color: gray">edit</mat-icon></button>
+            </div>
+          </ng-template>
+        </div>
+        <button *ngIf="!editing && !isMobile && (this.sessionCacheService.isOfficer() || this.sessionCacheService.isAdmin())"
+                mat-flat-button type="button" color="primary" (click)="edit()">Edit Packet</button>
+        <div *ngIf="editing">
+          <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
+          <button mat-flat-button type="submit" color="primary">Save Changes</button>
+        </div>
+      </div>
+
+      <mat-form-field *ngIf="editing" subscriptSizing="dynamic">
+        <mat-label class="form-label">Select Role</mat-label>
+        <mat-select [(ngModel)]="role" name="role">
+          <mat-option *ngFor="let option of roleOptions" [value]="option">{{option | titlecase}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <p *ngIf="showRoleRequiredError" class="error-message">Please specify a role.</p>
+
+      <div style="max-width: 100%; margin-top: 20px;">
+        <mat-form-field *ngIf="editing" subscriptSizing="dynamic" style="width: 80%">
         <textarea [(ngModel)]="content"
                   name="content"
                   matInput
                   style="min-height: 600px; resize: vertical;"
                   (keydown.tab)="insertTab($event)"></textarea>
-      </mat-form-field>
+        </mat-form-field>
 
-      <div *ngIf="!editing" style="white-space: pre-wrap; padding: 15px; width: 80%">
-        <span *ngIf="content.trim().length">{{content}}</span>
-        <span *ngIf="!content.trim().length" style="color: gray">No content has been entered yet.</span>
+        <div *ngIf="!editing" style="white-space: pre-wrap; padding: 15px; width: 80%">
+          <span *ngIf="content.trim().length">{{content}}</span>
+          <span *ngIf="!content.trim().length" style="color: gray">No content has been entered yet.</span>
+        </div>
       </div>
-    </div>
 
-    <button *ngIf="editing" style="margin-top: 20px;" mat-flat-button color="warn" type="button" (click)="openConfirmationDialog()">Delete Packet</button>
+      <button *ngIf="editing" style="margin-top: 20px;" mat-flat-button color="warn" type="button" (click)="openConfirmationDialog()">Delete Packet</button>
+    </ng-template>
+
+
   </form>
 </div>
 
