@@ -4,8 +4,8 @@
   <form #packetForm="ngForm" (ngSubmit)="save(packetForm)">
     <ng-container *ngIf="isMobile; else desktopView">
       <div class="mobile-top-row">
-<!--        <mat-icon class="button" fontSet="material-symbols-outlined" (click)="goBack()">arrow_back</mat-icon>-->
         <button type="button" (click)="goBack()" mat-flat-button style="background-color: lightgray">Back</button>
+
         <div style="display: flex; flex-direction: column; align-items: end;" class="title-text">
           <span style="margin-left: 10px"><b>{{packet?.station?.title}}</b></span>
           <span style="color: dimgray;">{{title}}</span>

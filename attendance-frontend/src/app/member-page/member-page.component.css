@@ -15,3 +15,15 @@
 .button:hover {
   cursor: pointer;
 }
+
+.mobile-top-row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.title-text {
+  font-family: Roboto, sans-serif;
+  font-size: 1.4rem;
+}

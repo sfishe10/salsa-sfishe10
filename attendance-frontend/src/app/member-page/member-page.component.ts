@@ -17,6 +17,7 @@ import {SessionCacheService} from '../services/session-cache.service';
 import {Utilities} from '../utilities/utilities';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-member-page',
@@ -34,8 +35,7 @@ import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angula
     NgForOf,
     MatDialogActions,
     MatDialogTitle,
-    RouterLink,
-    MatIconButton
+    RouterLink
   ],
   templateUrl: './member-page.component.html',
   styleUrl: './member-page.component.css'
@@ -60,6 +60,8 @@ export class MemberPageComponent implements OnInit {
 
   returnToPage: string = 'section';
 
+  isMobile: boolean = false;
+
   @ViewChild('confirmDeleteDialog') confirmDeleteDialog!: TemplateRef<any>;
   confirmDeleteDialogRef!: MatDialogRef<any>;
 
@@ -70,7 +72,8 @@ export class MemberPageComponent implements OnInit {
               private memberService: MemberService,
               private router: Router,
               public sessionCacheService: SessionCacheService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private responsive: BreakpointObserver) {
   }
 
   ngOnInit() {
@@ -84,6 +87,10 @@ export class MemberPageComponent implements OnInit {
 
     this.memberService.getMemberById(this.memberId).subscribe(member => {
       this.member = member;
+    })
+
+    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
     })
   }
 
