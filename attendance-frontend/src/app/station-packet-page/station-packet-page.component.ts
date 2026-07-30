@@ -81,7 +81,7 @@ export class StationPacketPageComponent implements OnInit {
       this.content = packet.content;
       this.role = packet.role;
 
-      if (this.action === 'edit') {
+      if (this.action === 'edit' && (this.sessionCacheService.isOfficer() || this.sessionCacheService.isAdmin())) {
         this.showEditButton = true;
       }
     })
