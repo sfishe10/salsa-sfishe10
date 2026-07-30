@@ -4,12 +4,14 @@ import {StationsTableComponent} from '../shared/stations-table/stations-table.co
 import {Location} from '@angular/common';
 import {SessionCacheService} from '../services/session-cache.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-station-list-page',
   standalone: true,
   imports: [
     StationsTableComponent,
+    MatIcon,
   ],
   templateUrl: './station-list-page.component.html',
   styleUrl: './station-list-page.component.css'

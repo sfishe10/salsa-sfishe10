@@ -13,6 +13,9 @@ import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angula
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import { Location } from '@angular/common';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {MatDivider} from '@angular/material/divider';
+import {Station} from '../models/station';
 
 @Component({
   selector: 'app-station-packet-page',
@@ -31,7 +34,8 @@ import { Location } from '@angular/common';
     MatOption,
     MatSelect,
     NgForOf,
-    TitleCasePipe
+    TitleCasePipe,
+    MatDivider
   ],
   templateUrl: './station-packet-page.component.html',
   styleUrl: './station-packet-page.component.css'
@@ -64,11 +68,14 @@ export class StationPacketPageComponent implements OnInit {
 
   showEditButton: boolean = false;
 
+  isMobile: boolean = false;
+
   constructor(private route: ActivatedRoute,
               public sessionCacheService: SessionCacheService,
               private stationService: StationService,
               private dialog: MatDialog,
-              private location: Location) {
+              private location: Location,
+              private responsive: BreakpointObserver) {
   }
 
   ngOnInit() {
@@ -80,10 +87,10 @@ export class StationPacketPageComponent implements OnInit {
       this.title = packet.title;
       this.content = packet.content;
       this.role = packet.role;
+    })
 
-      if (this.action === 'edit') {
-        this.showEditButton = true;
-      }
+    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
     })
   }
 
@@ -120,7 +127,9 @@ export class StationPacketPageComponent implements OnInit {
 
     let packet = {
       packetId: this.packetId,
+      station: {stationId: this.packet.station.stationId} as Station,
       title: this.title,
+      role: this.role,
       content: this.content
     } as StationPacket
 

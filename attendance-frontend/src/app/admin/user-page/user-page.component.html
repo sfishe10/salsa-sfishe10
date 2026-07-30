@@ -2,7 +2,7 @@
   <form #userForm="ngForm" (ngSubmit)="updateUser(userForm)">
     <div class="top-row">
       <div style="font-size: 1.4rem; display: flex; align-items: center">
-        <mat-icon class="button" (click)="goBack()">arrow_back</mat-icon>
+        <mat-icon class="button" fontSet="material-symbols-outlined" (click)="goBack()">arrow_back</mat-icon>
       </div>
       <button *ngIf="!editing" mat-flat-button type="button" color="primary"  (click)="edit()">Edit User</button>
       <div *ngIf="editing">

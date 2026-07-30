@@ -1,13 +1,13 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NgForOf, NgIf, TitleCasePipe} from '@angular/common';
-import {Station} from '../../models/station';
+import {Station} from '../models/station';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {StationPacket} from '../../models/station-packet';
+import {StationPacket} from '../models/station-packet';
 import {ActivatedRoute, Router} from '@angular/router';
-import {StationService} from '../../services/station.service';
+import {StationService} from '../services/station.service';
 import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';

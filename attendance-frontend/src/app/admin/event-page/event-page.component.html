@@ -3,7 +3,7 @@
     <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
       <div (click)="goBackToAdmin()" class="back-button"
            style="display: flex; flex-direction: row; align-items: center; width: max-content; max-height: 40px">
-        <mat-icon>arrow_left_alt</mat-icon>
+        <mat-icon class="material-symbols-outlined">arrow_left_alt</mat-icon>
         <h4 style="text-decoration: underline">Back to Admin page</h4>
       </div>
       <button *ngIf="!editing && sessionCacheService.isOfficer() || sessionCacheService.isAdmin()"

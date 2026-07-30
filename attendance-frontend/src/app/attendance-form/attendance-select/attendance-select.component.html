@@ -2,7 +2,7 @@
   <button type="button" mat-stroked-button [disabled]="false" (click)="toggleDropdown($event)" #dropdownTrigger="cdkOverlayOrigin" cdkOverlayOrigin
           class="dropdown-button">
     {{ selectedOption || '' }}
-    <mat-icon>arrow_drop_down</mat-icon>
+    <mat-icon class="material-symbols-outlined">arrow_drop_down</mat-icon>
   </button>
 
   <ng-template
@@ -49,7 +49,7 @@
         [attr.aria-expanded]="openSubMenu === 'Absent'"
       >
         Absent
-        <mat-icon class="arrow" [class.open]="openSubMenu === 'Absent'">arrow_right</mat-icon>
+        <mat-icon fontSet="material-symbols-outlined" class="arrow" [class.open]="openSubMenu === 'Absent'">arrow_right</mat-icon>
       </div>
       <div *ngIf="openSubMenu === 'Absent'" class="sub-options" role="group" aria-label="Absent options">
         <div
@@ -79,7 +79,7 @@
         [attr.aria-expanded]="openSubMenu === 'Late'"
       >
         Late
-        <mat-icon class="arrow" [class.open]="openSubMenu === 'Late'">arrow_right</mat-icon>
+        <mat-icon fontSet="material-symbols-outlined" class="arrow" [class.open]="openSubMenu === 'Late'">arrow_right</mat-icon>
       </div>
       <div *ngIf="openSubMenu === 'Late'" class="sub-options" role="group" aria-label="Late options">
         <div
@@ -109,7 +109,7 @@
         [attr.aria-expanded]="openSubMenu === 'Left Early'"
       >
         Left Early
-        <mat-icon class="arrow" [class.open]="openSubMenu === 'Left Early'">arrow_right</mat-icon>
+        <mat-icon fontSet="material-symbols-outlined" class="arrow" [class.open]="openSubMenu === 'Left Early'">arrow_right</mat-icon>
       </div>
       <div *ngIf="openSubMenu === 'Left Early'" class="sub-options" role="group" aria-label="Left Early options">
         <div

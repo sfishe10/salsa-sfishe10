@@ -14,6 +14,7 @@ import {
   MatTable
 } from '@angular/material/table';
 import {Router} from '@angular/router';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-member-list-page',
@@ -30,7 +31,8 @@ import {Router} from '@angular/router';
     MatHeaderRow,
     MatHeaderRowDef,
     MatRow,
-    MatRowDef
+    MatRowDef,
+    MatIcon
   ],
   templateUrl: './member-list-page.component.html',
   styleUrl: './member-list-page.component.css'
@@ -67,4 +69,9 @@ export class MemberListPageComponent implements OnInit {
   goToStationsList(memberId: number) {
     this.router.navigate(['/member', memberId, 'stations']);
   }
+
+  goBack() {
+    this.router.navigate(['/stations']);
+  }
+
 }

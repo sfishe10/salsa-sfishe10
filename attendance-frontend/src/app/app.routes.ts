@@ -19,7 +19,7 @@ import {StationPacketPageComponent} from './station-packet-page/station-packet-p
 import {StationsMenuPageComponent} from './stations-menu-page/stations-menu-page.component';
 import {MemberListPageComponent} from './member-list-page/member-list-page.component';
 import {StationListPageComponent} from './station-list-page/station-list-page.component';
-import {StationPacketListPageComponent} from './shared/station-packet-list-page/station-packet-list-page.component';
+import {StationPacketListPageComponent} from './station-packet-list-page/station-packet-list-page.component';
 import {EvaluationPageComponent} from './evaluation-page/evaluation-page.component';
 import {MemberStationsStatusPageComponent} from './member-stations-status-page/member-stations-status-page.component';
 

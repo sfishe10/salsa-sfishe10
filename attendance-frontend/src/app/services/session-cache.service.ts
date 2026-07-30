@@ -90,6 +90,14 @@ export class SessionCacheService {
     sessionStorage.clear();
   }
 
+  public getLoggedInMember() {
+    return this.get(Constants.STORAGE_KEY_ME).member;
+  }
+
+  public getLoggedInUser() {
+    return this.get(Constants.STORAGE_KEY_ME).user;
+  }
+
   public isAdmin() {
     return this.get(Constants.STORAGE_KEY_ME).user?.role === Constants.ROLE_ADMIN;
   }

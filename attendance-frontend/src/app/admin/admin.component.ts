@@ -290,15 +290,15 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.uploadCsvDialogRef = this.dialog.open(this.uploadCsvDialog);
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.selectedFile = input.files?.[0] ?? null;
-  }
-
-  clearFile(fileInput: HTMLInputElement) {
-    this.selectedFile = null;
-    fileInput.value = '';
-  }
+  // onFileSelected(event: Event) {
+  //   const input = event.target as HTMLInputElement;
+  //   this.selectedFile = input.files?.[0] ?? null;
+  // }
+  //
+  // clearFile(fileInput: HTMLInputElement) {
+  //   this.selectedFile = null;
+  //   fileInput.value = '';
+  // }
 
   uploadFile() {
     if (!this.selectedFile) return;
