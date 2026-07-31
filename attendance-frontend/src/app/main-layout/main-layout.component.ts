@@ -1,31 +1,44 @@
 import {Component,OnInit, ViewChild} from '@angular/core';
 import {MatDivider} from "@angular/material/divider";
 import {MatIcon} from "@angular/material/icon";
-import {MatIconButton} from "@angular/material/button";
+import {MatAnchor, MatIconButton} from "@angular/material/button";
 import {MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/material/sidenav";
 import {MatToolbar} from "@angular/material/toolbar";
 import {NgIf} from "@angular/common";
-import {ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet} from "@angular/router";
+import {
+  ActivatedRoute,
+  IsActiveMatchOptions,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet
+} from "@angular/router";
 import {filter} from 'rxjs';
 import {SessionCacheService} from '../services/session-cache.service';
 import {environment} from '../../environments/environment';
 import {Constants} from '../utilities/constants';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
+import {LogoComponent} from '../logo/logo.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-    imports: [
-        MatDivider,
-        MatIcon,
-        MatIconButton,
-        MatSidenav,
-        MatSidenavContainer,
-        MatSidenavContent,
-        MatToolbar,
-        NgIf,
-        RouterLink,
-        RouterOutlet
-    ],
+  imports: [
+    MatDivider,
+    MatIcon,
+    MatIconButton,
+    MatSidenav,
+    MatSidenavContainer,
+    MatSidenavContent,
+    MatToolbar,
+    NgIf,
+    RouterLink,
+    RouterOutlet,
+    MatAnchor,
+    LogoComponent,
+  ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
@@ -35,10 +48,13 @@ export class MainLayoutComponent implements OnInit{
 
   eventType: string = 'upcoming'; // default
 
+  isMobile: boolean = false;
+
   constructor(
     public sessionCacheService: SessionCacheService,
     public router: Router,
-    public route: ActivatedRoute) { };
+    public route: ActivatedRoute,
+    private responsive: BreakpointObserver) { };
 
   ngOnInit() {
     this.router.events
@@ -48,6 +64,10 @@ export class MainLayoutComponent implements OnInit{
           this.eventType = params['type'] || 'upcoming';
         });
       });
+
+    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
+    })
   }
 
   get pageTitle(): string {
@@ -70,7 +90,7 @@ export class MainLayoutComponent implements OnInit{
   public goToSection() {
     let sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION).sectionId;
 
-    this.sidenav.toggle();
+    this.sidenav?.toggle();
     this.router.navigate(['/section', sectionId]);
   }
 
