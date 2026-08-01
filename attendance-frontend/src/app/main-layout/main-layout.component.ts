@@ -7,19 +7,15 @@ import {MatToolbar} from "@angular/material/toolbar";
 import {NgIf} from "@angular/common";
 import {
   ActivatedRoute,
-  IsActiveMatchOptions,
   NavigationEnd,
   Router,
   RouterLink,
-  RouterLinkActive,
   RouterOutlet
 } from "@angular/router";
 import {filter} from 'rxjs';
 import {SessionCacheService} from '../services/session-cache.service';
-import {environment} from '../../environments/environment';
 import {Constants} from '../utilities/constants';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
 import {LogoComponent} from '../logo/logo.component';
 
 @Component({
