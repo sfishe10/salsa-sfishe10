@@ -48,10 +48,16 @@
   color: lightgray;
 }
 
+.app-content {
+  min-height: 100vh;
+  background-color: white;
+}
+
 .main-container {
   padding: 16px;
   max-width: 100%;
   box-sizing: border-box;
+  background-color: inherit;
 }
 
 a:hover {
