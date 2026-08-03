@@ -1,21 +1,39 @@
-<div *ngIf="sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader()">
+<div *ngIf="member && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader())">
   <form #memberForm="ngForm" (ngSubmit)="save(memberForm)">
-    <div class="top-row">
-      <div class="member-name">
-        <mat-icon class="button" fontSet="material-symbols-outlined" (click)="goBack()">arrow_back</mat-icon>
-        <a [routerLink]="['/user', this.member?.user?.userId]" style="margin-left: 10px; color: inherit; text-decoration: none;">
-          {{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;
-          <span style="color: dimgray">- {{member?.user?.email}}</span></a>
-      </div>
-      <button *ngIf="!editing && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader())"
-              mat-flat-button type="button" color="primary"  (click)="edit()">Edit Member</button>
-      <div *ngIf="editing">
-        <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
-        <button mat-flat-button type="submit" color="primary">Save Changes</button>
-      </div>
-    </div>
 
-    <div *ngIf="!editing" style="display: flex; flex-direction: column; gap: 20px; margin-top: 10px; margin-bottom: 10px; font-size: 1.2rem">
+    <ng-container *ngIf="isMobile; else desktopView">
+      <div class="mobile-top-row">
+        <div [routerLink]="['/user', this.member?.user?.userId]" style="display: flex; flex-direction: column; align-items: start;" class="title-text">
+          <span style="color: inherit; text-decoration: none;">
+            {{member?.user?.firstName}} {{member?.user?.lastName}}</span>
+          <span style="color: dimgray">{{member?.user?.email}}</span>
+        </div>
+        <button *ngIf="!editing && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader())"
+                mat-flat-button type="button" color="primary"  (click)="edit()">Edit</button>
+        <div *ngIf="editing" style="display: flex; flex-direction: column; align-items: end; gap: 5px;">
+          <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+          <button mat-flat-button type="submit" color="primary">Save</button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #desktopView>
+      <div class="top-row">
+        <div class="title">
+          <a [routerLink]="['/user', this.member?.user?.userId]" style="color: inherit; text-decoration: none;">
+            {{member?.user?.firstName}} {{member?.user?.lastName}}&nbsp;
+            <span style="color: dimgray">- {{member?.user?.email}}</span></a>
+        </div>
+        <button *ngIf="!editing && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader())"
+                mat-flat-button type="button" color="primary"  (click)="edit()">Edit</button>
+        <div *ngIf="editing">
+          <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;
+          <button mat-flat-button type="submit" color="primary">Save</button>
+        </div>
+      </div>
+    </ng-template>
+
+    <div *ngIf="!editing" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px; margin-bottom: 10px; font-size: 1.2rem">
       <span>Term: <b>{{member?.term?.termName}}</b></span>
       <span>Section: <b>{{member?.section?.name}}</b></span>
       <span>Pep Band: <b>{{member?.pepBand?.displayName}}</b></span>
@@ -28,7 +46,7 @@
     <div *ngIf="editing">
 
       <div style="display: flex; flex-direction: column; gap: 10px; max-width: 300px; margin-top: 10px; margin-bottom: 10px">
-        <span style="font-size: 1.2rem">Term: {{member?.term?.termName}}</span>
+        <span style="font-size: 1.2rem">Term: <b>{{member?.term?.termName}}</b></span>
         <mat-form-field subscriptSizing="dynamic">
           <mat-label class="form-label">Section</mat-label>
           <mat-select id="section" name="section" [(ngModel)]="section">
@@ -56,7 +74,17 @@
 
     </div>
   </form>
-  <app-member-attendance-table [attendances]="this.member?.attendances"></app-member-attendance-table>
+  <app-member-attendance-table *ngIf="!editing" [attendances]="this.member?.attendances"></app-member-attendance-table>
+
+  <button *ngIf="!editing"
+          type="button"
+          (click)="goBack()"
+          mat-flat-button
+          style="background-color: lightgray; margin-top: 20px;">Back</button>
+</div>
+
+<div *ngIf="memberLoaded && !member">
+  Member not found.
 </div>
 
 

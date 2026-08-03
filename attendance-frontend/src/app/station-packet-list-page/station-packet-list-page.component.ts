@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {NgForOf, NgIf, TitleCasePipe} from '@angular/common';
+import {NgForOf, NgIf, TitleCasePipe, UpperCasePipe} from '@angular/common';
 import {Station} from '../models/station';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
@@ -12,6 +12,8 @@ import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTi
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import { Location } from '@angular/common';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {MatDivider} from '@angular/material/divider';
 
 @Component({
   selector: 'app-station-packet-list-page',
@@ -30,7 +32,9 @@ import { Location } from '@angular/common';
     MatLabel,
     MatOption,
     MatSelect,
-    TitleCasePipe
+    TitleCasePipe,
+    MatDivider,
+    UpperCasePipe
   ],
   templateUrl: './station-packet-list-page.component.html',
   styleUrl: './station-packet-list-page.component.css'
@@ -53,11 +57,14 @@ export class StationPacketListPageComponent implements OnInit{
 
   showAddButton: boolean = false;
 
+  isMobile: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private stationService: StationService,
               private dialog: MatDialog,
-              private location: Location) {
+              private location: Location,
+              private responsive: BreakpointObserver) {
   }
 
   ngOnInit() {
@@ -75,6 +82,10 @@ export class StationPacketListPageComponent implements OnInit{
         this.showAddButton = true;
       }
     });
+
+    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
+    })
   }
 
   addPacket() {

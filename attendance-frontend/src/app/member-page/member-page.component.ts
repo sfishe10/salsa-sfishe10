@@ -6,7 +6,7 @@ import {MatIcon} from '@angular/material/icon';
 import {FormsModule, NgForm} from '@angular/forms';
 import {NgForOf, NgIf} from '@angular/common';
 import {MemberAttendanceTableComponent} from '../shared/member-attendance-table/member-attendance-table.component';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatAnchor, MatButton, MatIconButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
@@ -17,6 +17,8 @@ import {SessionCacheService} from '../services/session-cache.service';
 import {Utilities} from '../utilities/utilities';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {MatDivider} from '@angular/material/divider';
 
 @Component({
   selector: 'app-member-page',
@@ -35,7 +37,6 @@ import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angula
     MatDialogActions,
     MatDialogTitle,
     RouterLink,
-    MatIconButton
   ],
   templateUrl: './member-page.component.html',
   styleUrl: './member-page.component.css'
@@ -45,6 +46,7 @@ export class MemberPageComponent implements OnInit {
   private _snackBar = inject(MatSnackBar);
 
   member: Member | null = null;
+  memberLoaded: boolean = false;
 
   memberId!: number
 
@@ -60,6 +62,8 @@ export class MemberPageComponent implements OnInit {
 
   returnToPage: string = 'section';
 
+  isMobile: boolean = false;
+
   @ViewChild('confirmDeleteDialog') confirmDeleteDialog!: TemplateRef<any>;
   confirmDeleteDialogRef!: MatDialogRef<any>;
 
@@ -70,7 +74,8 @@ export class MemberPageComponent implements OnInit {
               private memberService: MemberService,
               private router: Router,
               public sessionCacheService: SessionCacheService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private responsive: BreakpointObserver) {
   }
 
   ngOnInit() {
@@ -84,6 +89,11 @@ export class MemberPageComponent implements OnInit {
 
     this.memberService.getMemberById(this.memberId).subscribe(member => {
       this.member = member;
+      this.memberLoaded = true;
+    })
+
+    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
     })
   }
 

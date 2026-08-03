@@ -94,7 +94,7 @@ export class AttendanceFormComponent implements OnInit {
 
   form: FormGroup;
 
-  columnsToDisplay = ['name', 'attendance', 'delete'];
+  columnsToDisplay = ['name', 'attendance'];
 
   sectionMembers: Member[] = [];
 
@@ -135,6 +135,10 @@ export class AttendanceFormComponent implements OnInit {
     this.eventService.getEvent(this.eventId).subscribe(event => {
       this.event = event;
       this.attendanceOptions = Utilities.getAttendanceOptions(this.event?.type === this.PEP_EVENT);
+
+      if (this.event?.type !== Constants.EVENT_TYPE_WHOLE_BAND_EVENT && this.event?.type !== Constants.EVENT_TYPE_REHEARSAL) {
+        this.columnsToDisplay.push('delete');
+      }
     })
 
     this.eventService.getEventAttendance(this.eventId, sectionId).subscribe(attendances => {

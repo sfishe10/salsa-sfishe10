@@ -53,7 +53,6 @@ import {MatTab, MatTabGroup} from '@angular/material/tabs';
     MatSelect,
     NgForOf,
     FormsModule,
-    MatDivider,
     MatTabGroup,
     MatTab
   ],
@@ -78,6 +77,8 @@ export class SectionPageComponent implements OnInit {
 
   memberStats: MemberStats[] = [];
   statsColumns: string[] = ['member', 'numRehearsals', 'numWholeBandEvents', 'numPepEvents', 'numVolunteerEvents', 'numSubEvents'];
+
+  allowSectionSelection: boolean = false;
 
   @ViewChildren(AttendanceTableComponent) attendanceTables!: QueryList<AttendanceTableComponent>;
 
@@ -109,6 +110,12 @@ export class SectionPageComponent implements OnInit {
     this.pepBandService.getAllWithSectionMembers(this.sectionId, this.term.termId).subscribe(pepBands => {
       this.pepBands = pepBands.filter(band => band.bandId != Constants.PEP_BAND_ID_VOLUNTEER);
     })
+
+    if (this.sessionCacheService.isAdmin()
+      || this.sessionCacheService.isOfficer()
+      || this.sessionCacheService.isDrumlineAttendanceTaker()) {
+      this.allowSectionSelection = true;
+    }
   }
 
   navigateToMember(memberId: number) {
