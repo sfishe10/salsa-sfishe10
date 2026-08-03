@@ -13,6 +13,8 @@ import {MatSelect} from '@angular/material/select';
 import {Utilities} from '../../utilities/utilities';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
+import {SessionCacheService} from '../../services/session-cache.service';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-user-page',
@@ -46,12 +48,17 @@ export class UserPageComponent implements OnInit {
 
   roleOptions: string[] = [];
 
+  canEdit: boolean = false;
   editing: boolean = false;
+
+  isMobile: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private userService: UserService,
               private router: Router,
-              private location: Location) {
+              private location: Location,
+              public sessionCacheService: SessionCacheService,
+              private responsive: BreakpointObserver) {
   }
 
   ngOnInit() {
@@ -62,6 +69,14 @@ export class UserPageComponent implements OnInit {
     })
 
     this.roleOptions = Utilities.getRoleOptions();
+
+    if (this.sessionCacheService.isAdmin() || this.sessionCacheService.isOfficer()) {
+      this.canEdit = true;
+    }
+
+    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
+    })
   }
 
   edit() {

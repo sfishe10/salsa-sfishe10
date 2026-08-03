@@ -1,8 +1,4 @@
 <div>
   <app-stations-table (stationClicked)="stationClicked($event)"></app-stations-table>
-  <div (click)="goBack()" class="button"
-       style="display: flex; flex-direction: row; align-items: center; gap: 0; width: max-content; margin-bottom: 10px; margin-top: 20px;">
-    <mat-icon fontSet="material-symbols-outlined">arrow_left_alt</mat-icon>
-    <span style="font-size: 1rem; font-weight: bold; text-decoration: underline; margin-left: 5px;">Back to Stations</span>
-  </div>
+  <button type="button" (click)="goBack()" mat-flat-button style="background-color: lightgray; margin-top: 10px;">Back</button>
 </div>

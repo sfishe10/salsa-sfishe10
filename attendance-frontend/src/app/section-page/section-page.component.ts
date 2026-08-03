@@ -53,7 +53,6 @@ import {MatTab, MatTabGroup} from '@angular/material/tabs';
     MatSelect,
     NgForOf,
     FormsModule,
-    MatDivider,
     MatTabGroup,
     MatTab
   ],

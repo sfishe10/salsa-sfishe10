@@ -1,9 +1,14 @@
-.member-name {
+.title {
   font-family: Roboto, sans-serif;
   font-size: 1.4rem;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  border-radius: 6px;
+}
+
+.title:hover {
+  background-color: #f5f5f5;
 }
 
 .top-row {

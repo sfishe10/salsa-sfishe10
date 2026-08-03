@@ -12,6 +12,7 @@ import {MemberService} from '../services/member.service';
 import {NgIf, UpperCasePipe} from '@angular/common';
 import {MatDivider} from '@angular/material/divider';
 import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-member-stations-status-page',
@@ -21,7 +22,8 @@ import {MatIcon} from '@angular/material/icon';
     NgIf,
     UpperCasePipe,
     MatDivider,
-    MatIcon
+    MatIcon,
+    MatButton
   ],
   templateUrl: './member-stations-status-page.component.html',
   styleUrl: './member-stations-status-page.component.css'

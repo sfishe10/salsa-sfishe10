@@ -5,6 +5,7 @@ import {Location} from '@angular/common';
 import {SessionCacheService} from '../services/session-cache.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-station-list-page',
@@ -12,6 +13,7 @@ import {MatIcon} from '@angular/material/icon';
   imports: [
     StationsTableComponent,
     MatIcon,
+    MatButton,
   ],
   templateUrl: './station-list-page.component.html',
   styleUrl: './station-list-page.component.css'

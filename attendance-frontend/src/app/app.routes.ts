@@ -22,6 +22,10 @@ import {StationListPageComponent} from './station-list-page/station-list-page.co
 import {StationPacketListPageComponent} from './station-packet-list-page/station-packet-list-page.component';
 import {EvaluationPageComponent} from './evaluation-page/evaluation-page.component';
 import {MemberStationsStatusPageComponent} from './member-stations-status-page/member-stations-status-page.component';
+import {eventListTitleResolver} from './resolvers/event-list-title-resolver';
+import {stationsListTitleResolver} from './resolvers/stations-list-title-resolver';
+import {stationTitleResolver} from './resolvers/station-title-resolver';
+import {stationPacketTitleResolver} from './resolvers/station-packet-title-resolver';
 
 export const routes: Routes = [
   {
@@ -40,22 +44,27 @@ export const routes: Routes = [
       {
         path: 'events',
         component: EventListComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: eventListTitleResolver,
+        runGuardsAndResolvers: 'pathParamsOrQueryParamsChange'
       },
       {
         path: 'stations',
         component: StationsMenuPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Stations'
       },
       {
         path: 'stations/evaluate',
         component: MemberListPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Evaluate'
       },
       {
         path: 'stations-list',
         component: StationListPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: stationsListTitleResolver
       },
       {
         path: 'profile',
@@ -65,7 +74,8 @@ export const routes: Routes = [
       {
         path: 'admin',
         component: AdminComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Admin'
       },
       {
         path: 'attendance/term/:id',
@@ -75,37 +85,44 @@ export const routes: Routes = [
       {
         path: 'attendance-form/:id',
         component: AttendanceFormComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Enter Attendance'
       },
       {
         path: 'member/:id',
         component: MemberPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Member'
       },
       {
         path: 'member/:id/stations',
         component: MemberStationsStatusPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Evaluate'
       },
       {
         path: 'user/:id',
         component: UserPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'User'
       },
       {
         path: 'event/:id',
         component: EventPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Event'
       },
       {
         path: 'section/:id',
         component: SectionPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'View Section'
       },
       {
         path: 'attendance/:id',
         component: EventAttendancePageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Attendance'
       },
       {
         path: 'station/:id',
@@ -115,17 +132,20 @@ export const routes: Routes = [
       {
         path: 'station/:id/packets',
         component: StationPacketListPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: stationTitleResolver
       },
       {
         path: 'packet/:id',
         component: StationPacketPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: stationPacketTitleResolver
       },
       {
         path: 'evaluation/:id',
         component: EvaluationPageComponent,
-        canActivate: [AuthzGuard]
+        canActivate: [AuthzGuard],
+        title: 'Evaluate'
       }
     ]
   },
