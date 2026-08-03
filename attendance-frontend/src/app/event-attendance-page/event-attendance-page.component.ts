@@ -13,6 +13,8 @@ import {AttendanceSelectComponent} from '../attendance-form/attendance-select/at
 import {MemberSelectComponent} from '../attendance-form/member-select/member-select.component';
 import {MemberService} from '../services/member.service';
 import {Member} from '../models/member';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {MatDivider} from '@angular/material/divider';
 
 @Component({
   selector: 'app-event-attendance-page',
@@ -25,7 +27,8 @@ import {Member} from '../models/member';
     NgIf,
     ReactiveFormsModule,
     AttendanceSelectComponent,
-    MemberSelectComponent
+    MemberSelectComponent,
+    MatDivider
   ],
   templateUrl: './event-attendance-page.component.html',
   styleUrl: './event-attendance-page.component.css'
@@ -50,11 +53,14 @@ export class EventAttendancePageComponent implements OnInit {
 
   returnToPage: string = 'member'
 
+  isMobile: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private attendanceService: AttendanceService,
               private router: Router,
               private fb: FormBuilder,
-              private memberService: MemberService) {
+              private memberService: MemberService,
+              private responsive: BreakpointObserver) {
     this.form = this.fb.group({
       attendance: [this.eventAttendance?.attendance],
       sub: [this.eventAttendance?.sub]
@@ -79,6 +85,10 @@ export class EventAttendancePageComponent implements OnInit {
       this.attendanceOptions = Utilities.getAttendanceOptions(this.eventAttendance?.mbEvent?.type === this.PEP_EVENT);
     }, error => {
       console.log(error)
+    })
+
+    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
     })
   }
 

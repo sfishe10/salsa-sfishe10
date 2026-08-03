@@ -1,12 +1,12 @@
-.member-name {
+.title {
   font-family: Roboto, sans-serif;
-  font-size: 1.4rem;
-  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
 }
 
 .top-row {
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
 }
 

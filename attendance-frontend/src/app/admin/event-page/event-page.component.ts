@@ -22,6 +22,7 @@ import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angula
 import {VolunteerRosterMemberCount} from '../../models/volunteer-roster-member-count';
 import {MatDivider} from '@angular/material/divider';
 import {MatCheckbox} from '@angular/material/checkbox';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-event-page',
@@ -82,12 +83,15 @@ export class EventPageComponent implements OnInit {
   volunteerRosterMemberCounts: VolunteerRosterMemberCount[] = [];
   editing: boolean = false;
 
+  isMobile: boolean = false;
+
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private router: Router,
               public sessionCacheService: SessionCacheService,
               private adminService: AdminService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private responsive: BreakpointObserver) {
   }
 
   ngOnInit() {
@@ -104,6 +108,10 @@ export class EventPageComponent implements OnInit {
       this.extraAttendeesAllowed = event.extraAttendeesAllowed ?? true;
       this.volunteerRosterMemberCounts = event.volunteerRosterMemberCounts;
       this.separateDateAndTimeInputs(new Date(event.date));
+    })
+
+    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
     })
   }
 
