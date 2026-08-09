@@ -12,6 +12,7 @@ const router: Router = Router();
 
 router.post('/', users.admin.create);
 router.put('/', users.admin.update);
+router.delete('/:id', users.admin.deleteUser);
 router.post('/uploadRolesCsv', upload.single('file'), users.admin.uploadRolesCsv);
 
 /**

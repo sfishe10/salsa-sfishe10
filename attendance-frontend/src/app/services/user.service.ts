@@ -22,4 +22,9 @@ export class UserService {
     return this.http.put<any>(url, user);
   }
 
+  public deleteUser(id: number) {
+    const url = this.baseUrl + `/users/${id}`;
+    return this.http.delete<boolean>(url);
+  }
+
 }

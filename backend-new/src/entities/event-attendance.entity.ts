@@ -16,7 +16,8 @@ export class EventAttendance {
     attendanceId!: number;
 
     // Each attendance belongs to one event
-    @ManyToOne(() => MBEvent, (event: MBEvent) => event.attendances, { onDelete: 'CASCADE' })
+    @ManyToOne(() => MBEvent, (event: MBEvent) => event.attendances, {
+        onDelete: 'CASCADE' })
     @JoinColumn({ name: 'eventId' })
     mbEvent!: MBEvent;
 
@@ -24,12 +25,16 @@ export class EventAttendance {
     @Column({ type: 'varchar', length: 50, nullable: true })
     attendance!: string | null;
 
-    @ManyToOne(() => Member, (member: Member) => member.attendances, { nullable: true })
+    @ManyToOne(() => Member, (member: Member) => member.attendances, {
+        nullable: true,
+        onDelete: "CASCADE"})
     @JoinColumn({ name: 'memberId' })
     member!: Member | null;
 
     // Substitute member (optional)
-    @ManyToOne(() => Member, { nullable: true })
+    @ManyToOne(() => Member, {
+        nullable: true,
+        onDelete: "SET NULL"})
     @JoinColumn({ name: 'subId' })
     sub!: Member | null;
 

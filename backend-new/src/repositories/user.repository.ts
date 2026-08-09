@@ -47,4 +47,9 @@ export class UserRepository {
             { email: user.email },
             { role: user.role })
     }
+
+    public async delete(userId: number) {
+        const result = await this.repo.delete(userId);
+        return result.affected;
+    }
 }

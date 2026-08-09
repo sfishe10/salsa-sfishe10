@@ -30,6 +30,11 @@
             </mat-select>
           </mat-form-field>
         </div>
+        <button style="margin-top: 10px;"
+                mat-flat-button
+                color="warn"
+                type="button"
+                (click)="openConfirmationDialog()">Delete User</button>&nbsp;
       </div>
 
       <div>
@@ -49,3 +54,22 @@
             style="background-color: lightgray; margin-top: 20px;">Back</button>
   </form>
 </div>
+
+
+<ng-template #confirmDeleteDialog>
+  <h2 mat-dialog-title>Delete User?</h2>
+  <mat-dialog-content>
+    <span style="color: red">WARNING: This will delete all associated records for this user.</span>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancelDialog()">Cancel</button>
+    <button mat-button (click)="deleteUser()">Delete</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #successDialog>
+  <h2 mat-dialog-title>User successfully deleted!</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="goBack()">Ok</button>
+  </mat-dialog-actions>
+</ng-template>

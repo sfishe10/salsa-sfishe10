@@ -43,6 +43,19 @@ export const update = async (req: any, res: any) => {
   }
 };
 
+export const deleteUser = async (req: any, res: any) => {
+  try {
+    const userId = req.params.id;
+
+    const success = await userService.deleteUser(userId);
+
+    res.send(success);
+  } catch (err: any) {
+    console.error('A critical error occurred in users.deleteUser():', err.message);
+    return res.status(500).send(err.message);
+  }
+};
+
 export const uploadRolesCsv = async (req: any, res: any) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
