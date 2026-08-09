@@ -2,7 +2,6 @@ import {MemberRepository} from "../repositories/member.repository";
 import {Member} from "../entities/member.entity";
 import {MemberDto} from "../dto/member.dto";
 import {toMemberDto} from "../mappers/member.mapper";
-import {UserService} from "./user.service";
 import {SectionService} from "./section.service";
 import {AttendanceService} from "./attendance.service";
 import {User} from "../entities/user.entity";
@@ -14,20 +13,21 @@ import {Constants} from "../utilities/constants";
 import {InvalidEmailsError} from "../errors/invalid-emails-error";
 import {InvalidSectionsError} from "../errors/invalid-sections-error";
 import {NotFoundError} from "../errors/not-found-error";
+import {UserRepository} from "../repositories/user.repository";
 
 export class MemberService {
     private memberRepository: MemberRepository;
     private attendanceService: AttendanceService;
-    private userService: UserService;
+    private userRepository: UserRepository;
     private sectionService: SectionService;
 
     constructor(memberRepository?: MemberRepository,
                 attendanceService?: AttendanceService,
-                userService?: UserService,
+                userRepository?: UserRepository,
                 sectionService?: SectionService) {
         this.memberRepository = memberRepository ?? new MemberRepository();
         this.attendanceService = attendanceService ?? new AttendanceService();
-        this.userService = userService ?? new UserService();
+        this.userRepository = userRepository ?? new UserRepository();
         this.sectionService = sectionService ?? new SectionService();
     }
 
@@ -189,7 +189,7 @@ export class MemberService {
             // ! = non-null assertion, since we already checked for invalid section names
             const section: Section = sectionMap.get(sectionName)!;
 
-            let user: User | null = await this.userService.getByEmail(email);
+            let user: User | null = await this.userRepository.findByEmail(email);
             if (user && user.role != Constants.ROLE_ADMIN && user.role != Constants.ROLE_OFFICER) {
                 // reset everyone's role, unless they're an admin/officer - in case the logged-in user is an admin/officer,
                 // we don't want it to change their access level during the session
@@ -214,7 +214,7 @@ export class MemberService {
         }
 
         // insert users if they don't exist
-        await this.userService.insertOrUpdate(users);
+        await this.userRepository.insertOrUpdate(users);
 
         // insert members
         await this.memberRepository.insertOrIgnore(members);

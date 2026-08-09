@@ -5,12 +5,16 @@ import {toUserDto} from "../mappers/user.mapper";
 import {NotFoundError} from "../errors/not-found-error";
 import {Utilities} from "../utilities/utilities";
 import {InvalidEmailsError} from "../errors/invalid-emails-error";
+import {MemberService} from "./member.service";
 
 export class UserService {
     private userRepository: UserRepository;
+    private memberService: MemberService;
 
-    constructor(userRepository?: UserRepository) {
+    constructor(userRepository?: UserRepository,
+                memberService?: MemberService) {
         this.userRepository = userRepository ?? new UserRepository();
+        this.memberService = memberService ?? new MemberService();
     }
 
     public async getAll(): Promise<UserDto[]> {
@@ -64,6 +68,22 @@ export class UserService {
         existingUser.lastName = userDto.lastName;
 
         return await this.userRepository.save(existingUser);
+    }
+
+    public async deleteUser(userId: number): Promise<boolean> {
+        const existingUser = await this.getById(userId);
+
+        if (!existingUser) {
+            throw new NotFoundError('User not found');
+        }
+
+        for (const member of existingUser.members) {
+            await this.memberService.delete(member.memberId);
+        }
+
+        const success = await this.userRepository.delete(userId);
+
+        return !!success;
     }
 
     public async insertOrUpdate(users: User[] | User) {

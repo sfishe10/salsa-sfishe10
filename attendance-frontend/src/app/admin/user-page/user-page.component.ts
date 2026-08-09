@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../../models/user';
 import {UserService} from '../../services/user.service';
@@ -15,6 +15,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import {SessionCacheService} from '../../services/session-cache.service';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-page',
@@ -29,13 +30,22 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
     MatOption,
     MatSelect,
     NgForOf,
-    NgIf
+    NgIf,
+    MatDialogActions,
+    MatDialogTitle,
+    MatDialogContent
   ],
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css'
 })
 export class UserPageComponent implements OnInit {
   private _snackBar = inject(MatSnackBar);
+
+  @ViewChild('confirmDeleteDialog') confirmDeleteDialog!: TemplateRef<any>;
+  confirmDeleteDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('successDialog') successDialog!: TemplateRef<any>;
+  successDialogRef!: MatDialogRef<any>;
 
   user!: User;
 
@@ -58,6 +68,7 @@ export class UserPageComponent implements OnInit {
               private router: Router,
               private location: Location,
               public sessionCacheService: SessionCacheService,
+              private dialog: MatDialog,
               private responsive: BreakpointObserver) {
   }
 
@@ -121,6 +132,35 @@ export class UserPageComponent implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  openConfirmationDialog() {
+    this.confirmDeleteDialogRef = this.dialog.open(this.confirmDeleteDialog);
+  }
+
+  openSuccessDialog() {
+    this.successDialogRef = this.dialog.open(this.successDialog);
+  }
+
+  cancelDialog() {
+    this.dialog.closeAll();
+  }
+
+  deleteUser() {
+    if (!this.user) {
+      return;
+    }
+    this.cancelDialog();
+    this.userService.deleteUser(this.user.userId).subscribe(success => {
+      if (success) {
+        this.openSuccessDialog();
+      } else {
+        this.openSnackBar("Error deleting user", "Ok", 3000);
+      }
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error deleting user", "Ok", 3000);
+    })
   }
 
   openSnackBar(message: string, action: string, duration: number) {
