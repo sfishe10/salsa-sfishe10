@@ -18,6 +18,28 @@ import {Constants} from '../utilities/constants';
 import {LogoComponent} from '../logo/logo.component';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {BaseComponent} from '../base-component';
+import {
+  MatTree,
+  MatTreeFlatDataSource,
+  MatTreeFlattener,
+  MatTreeNode, MatTreeNodeDef, MatTreeNodePadding, MatTreeNodeToggle
+} from '@angular/material/tree';
+import {FlatTreeControl} from '@angular/cdk/tree';
+
+interface NavNode {
+  name: string;
+  route?: string;
+  queryParams?: any;
+  children?: NavNode[];
+}
+
+interface FlatNavNode {
+  name: string;
+  route?: string;
+  queryParams?: any;
+  level: number;
+  expandable: boolean;
+}
 
 @Component({
   selector: 'app-main-layout',
@@ -35,15 +57,48 @@ import {BaseComponent} from '../base-component';
     RouterOutlet,
     MatAnchor,
     LogoComponent,
+    MatTree,
+    MatTreeNode,
+    MatTreeNodeDef,
+    MatTreeNodePadding,
+    MatTreeNodeToggle,
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
 export class MainLayoutComponent extends BaseComponent implements OnInit {
+  private transformer = (node: NavNode, level: number): FlatNavNode => ({
+    name: node.name,
+    route: node.route,
+    level,
+    expandable: !!node.children?.length
+  });
+
+  treeControl = new FlatTreeControl<FlatNavNode>(
+    node => node.level,
+    node => node.expandable
+  );
+
+  treeFlattener = new MatTreeFlattener(
+    this.transformer,
+    node => node.level,
+    node => node.expandable,
+    node => node.children
+  );
+
+  dataSource = new MatTreeFlatDataSource(
+    this.treeControl,
+    this.treeFlattener
+  );
+
+  hasChild = (_: number, node: FlatNavNode) => node.expandable;
+
 
   @ViewChild('sidenav') sidenav: any;
 
   pageTitle = '';
+
+  sectionId: number | null = null;
 
   constructor(
     public sessionCacheService: SessionCacheService,
@@ -58,6 +113,8 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
       this.router.navigate(['/admin/term'])
     }
 
+    this.sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION).sectionId;
+
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
@@ -69,6 +126,60 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
       .subscribe(title => {
         this.pageTitle = title;
       });
+
+    const links = [];
+
+    // only designated attendance takers access events
+    if (this.sessionCacheService.isSectionLeader()
+      || this.sessionCacheService.isAttendanceTaker()
+      || this.sessionCacheService.isOfficer()) {
+      links.push({
+        name: 'Upcoming Events',
+        route: '/events',
+        queryParams: { type: 'upcoming' }
+      });
+      links.push({
+        name: 'Recent Events',
+        route: '/events',
+        queryParams: { type: 'recent' }
+      })
+    }
+
+    // everyone in leadership + admin can access stations
+    // TODO: refactor Evaluations to point to a User instead of Member, so admins (who don't have associated Members) can also evaluate
+    links.push({
+      name: 'Stations',
+      route: '/stations'
+    })
+
+    // only section leaders and officers need the My Section page (admins can see the info elsewhere)
+    if (this.sessionCacheService.isSectionLeader() || this.sessionCacheService.isOfficer()) {
+      links.push({
+        name: 'My Section',
+        route: `/section/${this.sectionId}`
+      })
+    }
+
+    const adminLinks = [
+      { name: 'View Term', route: '/admin/term' },
+      { name: 'Users/Roles', route: '/admin/users' },
+      { name: 'Manage Stations', route: '/admin/stations' },
+      { name: 'Attendance', route: '/admin/attendance' },
+      { name: 'Stations Progress', route: '/admin/stations-progress' }
+    ]
+
+    if (this.sessionCacheService.isOfficer()) {
+      links.push({
+        name: 'Admin',
+        children: adminLinks
+      })
+    }
+
+    if (this.sessionCacheService.isAdmin()) {
+      this.dataSource.data = adminLinks;
+    } else {
+      this.dataSource.data = links;
+    }
   }
 
   private getDeepestRoute(route: ActivatedRoute): ActivatedRoute {
