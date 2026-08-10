@@ -15,9 +15,9 @@ import {
 import {filter, map, startWith} from 'rxjs';
 import {SessionCacheService} from '../services/session-cache.service';
 import {Constants} from '../utilities/constants';
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {LogoComponent} from '../logo/logo.component';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {BaseComponent} from '../base-component';
 
 @Component({
   selector: 'app-main-layout',
@@ -39,25 +39,24 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
-export class MainLayoutComponent implements OnInit{
+export class MainLayoutComponent extends BaseComponent implements OnInit {
 
   @ViewChild('sidenav') sidenav: any;
 
   pageTitle = '';
 
-  isMobile: boolean = false;
-
   constructor(
     public sessionCacheService: SessionCacheService,
     public router: Router,
     public route: ActivatedRoute,
-    private destroyRef: DestroyRef,
-    private responsive: BreakpointObserver) { };
+    private destroyRef: DestroyRef) {
+    super();
+  };
 
   ngOnInit() {
-    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
-      this.isMobile = result.matches;
-    })
+    if (this.sessionCacheService.isAdmin() || (this.sessionCacheService.isOfficer() && !this.isMobile)) {
+      this.router.navigate(['/admin/term'])
+    }
 
     this.router.events
       .pipe(

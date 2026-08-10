@@ -1,4 +1,4 @@
-<ng-container *ngIf="isMobile; else desktopView">
+<ng-container *ngIf="isMobile(); else desktopView">
   <mat-sidenav-container style="height:100%">
     <mat-sidenav #sidenav [mode]="'over'" class="side-navbar">
       <div class="side-navbar-content">
@@ -35,16 +35,29 @@
 
 <ng-template #desktopView>
   <div class="app-content">
-    <mat-toolbar class="top-navbar">
-      <app-logo></app-logo>
-      <a mat-button routerLink="/events" [queryParams]="{ type: 'upcoming' }">Upcoming Events</a>
-      <a mat-button routerLink="/events" [queryParams]="{ type: 'recent' }">Recent Events</a>
-      <a mat-button *ngIf="sessionCacheService.getLoggedInMember() && !sessionCacheService.isMember()" routerLink="/stations">Stations</a>
-      <!--    <a routerLink="/events" [queryParams]="{ type: 'volunteer' }" *ngIf="sessionCacheService.isSectionLeader() || sessionCacheService.isOfficer()" (click)="sidenav.toggle()">Volunteer Sign-up</a>-->
-      <!--    <a routerLink="/profile" (click)="sidenav.toggle()">Profile</a>-->
-      <a mat-button *ngIf="sessionCacheService.get(STORAGE_KEY_SECTION) && (sessionCacheService.isSectionLeader() || sessionCacheService.isOfficer())" (click)="goToSection()">My Section</a>
-      <a mat-button *ngIf="sessionCacheService.isAdmin() || sessionCacheService.isOfficer()" routerLink="/admin">Admin</a>
-    </mat-toolbar>
+    <ng-container *ngIf="!sessionCacheService.isAdmin() && !sessionCacheService.isOfficer(); else adminView">
+      <mat-toolbar class="top-navbar">
+        <app-logo></app-logo>
+        <a mat-button routerLink="/events" [queryParams]="{ type: 'upcoming' }">Upcoming Events</a>
+        <a mat-button routerLink="/events" [queryParams]="{ type: 'recent' }">Recent Events</a>
+        <a mat-button *ngIf="sessionCacheService.getLoggedInMember() && !sessionCacheService.isMember()" routerLink="/stations">Stations</a>
+        <!--    <a routerLink="/events" [queryParams]="{ type: 'volunteer' }" *ngIf="sessionCacheService.isSectionLeader() || sessionCacheService.isOfficer()" (click)="sidenav.toggle()">Volunteer Sign-up</a>-->
+        <!--    <a routerLink="/profile" (click)="sidenav.toggle()">Profile</a>-->
+        <a mat-button *ngIf="sessionCacheService.get(STORAGE_KEY_SECTION) && (sessionCacheService.isSectionLeader() || sessionCacheService.isOfficer())" (click)="goToSection()">My Section</a>
+      </mat-toolbar>
+    </ng-container>
+
+
+    <ng-template #adminView>
+      <mat-toolbar class="top-navbar">
+        <app-logo></app-logo>
+        <a mat-button routerLink="/admin/term">View Term</a>
+        <a mat-button routerLink="/admin/users">Users/Roles</a>
+        <a mat-button routerLink="/admin/stations">Manage Stations</a>
+        <a mat-button routerLink="/admin/attendance">Attendance</a>
+        <a mat-button routerLink="/admin/stations-progress">Stations Progress</a>
+      </mat-toolbar>
+    </ng-template>
     <mat-divider></mat-divider>
     <div class="main-container">
       <router-outlet />

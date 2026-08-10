@@ -1,8 +1,8 @@
 <p *ngIf="sessionCacheService.isMember()">You do not have access to view this page.</p>
 
-<div *ngIf="packet && !sessionCacheService.isMember()">
+<div *ngIf="packet && !sessionCacheService.isMember()" style="margin-bottom: 100px;">
   <form #packetForm="ngForm" (ngSubmit)="save(packetForm)">
-    <ng-container *ngIf="isMobile; else desktopView">
+    <ng-container *ngIf="isMobile(); else desktopView">
       <div style="white-space: pre-wrap;">
         <span *ngIf="content.trim().length">{{content}}</span>
         <span *ngIf="!content.trim().length" style="color: gray">No content has been entered yet.</span>
@@ -46,7 +46,7 @@
             </div>
           </ng-template>
         </div>
-        <button *ngIf="!editing && !isMobile && (this.sessionCacheService.isOfficer() || this.sessionCacheService.isAdmin())"
+        <button *ngIf="!editing && !isMobile() && (this.sessionCacheService.isOfficer() || this.sessionCacheService.isAdmin())"
                 mat-flat-button type="button" color="primary" (click)="edit()">Edit Packet</button>
         <div *ngIf="editing">
           <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>&nbsp;

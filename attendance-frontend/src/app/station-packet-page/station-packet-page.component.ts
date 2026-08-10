@@ -13,9 +13,9 @@ import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angula
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import { Location } from '@angular/common';
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {MatDivider} from '@angular/material/divider';
 import {Station} from '../models/station';
+import {BaseComponent} from '../base-component';
 
 @Component({
   selector: 'app-station-packet-page',
@@ -35,12 +35,11 @@ import {Station} from '../models/station';
     MatSelect,
     NgForOf,
     TitleCasePipe,
-    MatDivider
   ],
   templateUrl: './station-packet-page.component.html',
   styleUrl: './station-packet-page.component.css'
 })
-export class StationPacketPageComponent implements OnInit {
+export class StationPacketPageComponent extends BaseComponent implements OnInit {
   private _snackBar = inject(MatSnackBar);
 
   packetId!: number;
@@ -68,14 +67,12 @@ export class StationPacketPageComponent implements OnInit {
 
   showEditButton: boolean = false;
 
-  isMobile: boolean = false;
-
   constructor(private route: ActivatedRoute,
               public sessionCacheService: SessionCacheService,
               private stationService: StationService,
               private dialog: MatDialog,
-              private location: Location,
-              private responsive: BreakpointObserver) {
+              private location: Location) {
+    super();
   }
 
   ngOnInit() {
@@ -87,10 +84,6 @@ export class StationPacketPageComponent implements OnInit {
       this.title = packet.title;
       this.content = packet.content;
       this.role = packet.role;
-    })
-
-    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
-      this.isMobile = result.matches;
     })
   }
 
