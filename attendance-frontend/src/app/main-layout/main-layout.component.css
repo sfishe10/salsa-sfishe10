@@ -3,6 +3,12 @@
   font-size: 1.6rem;
 }
 
+.toolbar {
+  position: sticky;
+  z-index: 100000;
+  top: 0;
+}
+
 .side-navbar {
   min-width: 300px;
 }
@@ -37,6 +43,9 @@
   padding-top: 5px;
   padding-bottom: 5px;
   padding-left: 10px;
+  position: sticky;
+  z-index: 100000;
+  top: 0;
 }
 
 .top-navbar a {
