@@ -1,1 +1,65 @@
-<p>term-page works!</p>
+<div style="padding: 10px">
+  <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label class="form-label">Select a term</mat-label>
+        <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
+          <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" (click)="openTermDialog(false)">Create Term</button>
+    </div>
+    <div style="display: flex; align-items: center;">
+      <p align="right">{{selectedTerm?.startDate | date: 'MMMM d, yyyy'}} - {{selectedTerm?.endDate | date: 'MMMM d, yyyy'}}</p>
+      <button mat-icon-button (click)="openTermDialog(true)"><mat-icon class="material-symbols-outlined">edit_square</mat-icon></button>
+    </div>
+  </div>
+  <mat-accordion multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>Events</mat-expansion-panel-header>
+      <div style="padding-top:5px">
+        <app-events-table [selectedTerm]="selectedTerm"></app-events-table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>Members</mat-expansion-panel-header>
+      <div style="padding-top:5px">
+        <app-members-table [selectedTerm]="selectedTerm"></app-members-table>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+<!--  <div (click)="goToAttendance()" class="back-button"-->
+<!--       style="display: flex; flex-direction: row; align-items: center; gap: 6px; padding-left: 10px; width: max-content;">-->
+<!--    <h4 style="text-decoration: underline">View Attendance</h4>-->
+<!--    <mat-icon class="material-symbols-outlined">arrow_right_alt</mat-icon>-->
+<!--  </div>-->
+</div>
+
+
+<ng-template #termDialog>
+  <h2 mat-dialog-title>{{ editingTerm ? 'Edit' : 'Create' }} Term</h2>
+  <form #termForm="ngForm" (ngSubmit)="submitTerm(termForm)">
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-label class="form-label">Name</mat-label>
+        <input matInput id="termName" type="text" name="termName" [(ngModel)]="termName">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Start Date</mat-label>
+        <input matInput [matDatepicker]="termStartPicker" name="termStartDate" [(ngModel)]="termStartDate">
+        <mat-datepicker-toggle matIconSuffix [for]="termStartPicker"></mat-datepicker-toggle>
+        <mat-datepicker #termStartPicker></mat-datepicker>
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">End Date</mat-label>
+        <input matInput [matDatepicker]="termEndPicker" name="termEndDate" [(ngModel)]="termEndDate">
+        <mat-datepicker-toggle matIconSuffix [for]="termEndPicker"></mat-datepicker-toggle>
+        <mat-datepicker #termEndPicker></mat-datepicker>
+      </mat-form-field><br/>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="cancelDialog()">Cancel</button>
+      <button mat-button type="submit">{{ editingTerm ? 'Update' : 'Submit' }}</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>

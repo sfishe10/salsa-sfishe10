@@ -66,12 +66,6 @@ export const routes: Routes = [
         component: ProfileComponent,
         canActivate: [AuthzGuard]
       },
-      // {
-      //   path: 'admin',
-      //   component: AdminComponent,
-      //   canActivate: [AuthzGuard],
-      //   title: 'Admin'
-      // },
       {
         path: 'admin/term',
         component: TermPageComponent,

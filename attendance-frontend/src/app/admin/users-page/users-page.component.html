@@ -1,1 +1,130 @@
-<p>users-page works!</p>
+<div style="padding: 10px">
+  <mat-accordion multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>{{ROLE_ADMIN}}s</mat-expansion-panel-header>
+      <div style="padding-top:5px">
+        <app-users-table [role]="ROLE_ADMIN"></app-users-table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>{{ROLE_OFFICER}}s</mat-expansion-panel-header>
+      <div style="padding-top:5px">
+        <app-users-table [role]="ROLE_OFFICER"></app-users-table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>{{ROLE_SECTION_LEADER}}s</mat-expansion-panel-header>
+      <div style="padding-top:5px">
+        <app-users-table [role]="ROLE_SECTION_LEADER"></app-users-table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>{{ROLE_ATTENDANCE_TAKER}}s</mat-expansion-panel-header>
+      <div style="padding-top:5px">
+        <app-users-table [role]="ROLE_ATTENDANCE_TAKER"></app-users-table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>{{ROLE_MEMBER}}s</mat-expansion-panel-header>
+      <div style="padding-top:5px">
+        <app-users-table [role]="ROLE_MEMBER"></app-users-table>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion><br/>
+  <div style="display: flex; flex-direction: row; justify-content: space-between;">
+    <div>
+      <button mat-flat-button color="primary" (click)="openUserDialog()">Add User</button>&nbsp;&nbsp;
+      <!--          <button mat-stroked-button (click)="openRoleDialog()">-->
+      <!--            Assign User to Role-->
+      <!--          </button>-->
+    </div>
+    <button mat-stroked-button (click)="onUploadCsvClicked()">
+      Upload Roles CSV
+    </button>
+  </div>
+</div>
+
+<ng-template #addUserDialog>
+  <h2 mat-dialog-title>Add User</h2>
+  <form #userForm="ngForm" (ngSubmit)="submitUser(userForm)">
+    <mat-dialog-content>
+      <mat-form-field>
+        <mat-label class="form-label">Email</mat-label>
+        <input matInput id="userEmail" type="text" name="userEmail" [(ngModel)]="userEmail">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">First Name</mat-label>
+        <input matInput id="userFirstName" type="text" name="userFirstName" [(ngModel)]="userFirstName">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Last Name</mat-label>
+        <input matInput id="userLastName" type="text" name="userLastName" [(ngModel)]="userLastName">
+      </mat-form-field><br/>
+      <mat-form-field>
+        <mat-label class="form-label">Role</mat-label>
+        <mat-select id="userRole" name="userRole" [(ngModel)]="userRole">
+          <mat-option [value]="null">--</mat-option>
+          <mat-option *ngFor="let option of userRoleOptions" [value]="option">{{option}}</mat-option>
+        </mat-select>
+      </mat-form-field><br/>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>
+      <button mat-button type="submit" [disabled]="!userEmail || !userFirstName || !userLastName || !userRole">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<!--<ng-template #roleDialog>-->
+<!--  <form #roleForm="ngForm" (ngSubmit)="updateUserRole(roleForm)">-->
+<!--    <h2 mat-dialog-title>Assign role</h2>-->
+<!--    <mat-dialog-content>-->
+<!--      <mat-form-field>-->
+<!--        <mat-label class="form-label">Email</mat-label>-->
+<!--        <input matInput type="text" name="userEmail" [(ngModel)]="userEmail">-->
+<!--      </mat-form-field><br/>-->
+<!--      <mat-form-field>-->
+<!--        <mat-label class="form-label">Role</mat-label>-->
+<!--        <mat-select name="userRole" [(ngModel)]="userRole">-->
+<!--          <mat-option [value]="null">&#45;&#45;</mat-option>-->
+<!--          <mat-option *ngFor="let option of userRoleOptions" [value]="option">{{option}}</mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field><br/>-->
+<!--    </mat-dialog-content><br/>-->
+<!--    <mat-dialog-actions align="end">-->
+<!--      <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>-->
+<!--      <button mat-button type="submit">Assign</button>-->
+<!--    </mat-dialog-actions>-->
+<!--  </form>-->
+<!--</ng-template>-->
+
+<!--<ng-template #uploadCsvDialog>-->
+<!--  <h2 mat-dialog-title>Upload CSV File</h2>-->
+<!--  <mat-dialog-content style="padding-bottom:0">-->
+<!--    <div style="display:flex; align-items:center">-->
+<!--      <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)"/>-->
+<!--      <button mat-icon-button-->
+<!--              (click)="clearFile(fileInput)">-->
+<!--        <mat-icon class="material-symbols-outlined">close</mat-icon>-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </mat-dialog-content>-->
+<!--  <mat-dialog-actions align="end">-->
+<!--    <button mat-button type="button" (click)="onCancelDialog()">Cancel</button>-->
+<!--    <button mat-flat-button color="primary" (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>-->
+<!--  </mat-dialog-actions>-->
+<!--</ng-template>-->
+
+<ng-template #missingEmailsConfirmationDialog>
+  <h2 mat-dialog-title>The following emails are not associated with a user:</h2>
+  <mat-dialog-content>
+    <ul>
+      <li *ngFor="let email of emailsMissingUsers">{{ email }}</li>
+    </ul>
+    <span style="color:black">Proceed and skip these emails?</span>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialogAndClearEmails()">Cancel</button>&nbsp;
+    <button mat-button (click)="uploadFile()">Proceed</button>
+  </mat-dialog-actions>
+</ng-template>
