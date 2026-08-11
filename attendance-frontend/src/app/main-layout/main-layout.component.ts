@@ -111,6 +111,8 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     if (this.sessionCacheService.isAdmin() || (this.sessionCacheService.isOfficer() && !this.isMobile)) {
       this.router.navigate(['/admin/term'])
+    } else if (this.sessionCacheService.isLeadership()) {
+      this.router.navigate(['/stations/evaluate'])
     }
 
     this.sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION).sectionId;
@@ -146,10 +148,20 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
     }
 
     // everyone in leadership + admin can access stations
-    links.push({
+    const stationsLinks = {
       name: 'Stations',
-      route: '/stations'
-    })
+      children: [
+        { name: 'Evaluate', route: '/stations/evaluate' },
+        { name: 'Lead', route: '/stations-list', queryParams: {action: 'lead'}}
+      ]
+    };
+
+    if (this.sessionCacheService.isAdmin()) {
+      stationsLinks.children.push({ name: 'Manage Stations', route: '/admin/stations' });
+    }
+
+
+    links.push(stationsLinks);
 
     // only section leaders and officers need the My Section page (admins can see the info elsewhere)
     if (this.sessionCacheService.isSectionLeader() || this.sessionCacheService.isOfficer()) {
@@ -162,19 +174,17 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
     const adminLinks = [
       { name: 'View Term', route: '/admin/term' },
       { name: 'Users/Roles', route: '/admin/users' },
-      { name: 'Manage Stations', route: '/admin/stations' },
       { name: 'Attendance', route: '/admin/attendance' },
       { name: 'Stations Progress', route: '/admin/stations-progress' }
     ]
 
     if (this.sessionCacheService.isOfficer()) {
+      adminLinks.push({ name: 'Manage Stations', route: '/admin/stations' });
       links.push({
         name: 'Admin',
         children: adminLinks
       })
-    }
-
-    if (this.sessionCacheService.isAdmin()) {
+    } else if (this.sessionCacheService.isAdmin()) {
       links.push(...adminLinks);
     }
 

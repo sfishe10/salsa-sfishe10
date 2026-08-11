@@ -50,12 +50,6 @@ export const routes: Routes = [
         runGuardsAndResolvers: 'pathParamsOrQueryParamsChange'
       },
       {
-        path: 'stations',
-        component: StationsMenuPageComponent,
-        canActivate: [AuthzGuard],
-        title: 'Stations'
-      },
-      {
         path: 'stations/evaluate',
         component: MemberListPageComponent,
         canActivate: [AuthzGuard],

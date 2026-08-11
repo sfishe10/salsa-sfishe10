@@ -32,7 +32,8 @@ export class AuthzGuard implements CanActivate {
     if (this.sessionCacheService.isOfficer()
         || this.sessionCacheService.isAdmin()
         || this.sessionCacheService.isAttendanceTaker()
-        || this.sessionCacheService.isSectionLeader()) {
+        || this.sessionCacheService.isSectionLeader()
+      || this.sessionCacheService.isLeadership()) {
       return true;
     }
     return this.router.parseUrl('/unauthorized');
