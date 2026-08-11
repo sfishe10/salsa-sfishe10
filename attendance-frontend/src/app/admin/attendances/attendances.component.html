@@ -1,23 +1,23 @@
-<div>
-  <mat-form-field subscriptSizing="dynamic" style="margin-bottom: 20px;">
+<div class="attendance-page">
+  <mat-form-field subscriptSizing="dynamic" class="term-select">
     <mat-label class="form-label">Select a term</mat-label>
     <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
       <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-tab-group *ngIf="selectedTerm">
+  <mat-tab-group *ngIf="selectedTerm" class="attendance-tabs">
     <mat-tab label="Rehearsals">
-      <div style="padding: 10px">
+      <div class="tab-content">
         <app-attendance-table [termId]="selectedTerm.termId" [eventType]="EVENT_TYPE_REHEARSAL"></app-attendance-table>
       </div>
     </mat-tab>
     <mat-tab label="Whole Band Events">
-      <div style="padding: 10px">
+      <div class="tab-content">
         <app-attendance-table [termId]="selectedTerm.termId" [eventType]="EVENT_TYPE_WHOLE_BAND_EVENT"></app-attendance-table>
       </div>
     </mat-tab>
     <mat-tab label="Pep Events">
-      <div style="padding: 10px">
+      <div class="tab-content">
         <app-attendance-table [termId]="selectedTerm.termId" [eventType]="EVENT_TYPE_PEP_EVENT"></app-attendance-table>
       </div>
     </mat-tab>
