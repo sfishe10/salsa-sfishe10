@@ -20,6 +20,7 @@ import {SessionCacheService} from '../../services/session-cache.service';
 import {Router} from '@angular/router';
 import {User} from '../../models/user';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {Utilities} from '../../utilities/utilities';
 
 @Component({
   selector: 'app-term-page',
@@ -83,35 +84,14 @@ export class TermPageComponent implements OnInit {
 
   ngOnInit() {
     this.adminService.getTerms().subscribe(terms => {
-      let closestDiff: number | null = null;
-      let closestTerm: Term | null = null;
+      this.terms.push(...terms);
 
-      let now = new Date();
-
-      terms.forEach(term => {
-        const start = new Date(term.startDate);
-        const end = new Date(term.endDate);
-
-        this.terms.push(term);
-        if (start <= now && end >= now) {
-          this.selectedTerm = term;
-        }
-        // Track the term with start date closest to now
-        const diff = Math.abs(start.getTime() - now.getTime());
-        if ((!closestDiff || diff < closestDiff)) {
-          closestDiff = diff;
-          closestTerm = term;
-        }
-      })
-      // If no current term matches, fallback to the closest start date
-      this.selectedTerm = this.selectedTerm ?? closestTerm;
+      this.selectedTerm = Utilities.findCurrentOrClosestTerm(terms);
 
       if (this.selectedTerm) {
         this.onTermChange(this.selectedTerm);
       }
     })
-
-
   }
 
   onTermChange(term: Term) {

@@ -1,12 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, viewChildren} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
 import {AttendanceTableComponent} from '../attendance-table/attendance-table.component';
 import {AdminService} from '../../services/admin.service';
 import {Term} from '../../models/term';
-import {NgIf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {Constants} from '../../utilities/constants';
-import {MatIcon} from '@angular/material/icon';
+import {Utilities} from '../../utilities/utilities';
+import {MatFormField, MatLabel} from '@angular/material/input';
+import {MatOption} from '@angular/material/core';
+import {MatSelect} from '@angular/material/select';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-attendances',
@@ -16,29 +20,43 @@ import {MatIcon} from '@angular/material/icon';
     MatTabGroup,
     AttendanceTableComponent,
     NgIf,
-    MatIcon,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    NgForOf,
+    FormsModule,
   ],
   templateUrl: './attendances.component.html',
   styleUrl: './attendances.component.css'
 })
 export class AttendancesComponent implements OnInit {
 
-  public term!: Term;
+  terms: Term[] = [];
+
+  selectedTerm: Term | null = null;
+
+  readonly attendanceTables = viewChildren(AttendanceTableComponent);
 
   constructor(private route: ActivatedRoute,
               private adminService: AdminService,
               private router: Router) {}
 
   ngOnInit() {
-    let termId = Number(this.route.snapshot.paramMap.get('id'));
+    this.adminService.getTerms().subscribe(terms => {
+      this.terms.push(...terms);
 
-    this.adminService.getTermById(termId).subscribe(term => {
-      this.term = term;
+      this.selectedTerm = Utilities.findCurrentOrClosestTerm(terms);
+
+      if (this.selectedTerm) {
+        this.onTermChange(this.selectedTerm);
+      }
     })
   }
 
-  goBackToAdmin() {
-    this.router.navigate(['/admin'])
+  onTermChange(term: Term) {
+    this.selectedTerm = term;
+    this.attendanceTables().forEach(table => table.initializeTerm(term.termId));
   }
 
   protected readonly EVENT_TYPE_REHEARSAL = Constants.EVENT_TYPE_REHEARSAL;

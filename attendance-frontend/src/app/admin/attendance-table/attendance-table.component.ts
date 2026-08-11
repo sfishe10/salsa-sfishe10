@@ -74,7 +74,7 @@ type TableRow = SectionRow | MemberWithAttendance;
 })
 export class AttendanceTableComponent implements OnInit {
 
-  @Input('term') term!: Term;
+  @Input('termId') termId!: number;
 
   @Input('eventType') eventType!: string;
 
@@ -100,6 +100,11 @@ export class AttendanceTableComponent implements OnInit {
               private router: Router) {}
 
   ngOnInit() {
+    this.initializeTerm(this.termId);
+  }
+
+  initializeTerm(termId: number) {
+    this.termId = termId;
 
     if (this.eventType === Constants.EVENT_TYPE_PEP_EVENT) {
       this.pepBandOptions = this.sessionCacheService.get(Constants.STORAGE_KEY_PEP_BANDS);
@@ -107,20 +112,15 @@ export class AttendanceTableComponent implements OnInit {
 
       this.onPepBandChange(this.selectedPepBand);
     } else {
-      let termId = this.term.termId;
-
       this.adminService.getAttendanceByTermIdAndSection(termId, this.sectionId, this.eventType).subscribe(attendances => {
         this.populateTable(attendances);
       })
     }
-
   }
 
   onPepBandChange(pepBand: PepBand) {
-    let termId = this.term.termId;
-
-
-    this.adminService.getAttendanceByTermIdAndPepBandAndSection(termId, this.sectionId, pepBand.bandId, false).subscribe(attendances => {
+    console.log(this.termId);
+    this.adminService.getAttendanceByTermIdAndPepBandAndSection(this.termId, this.sectionId, pepBand.bandId, false).subscribe(attendances => {
       this.populateTable(attendances);
     })
   }
@@ -129,9 +129,7 @@ export class AttendanceTableComponent implements OnInit {
     if (this.eventType === Constants.EVENT_TYPE_PEP_EVENT && this.selectedPepBand) {
       this.onPepBandChange(this.selectedPepBand);
     } else {
-      let termId = this.term.termId;
-
-      this.adminService.getAttendanceByTermIdAndSection(termId, sectionId, this.eventType).subscribe(attendances => {
+      this.adminService.getAttendanceByTermIdAndSection(this.termId, sectionId, this.eventType).subscribe(attendances => {
         this.populateTable(attendances);
       })
     }
@@ -144,7 +142,7 @@ export class AttendanceTableComponent implements OnInit {
       return;
     }
 
-    this.adminService.getAttendanceByTermIdAndPepBandAndSection(this.term.termId, this.sectionId, this.selectedPepBand.bandId, this.ignoreMemberPepBand).subscribe(attendances => {
+    this.adminService.getAttendanceByTermIdAndPepBandAndSection(this.termId, this.sectionId, this.selectedPepBand.bandId, this.ignoreMemberPepBand).subscribe(attendances => {
       this.populateTable(attendances);
     })
   }

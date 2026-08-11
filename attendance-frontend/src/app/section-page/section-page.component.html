@@ -89,18 +89,18 @@
   <mat-accordion multi>
     <mat-expansion-panel>
       <mat-expansion-panel-header>Rehearsal Attendances</mat-expansion-panel-header>
-      <app-attendance-table [term]="term" [eventType]="EVENT_TYPE_REHEARSAL" [sectionId]="sectionId"></app-attendance-table>
+      <app-attendance-table [termId]="term.termId" [eventType]="EVENT_TYPE_REHEARSAL" [sectionId]="sectionId"></app-attendance-table>
     </mat-expansion-panel>
     <mat-expansion-panel>
       <mat-expansion-panel-header>Whole Band Event Attendances</mat-expansion-panel-header>
       <div style="padding-top:5px">
-        <app-attendance-table [term]="term" [eventType]="EVENT_TYPE_WHOLE_BAND_EVENT" [sectionId]="sectionId"></app-attendance-table>
+        <app-attendance-table [termId]="term.termId" [eventType]="EVENT_TYPE_WHOLE_BAND_EVENT" [sectionId]="sectionId"></app-attendance-table>
       </div>
     </mat-expansion-panel>
     <mat-expansion-panel>
       <mat-expansion-panel-header>Pep Event Attendances</mat-expansion-panel-header>
       <div style="padding-top:5px">
-        <app-attendance-table [term]="term" [eventType]="EVENT_TYPE_PEP_EVENT" [sectionId]="sectionId"></app-attendance-table>
+        <app-attendance-table [termId]="term.termId" [eventType]="EVENT_TYPE_PEP_EVENT" [sectionId]="sectionId"></app-attendance-table>
       </div>
     </mat-expansion-panel>
 <!--    <mat-expansion-panel>-->

@@ -91,7 +91,7 @@ export const routes: Routes = [
         title: 'Stations Progress'
       },
       {
-        path: 'attendance/term/:id',
+        path: 'admin/attendance',
         component: AttendancesComponent,
         canActivate: [AuthzGuard]
       },
