@@ -104,10 +104,6 @@ export class EventPageComponent implements OnInit {
     })
   }
 
-  goBackToAdmin() {
-    this.router.navigate(['/admin'])
-  }
-
   saveEvent(form: NgForm) {
     this.combineDateAndTimeInputs();
 

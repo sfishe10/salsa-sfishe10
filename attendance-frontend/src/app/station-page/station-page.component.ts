@@ -156,7 +156,7 @@ export class StationPageComponent implements OnInit {
 
   goBack() {
     // this.cancelDialog();
-    this.router.navigate(['/admin']);
+    this.router.navigate(['/admin/stations']);
   }
 
   navigateToPackets() {

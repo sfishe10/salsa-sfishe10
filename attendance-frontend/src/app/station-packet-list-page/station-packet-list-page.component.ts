@@ -32,6 +32,7 @@ import {BaseComponent} from '../base-component';
     MatOption,
     MatSelect,
     TitleCasePipe,
+    MatIcon,
   ],
   templateUrl: './station-packet-list-page.component.html',
   styleUrl: './station-packet-list-page.component.css'
