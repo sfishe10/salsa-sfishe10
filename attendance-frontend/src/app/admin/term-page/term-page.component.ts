@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {DatePipe, NgForOf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {EventsTableComponent} from '../events-table/events-table.component';
 import {MatAccordion, MatExpansionPanel, MatExpansionPanelHeader} from '@angular/material/expansion';
 import {MatButton, MatIconButton} from '@angular/material/button';
@@ -21,6 +21,7 @@ import {Router} from '@angular/router';
 import {User} from '../../models/user';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {Utilities} from '../../utilities/utilities';
+import {BaseComponent} from '../../base-component';
 
 @Component({
   selector: 'app-term-page',
@@ -49,12 +50,13 @@ import {Utilities} from '../../utilities/utilities';
     MatDialogTitle,
     MatInput,
     MatSuffix,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf
   ],
   templateUrl: './term-page.component.html',
   styleUrl: './term-page.component.css'
 })
-export class TermPageComponent implements OnInit {
+export class TermPageComponent extends BaseComponent implements OnInit {
   private _snackBar = inject(MatSnackBar);
 
   terms: Term[] = [];
@@ -80,6 +82,7 @@ export class TermPageComponent implements OnInit {
               public sessionCacheService: SessionCacheService,
               private dialog: MatDialog,
               private router: Router) {
+    super();
   }
 
   ngOnInit() {

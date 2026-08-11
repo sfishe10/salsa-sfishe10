@@ -1,19 +1,43 @@
-<div style="padding: 10px">
-  <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between">
-    <div style="display: flex; align-items: center; gap: 10px">
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label class="form-label">Select a term</mat-label>
-        <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
-          <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+<div>
+  <ng-container *ngIf="isMobile(); else desktopView">
+    <div style="margin-bottom: 10px; display: flex; align-items: start; justify-content: space-between">
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <mat-form-field subscriptSizing="dynamic" style="width: 60%;">
+          <mat-label class="form-label">Select a term</mat-label>
+          <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
+            <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div style="display: flex; align-items: center;">
+          <span>{{selectedTerm?.startDate | date: 'MMMM d, yyyy'}} - {{selectedTerm?.endDate | date: 'MMMM d, yyyy'}}</span>
+          <button mat-icon-button (click)="openTermDialog(true)"><mat-icon class="material-symbols-outlined">edit_square</mat-icon></button>
+        </div>
+      </div>
+
       <button mat-flat-button color="primary" (click)="openTermDialog(false)">Create Term</button>
     </div>
-    <div style="display: flex; align-items: center;">
-      <p align="right">{{selectedTerm?.startDate | date: 'MMMM d, yyyy'}} - {{selectedTerm?.endDate | date: 'MMMM d, yyyy'}}</p>
-      <button mat-icon-button (click)="openTermDialog(true)"><mat-icon class="material-symbols-outlined">edit_square</mat-icon></button>
+  </ng-container>
+
+  <ng-template #desktopView>
+    <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label class="form-label">Select a term</mat-label>
+          <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
+            <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-flat-button color="primary" (click)="openTermDialog(false)">Create Term</button>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <p align="right">{{selectedTerm?.startDate | date: 'MMMM d, yyyy'}} - {{selectedTerm?.endDate | date: 'MMMM d, yyyy'}}</p>
+        <button mat-icon-button (click)="openTermDialog(true)"><mat-icon class="material-symbols-outlined">edit_square</mat-icon></button>
+      </div>
     </div>
-  </div>
+  </ng-template>
+
+
   <mat-accordion multi>
     <mat-expansion-panel>
       <mat-expansion-panel-header>Events</mat-expansion-panel-header>
@@ -28,11 +52,6 @@
       </div>
     </mat-expansion-panel>
   </mat-accordion>
-<!--  <div (click)="goToAttendance()" class="back-button"-->
-<!--       style="display: flex; flex-direction: row; align-items: center; gap: 6px; padding-left: 10px; width: max-content;">-->
-<!--    <h4 style="text-decoration: underline">View Attendance</h4>-->
-<!--    <mat-icon class="material-symbols-outlined">arrow_right_alt</mat-icon>-->
-<!--  </div>-->
 </div>
 
 
