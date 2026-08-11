@@ -2,6 +2,7 @@ import {Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn
 import {Station} from "./station.entity";
 import {Member} from "./member.entity";
 import {EvaluationItem} from "./evaluation-item.entity";
+import {User} from "./user.entity";
 
 @Entity('Evaluation')
 export class Evaluation {
@@ -14,11 +15,11 @@ export class Evaluation {
     @JoinColumn({ name: 'memberId' })
     member!: Member;
 
-    @ManyToOne(() => Member, (member: Member) => member.evalsGiven, {
+    @ManyToOne(() => User, (user: User) => user.evalsGiven, {
         onDelete: 'CASCADE',
         nullable: false})
     @JoinColumn({ name: 'evaluatorId' })
-    evaluator!: Member;
+    evaluator!: User;
 
     @ManyToOne(() => Station, (station: Station) => station.evaluations, {
         onDelete: 'CASCADE',

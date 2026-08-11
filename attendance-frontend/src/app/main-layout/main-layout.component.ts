@@ -146,7 +146,6 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
     }
 
     // everyone in leadership + admin can access stations
-    // TODO: refactor Evaluations to point to a User instead of Member, so admins (who don't have associated Members) can also evaluate
     links.push({
       name: 'Stations',
       route: '/stations'
@@ -176,10 +175,10 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
     }
 
     if (this.sessionCacheService.isAdmin()) {
-      this.dataSource.data = adminLinks;
-    } else {
-      this.dataSource.data = links;
+      links.push(...adminLinks);
     }
+
+    this.dataSource.data = links;
   }
 
   private getDeepestRoute(route: ActivatedRoute): ActivatedRoute {

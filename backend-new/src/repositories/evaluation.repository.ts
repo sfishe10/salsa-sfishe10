@@ -102,10 +102,8 @@ export class EvaluationRepository {
                 WHERE ranked.rowNum = 1
             ) AS e
                                ON e.stationId = s.stationId
-                     LEFT JOIN Member AS evaluatorMember
-                               ON e.evaluatorId = evaluatorMember.memberId
                      LEFT JOIN User AS evaluatorUser
-                               ON evaluatorMember.email = evaluatorUser.email
+                               ON e.evaluatorId = evaluatorUser.userId
             ORDER BY s.level;
         `
 

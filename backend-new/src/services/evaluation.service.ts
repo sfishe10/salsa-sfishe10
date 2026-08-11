@@ -8,6 +8,7 @@ import {NewEvaluationDto} from "../dto/new-evaluation.dto";
 import {MemberStationStatusDto} from "../dto/member-station-status.dto";
 import {EvaluationDto} from "../dto/evaluation.dto";
 import {StationItem} from "../entities/station-item.entity";
+import {User} from "../entities/user.entity";
 
 export class EvaluationService {
     private evaluationRepository: EvaluationRepository;
@@ -42,7 +43,7 @@ export class EvaluationService {
         let newEvaluation = new Evaluation();
 
         newEvaluation.member = {memberId: newEvalDto.memberId} as Member;
-        newEvaluation.evaluator = {memberId: newEvalDto.evaluatorId} as Member;
+        newEvaluation.evaluator = {userId: newEvalDto.evaluatorId} as User;
         newEvaluation.station = {stationId: newEvalDto.stationId} as Station;
         newEvaluation.passed = null;
 
@@ -83,7 +84,7 @@ export class EvaluationService {
         const evaluation = await this.evaluationRepository.findById(evalDto.evalId);
 
         // in case the person who finished the evaluation is different from the person who started it
-        evaluation.evaluator = {memberId: evalDto.evaluator.memberId} as Member;
+        evaluation.evaluator = {userId: evalDto.evaluator.userId} as User;
 
         evaluation.passed = numFailed <= evaluation.station.maxFailed;
 

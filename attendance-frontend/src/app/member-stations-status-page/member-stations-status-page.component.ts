@@ -60,7 +60,7 @@ export class MemberStationsStatusPageComponent implements OnInit {
   }
 
   startEvaluation(stationId: number) {
-    const loggedInUserId = this.sessionCacheService.get(Constants.STORAGE_KEY_ME).member?.memberId;
+    const loggedInUserId = this.sessionCacheService.get(Constants.STORAGE_KEY_ME).user?.userId;
 
     // start a new evaluation, or get an existing evaluation if one is in progress, and navigate to that page
     const newEval = {

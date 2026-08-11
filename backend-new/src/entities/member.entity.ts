@@ -43,9 +43,6 @@ export class Member {
     @OneToMany(() => Evaluation, (evaluation) => evaluation.member)
     evalsReceived!: Evaluation[];
 
-    @OneToMany(() => Evaluation, (evaluation) => evaluation.evaluator)
-    evalsGiven!: Evaluation[];
-
     @Expose()
     get allAttendances(): EventAttendance[] {
         const combined = [...(this.attendances || []), ...(this.subs || [])];
