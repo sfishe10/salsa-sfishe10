@@ -154,7 +154,7 @@ export class MemberPageComponent extends BaseComponent implements OnInit {
     if (this.returnToPage == 'section') {
       this.router.navigate(['/section', this.member?.section?.sectionId]);
     } else if (this.returnToPage == 'admin') {
-      this.router.navigate(['/admin']);
+      this.router.navigate(['/admin/term']);
     }
   }
 
