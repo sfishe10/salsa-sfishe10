@@ -6,7 +6,7 @@
           <button mat-icon-button (click)="sidenav.toggle()"><mat-icon class="material-symbols-outlined">menu</mat-icon></button>
           <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" >
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-              <a [routerLink]="node.route" (click)="sidenav.toggle()">{{node.name}}</a>
+              <a [routerLink]="node.route" [queryParams]="node.queryParams" (click)="sidenav.toggle()">{{node.name}}</a>
             </mat-tree-node>
 
             <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>

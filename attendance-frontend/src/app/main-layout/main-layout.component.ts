@@ -70,6 +70,7 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
   private transformer = (node: NavNode, level: number): FlatNavNode => ({
     name: node.name,
     route: node.route,
+    queryParams: node.queryParams,
     level,
     expandable: !!node.children?.length
   });
