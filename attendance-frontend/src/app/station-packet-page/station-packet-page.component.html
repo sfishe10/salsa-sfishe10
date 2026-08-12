@@ -1,6 +1,6 @@
 <p *ngIf="sessionCacheService.isMember()">You do not have access to view this page.</p>
 
-<div *ngIf="packet && !sessionCacheService.isMember()" style="margin-bottom: 100px;">
+<div *ngIf="packet && !sessionCacheService.isMember()">
   <form #packetForm="ngForm" (ngSubmit)="save(packetForm)">
     <ng-container *ngIf="isMobile(); else desktopView">
       <div style="white-space: pre-wrap;">

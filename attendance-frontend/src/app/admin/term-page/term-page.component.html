@@ -10,7 +10,7 @@
           </mat-select>
         </mat-form-field>
         <div style="display: flex; align-items: center;">
-          <span>{{selectedTerm?.startDate | date: 'MMMM d, yyyy'}} - {{selectedTerm?.endDate | date: 'MMMM d, yyyy'}}</span>
+          <span>{{selectedTerm?.startDate | date: 'M/d/yy'}} - {{selectedTerm?.endDate | date: 'M/d/yy'}}</span>
           <button mat-icon-button (click)="openTermDialog(true)"><mat-icon class="material-symbols-outlined">edit_square</mat-icon></button>
         </div>
       </div>
@@ -47,7 +47,7 @@
     </mat-expansion-panel>
     <mat-expansion-panel>
       <mat-expansion-panel-header>Members</mat-expansion-panel-header>
-      <div style="padding-top:5px">
+      <div style="padding-top:5px;">
         <app-members-table [selectedTerm]="selectedTerm"></app-members-table>
       </div>
     </mat-expansion-panel>
