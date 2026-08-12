@@ -116,7 +116,7 @@ export class MainLayoutComponent extends BaseComponent implements OnInit {
       this.router.navigate(['/stations/evaluate'])
     }
 
-    this.sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION).sectionId;
+    this.sectionId = this.sessionCacheService.get(Constants.STORAGE_KEY_SECTION)?.sectionId ?? null;
 
     this.router.events
       .pipe(
