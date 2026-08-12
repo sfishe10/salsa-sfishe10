@@ -28,7 +28,10 @@ export class SessionCacheService {
         )
       );
 
-      // If user is a member, fetch their section members and term
+      const term = response.term;
+      this.set(Constants.STORAGE_KEY_TERM, term);
+
+      // If user is a member, fetch their section members
       if (response.member) {
         const section = response.member.section;
         this.set(Constants.STORAGE_KEY_SECTION, section);
@@ -38,15 +41,11 @@ export class SessionCacheService {
             || response.user.role === Constants.ROLE_ATTENDANCE_TAKER)
           && Utilities.isDrumline(response.member.section))
 
-        const termId = response.member.term.termId;
-
         const sectionMembers: any = await firstValueFrom(
-          this.http.get(`${this.baseUrl}/members/section/${section.sectionId}/term/${termId}`)
+          this.http.get(`${this.baseUrl}/members/section/${section.sectionId}/term/${term.termId}`)
         );
         this.set(Constants.STORAGE_KEY_SECTION_MEMBERS, sectionMembers);
 
-        const term = response.member.term;
-        this.set(Constants.STORAGE_KEY_TERM, term);
       }
 
       // Fetch sections and pep bands in parallel

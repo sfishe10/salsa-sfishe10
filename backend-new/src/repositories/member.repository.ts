@@ -53,14 +53,11 @@ export class MemberRepository {
         });
     }
 
-    public async findByEmailForCurrentTerm(email: string): Promise<Member[]> {
+    public async findByEmailForTerm(termId: number, email: string): Promise<Member[]> {
         return this.repo.find({
             where: {
                 user: { email },
-                term: {
-                    startDate: LessThanOrEqual(new Date()),
-                    endDate: MoreThanOrEqual(new Date())
-                }
+                term: { termId }
             },
             relations: {
                 user: true,

@@ -22,6 +22,7 @@ import {User} from '../../models/user';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {Utilities} from '../../utilities/utilities';
 import {BaseComponent} from '../../base-component';
+import {Constants} from '../../utilities/constants';
 
 @Component({
   selector: 'app-term-page',
@@ -88,7 +89,8 @@ export class TermPageComponent extends BaseComponent implements OnInit {
     this.adminService.getTerms().subscribe(terms => {
       this.terms.push(...terms);
 
-      this.selectedTerm = Utilities.findCurrentOrClosestTerm(terms);
+      const currentTerm = this.sessionCacheService.get(Constants.STORAGE_KEY_TERM);
+      this.selectedTerm = this.terms.find(term => term.termId == currentTerm.termId) ?? null;
 
       if (this.selectedTerm) {
         this.onTermChange(this.selectedTerm);

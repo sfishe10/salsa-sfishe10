@@ -36,6 +36,12 @@ export class TermService {
         return termDtos;
     }
 
+    public async getCurrentOrClosestTerm(): Promise<Term> {
+        const term: Term = await this.termRepository.findClosestOrCurrentTerm();
+
+        return term;
+    }
+
     public async create(termDto: TermDto): Promise<Term> {
         let newTerm: Term = new Term();
 

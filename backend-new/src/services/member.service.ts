@@ -45,9 +45,9 @@ export class MemberService {
         return member;
     }
 
-    public async getMemberForCurrentTerm(email: string): Promise<Member | null> {
+    public async getMemberForTerm(termId: number, email: string): Promise<Member | null> {
         const members: Member[] =
-            await this.memberRepository.findByEmailForCurrentTerm(email);
+            await this.memberRepository.findByEmailForTerm(termId, email);
 
         // technically there can be multiple members for a given email in a term, if they are in multiple sections
         // but this is a rare case so just return the first thing that comes up

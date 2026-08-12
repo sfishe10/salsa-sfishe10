@@ -11,6 +11,7 @@ import {MatFormField, MatLabel} from '@angular/material/input';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
+import {SessionCacheService} from '../../services/session-cache.service';
 
 @Component({
   selector: 'app-attendances',
@@ -40,13 +41,15 @@ export class AttendancesComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private adminService: AdminService,
+              private sessionCacheService: SessionCacheService,
               private router: Router) {}
 
   ngOnInit() {
     this.adminService.getTerms().subscribe(terms => {
       this.terms.push(...terms);
 
-      this.selectedTerm = Utilities.findCurrentOrClosestTerm(terms);
+      const currentTerm = this.sessionCacheService.get(Constants.STORAGE_KEY_TERM);
+      this.selectedTerm = this.terms.find(term => term.termId == currentTerm.termId) ?? null;
 
       if (this.selectedTerm) {
         this.onTermChange(this.selectedTerm);

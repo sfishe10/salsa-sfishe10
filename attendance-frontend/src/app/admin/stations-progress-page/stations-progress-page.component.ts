@@ -10,6 +10,8 @@ import {MatSelect} from '@angular/material/select';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {StationsProgressTableComponent} from '../../shared/stations-progress-table/stations-progress-table.component';
+import {SessionCacheService} from '../../services/session-cache.service';
+import {Constants} from '../../utilities/constants';
 
 @Component({
   selector: 'app-stations-progress-page',
@@ -36,6 +38,7 @@ export class StationsProgressPageComponent extends BaseComponent implements OnIn
 
   constructor(private route: ActivatedRoute,
               private adminService: AdminService,
+              private sessionCacheService: SessionCacheService,
               private router: Router) {
     super();
   }
@@ -44,7 +47,8 @@ export class StationsProgressPageComponent extends BaseComponent implements OnIn
     this.adminService.getTerms().subscribe(terms => {
       this.terms.push(...terms);
 
-      this.selectedTerm = Utilities.findCurrentOrClosestTerm(terms);
+      const currentTerm = this.sessionCacheService.get(Constants.STORAGE_KEY_TERM);
+      this.selectedTerm = this.terms.find(term => term.termId == currentTerm.termId) ?? null;
 
       if (this.selectedTerm) {
         this.onTermChange(this.selectedTerm);
