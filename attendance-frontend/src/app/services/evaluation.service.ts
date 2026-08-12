@@ -29,6 +29,16 @@ export class EvaluationService {
     return this.http.get<MemberStationStatus[]>(url);
   }
 
+  public getAllStationsProgress(termId: number): Observable<MemberStationStatus[]> {
+    const url = this.baseUrl + `/evaluations/progress/term/${termId}`;
+    return this.http.get<MemberStationStatus[]>(url);
+  }
+
+  public getSectionStationsProgress(termId: number, sectionId: number): Observable<MemberStationStatus[]> {
+    const url = this.baseUrl + `/evaluations/progress/term/${termId}/section/${sectionId}`;
+    return this.http.get<MemberStationStatus[]>(url);
+  }
+
   public submitEval(evaluation: Evaluation): Observable<Evaluation> {
     const url = this.baseUrl + `/evaluations/submit`;
     return this.http.put<Evaluation>(url, evaluation);

@@ -9,6 +9,7 @@ import {MemberStationStatusDto} from "../dto/member-station-status.dto";
 import {EvaluationDto} from "../dto/evaluation.dto";
 import {StationItem} from "../entities/station-item.entity";
 import {User} from "../entities/user.entity";
+import {getAllStationsProgress, getSectionStationsProgress} from "../controllers/evaluations/selector";
 
 export class EvaluationService {
     private evaluationRepository: EvaluationRepository;
@@ -28,6 +29,18 @@ export class EvaluationService {
 
     public async getMemberStationsStatus(memberId: number): Promise<MemberStationStatusDto[]> {
         const statuses: MemberStationStatusDto[] = await this.evaluationRepository.getMemberStationsStatus(memberId);
+
+        return statuses;
+    }
+
+    public async getAllStationsProgress(termId: number): Promise<MemberStationStatusDto[]> {
+        const statuses: MemberStationStatusDto[] = await this.evaluationRepository.getStationsProgress(termId);
+
+        return statuses;
+    }
+
+    public async getSectionStationsProgress(termId: number, sectionId: number): Promise<MemberStationStatusDto[]> {
+        const statuses: MemberStationStatusDto[] = await this.evaluationRepository.getStationsProgress(termId, sectionId);
 
         return statuses;
     }

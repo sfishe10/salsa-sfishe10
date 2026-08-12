@@ -112,6 +112,104 @@ export class EvaluationRepository {
         return plainToInstance(MemberStationStatusDto, results, {excludeExtraneousValues: true});
     }
 
+    public async getStationsProgress(termId: number, sectionId?: number): Promise<MemberStationStatusDto[]> {
+        const params: any[] = [termId];
+
+        let sectionClause = '';
+
+        if (sectionId) {
+            sectionClause = ` AND section.sectionId = ?`
+            params.push(sectionId);
+        }
+
+        const sql = `
+            SELECT
+                s.stationId AS stationId,
+                s.title AS stationTitle,
+                s.level AS stationLevel,
+                s.class AS stationClass,
+
+                e.evalId,
+
+                CASE
+                    WHEN e.evalId IS NULL THEN 'No Attempts Yet'
+                    WHEN e.passed = 1 THEN 'passed'
+                    WHEN e.passed = 0 THEN 'failed'
+                    WHEN e.passed IS NULL THEN 'in progress'
+                    END AS status,
+
+                COALESCE(e.attemptCount, 0) AS attemptCount,
+                e.evalTime,
+
+                evaluatorUser.firstName AS evaluatorFirst,
+                evaluatorUser.lastName AS evaluatorLast,
+
+                evaluatee.memberId AS memberId,
+                evaluateeUser.firstName AS memberFirst,
+                evaluateeUser.lastName AS memberLast,
+
+                evaluatee.sectionId AS sectionId,
+                section.name AS sectionName
+
+            FROM Member AS evaluatee
+
+                     JOIN User AS evaluateeUser
+                          ON evaluatee.email = evaluateeUser.email
+
+                     LEFT JOIN Section AS section
+            ON evaluatee.sectionId = section.sectionId
+
+                CROSS JOIN Station AS s
+
+                LEFT JOIN (
+                SELECT
+                ranked.evalId,
+                ranked.memberId,
+                ranked.evaluatorId,
+                ranked.stationId,
+                ranked.passed,
+                ranked.evalTime,
+                ranked.attemptCount
+                FROM (
+                SELECT
+                Evaluation.*,
+
+                ROW_NUMBER() OVER (
+                PARTITION BY memberId, stationId
+                ORDER BY evalTime DESC, evalId DESC
+                ) AS rowNum,
+
+                COUNT(*) OVER (
+                PARTITION BY memberId, stationId
+                ) AS attemptCount
+
+                FROM Evaluation
+                ) AS ranked
+
+                WHERE ranked.rowNum = 1
+
+                ) AS e
+                ON e.stationId = s.stationId
+                AND e.memberId = evaluatee.memberId
+
+                LEFT JOIN User AS evaluatorUser
+                ON e.evaluatorId = evaluatorUser.userId
+
+            WHERE evaluatee.termId = ?
+                ${sectionClause}
+
+            ORDER BY
+                sectionId,
+                evaluateeUser.lastName,
+                evaluateeUser.firstName,
+                s.level;
+        `
+
+        const results: any[] = await db.query(sql, params);
+
+        return plainToInstance(MemberStationStatusDto, results, {excludeExtraneousValues: true});
+    }
+
     public async save(evaluation: Partial<Evaluation>) {
         return await this.repo.save(evaluation);
     }

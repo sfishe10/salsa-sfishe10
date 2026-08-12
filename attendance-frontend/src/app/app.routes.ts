@@ -27,6 +27,7 @@ import {stationPacketTitleResolver} from './resolvers/station-packet-title-resol
 import {UsersPageComponent} from './admin/users-page/users-page.component';
 import {StationsPageComponent} from './admin/stations-page/stations-page.component';
 import {TermPageComponent} from './admin/term-page/term-page.component';
+import {StationsProgressPageComponent} from './admin/stations-progress-page/stations-progress-page.component';
 
 export const routes: Routes = [
   {
@@ -86,7 +87,7 @@ export const routes: Routes = [
       },
       {
         path: 'admin/stations-progress',
-        component: StationsPageComponent,
+        component: StationsProgressPageComponent,
         canActivate: [AuthzGuard],
         title: 'Stations Progress'
       },

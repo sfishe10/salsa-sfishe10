@@ -57,8 +57,6 @@ import {BaseComponent} from '../../base-component';
   styleUrl: './term-page.component.css'
 })
 export class TermPageComponent extends BaseComponent implements OnInit {
-  private _snackBar = inject(MatSnackBar);
-
   terms: Term[] = [];
 
   selectedTerm: Term | null = null;
@@ -81,7 +79,8 @@ export class TermPageComponent extends BaseComponent implements OnInit {
   constructor(private adminService: AdminService,
               public sessionCacheService: SessionCacheService,
               private dialog: MatDialog,
-              private router: Router) {
+              private router: Router,
+              private snackbar: MatSnackBar) {
     super();
   }
 
@@ -160,7 +159,7 @@ export class TermPageComponent extends BaseComponent implements OnInit {
   // }
 
   openSnackBar(message: string, action: string, duration: number) {
-    this._snackBar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});
+    this.snackbar.open(message, action, {duration: duration, horizontalPosition: 'center', verticalPosition: 'top'});
   }
 
 }

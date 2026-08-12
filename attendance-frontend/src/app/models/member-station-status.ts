@@ -9,4 +9,11 @@ export interface MemberStationStatus {
   evalTime: Date | null,
   evaluatorFirst: string | null,
   evaluatorLast: string | null;
+
+  // used in the admin overview
+  memberId: number,
+  memberFirst: string,
+  memberLast: string,
+  sectionId: number,
+  sectionName: string
 }
