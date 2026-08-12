@@ -214,7 +214,17 @@ export class EvaluationRepository {
         return await this.repo.save(evaluation);
     }
 
+    public async deleteEval(evalId: number) {
+        const result =  await this.repo.delete(evalId);
+        return result.affected;
+    }
+
     public async saveItem(item: Partial<EvaluationItem>) {
         return await this.itemRepo.save(item);
+    }
+
+    public async deleteItem(evalId: number, itemId: number) {
+        const result = await this.itemRepo.delete({evalId, itemId});
+        return result.affected;
     }
 }

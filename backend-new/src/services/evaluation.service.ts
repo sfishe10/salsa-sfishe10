@@ -105,4 +105,39 @@ export class EvaluationService {
 
         return evaluation;
     }
+
+    public async saveEvaluation(evalDto: EvaluationDto): Promise<Evaluation> {
+        for (const item of evalDto.items) {
+            let updatedItem = new EvaluationItem();
+
+            updatedItem.evalId = evalDto.evalId;
+            updatedItem.itemId = item.stationItem.itemId;
+            updatedItem.status = item.status;
+
+            await this.evaluationRepository.saveItem(updatedItem);
+        }
+
+        const evaluation = await this.evaluationRepository.findById(evalDto.evalId);
+
+        // in case the person who saved the evaluation is different from the person who started it
+        evaluation.evaluator = {userId: evalDto.evaluator.userId} as User;
+
+        evaluation.passed = null;
+
+        await this.evaluationRepository.save(evaluation);
+
+        return evaluation;
+    }
+
+    public async deleteEvaluation(evalId: number): Promise<boolean> {
+        const evaluation = await this.evaluationRepository.findById(evalId);
+
+        for (const item of evaluation.items) {
+            await this.evaluationRepository.deleteItem(item.evalId, item.itemId);
+        }
+
+        const result = await this.evaluationRepository.deleteEval(evalId);
+
+        return !!result;
+    }
 }

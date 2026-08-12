@@ -39,9 +39,19 @@ export class EvaluationService {
     return this.http.get<MemberStationStatus[]>(url);
   }
 
+  public saveEval(evaluation: Evaluation): Observable<Evaluation> {
+    const url = this.baseUrl + `/evaluations/save`;
+    return this.http.put<Evaluation>(url, evaluation);
+  }
+
   public submitEval(evaluation: Evaluation): Observable<Evaluation> {
     const url = this.baseUrl + `/evaluations/submit`;
     return this.http.put<Evaluation>(url, evaluation);
+  }
+
+  public deleteEval(evalId: number): Observable<boolean> {
+    const url = this.baseUrl + `/evaluations/${evalId}`;
+    return this.http.delete<boolean>(url);
   }
 
 }

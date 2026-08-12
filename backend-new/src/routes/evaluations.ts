@@ -1,6 +1,5 @@
 import {Router} from "express";
 import * as evaluations from '../controllers/evaluations';
-import {getAllStationsProgress, getSectionStationsProgress} from "../controllers/evaluations/selector";
 
 const router: Router = Router();
 
@@ -11,6 +10,8 @@ const router: Router = Router();
 
 router.post('/', evaluations.admin.create);
 router.put('/submit', evaluations.admin.submit);
+router.put('/save', evaluations.admin.save);
+router.delete('/:id', evaluations.admin.deleteEval);
 
 
 /**

@@ -9,10 +9,52 @@
 
   <app-evaluation-contents [readonly]="readonly" [evaluation]="evaluation"></app-evaluation-contents>
 
-  <div style="display: flex; justify-content: end; align-items: center;">
-    <button *ngIf="!readonly" (click)="submit()"
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <button type="button" (click)="openGoBackDialog()" mat-flat-button style="background-color: lightgray; margin: 20px 0 20px 0;">Back</button>
+
+    <button *ngIf="!readonly" (click)="openSubmitConfirmationDialog()"
             mat-flat-button
             color="primary"
             style="margin-top: 10px; margin-bottom: 20px;">Submit</button>
   </div>
 </div>
+
+<ng-template #goBackDialog>
+  <h2 mat-dialog-title>Save or discard evaluation?</h2>
+  <mat-dialog-actions>
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+      <button mat-button (click)="cancelDialog()">Cancel</button>
+      <div>
+        <button mat-flat-button color="warn" (click)="openDeleteConfirmationDialog()">Discard</button>
+        <button mat-flat-button color="primary" (click)="save()">Save</button>
+      </div>
+    </div>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #confirmSubmitDialog>
+  <h2 mat-dialog-title>Submit Evaluation?</h2>
+  <mat-dialog-actions align="end">
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+      <button mat-button (click)="cancelDialog()">Cancel</button>
+      <button mat-flat-button color="primary" (click)="submit()">Submit</button>
+    </div>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #confirmDeleteDialog>
+  <h2 mat-dialog-title>Discard Evaluation?</h2>
+  <mat-dialog-actions align="end">
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+      <button mat-button (click)="cancelDialog()">Cancel</button>
+      <button mat-flat-button color="primary" (click)="deleteEvaluation()">Delete</button>
+    </div>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #successDialog>
+  <h2 mat-dialog-title>Evaluation successfully {{attemptedAction}}!</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="goBack()">Ok</button>
+  </mat-dialog-actions>
+</ng-template>
