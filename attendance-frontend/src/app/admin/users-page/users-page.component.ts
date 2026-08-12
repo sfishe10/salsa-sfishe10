@@ -199,4 +199,5 @@ export class UsersPageComponent {
   readonly ROLE_SECTION_LEADER = Constants.ROLE_SECTION_LEADER;
   readonly ROLE_ATTENDANCE_TAKER = Constants.ROLE_ATTENDANCE_TAKER;
   readonly ROLE_MEMBER = Constants.ROLE_MEMBER;
+  readonly ROLE_LEADERSHIP = Constants.ROLE_LEADERSHIP;
 }

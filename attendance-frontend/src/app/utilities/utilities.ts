@@ -69,6 +69,7 @@ export class Utilities {
       Constants.ROLE_OFFICER,
       Constants.ROLE_SECTION_LEADER,
       Constants.ROLE_ATTENDANCE_TAKER,
+      Constants.ROLE_LEADERSHIP,
       Constants.ROLE_MEMBER
     ]
     return roleOptions;

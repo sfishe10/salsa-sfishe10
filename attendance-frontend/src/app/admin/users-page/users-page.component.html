@@ -25,6 +25,12 @@
       </div>
     </mat-expansion-panel>
     <mat-expansion-panel>
+      <mat-expansion-panel-header>Other Leadership</mat-expansion-panel-header>
+      <div style="padding-top:5px">
+        <app-users-table [role]="ROLE_LEADERSHIP"></app-users-table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>{{ROLE_MEMBER}}s</mat-expansion-panel-header>
       <div style="padding-top:5px">
         <app-users-table [role]="ROLE_MEMBER"></app-users-table>
@@ -38,9 +44,9 @@
       <!--            Assign User to Role-->
       <!--          </button>-->
     </div>
-    <button mat-stroked-button (click)="onUploadCsvClicked()">
-      Upload Roles CSV
-    </button>
+<!--    <button mat-stroked-button (click)="onUploadCsvClicked()">-->
+<!--      Upload Roles CSV-->
+<!--    </button>-->
   </div>
 </div>
 
