@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgIf} from '@angular/common';
@@ -6,6 +6,7 @@ import {EvaluationService} from '../services/evaluation.service';
 import {Evaluation} from '../models/evaluation';
 import {EvaluationContentsComponent} from './evaluation-contents/evaluation-contents.component';
 import {MatButton} from '@angular/material/button';
+import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-evaluation-page',
@@ -13,7 +14,9 @@ import {MatButton} from '@angular/material/button';
   imports: [
     NgIf,
     EvaluationContentsComponent,
-    MatButton
+    MatButton,
+    MatDialogActions,
+    MatDialogTitle
   ],
   templateUrl: './evaluation-page.component.html',
   styleUrl: './evaluation-page.component.css'
@@ -29,9 +32,24 @@ export class EvaluationPageComponent implements OnInit {
 
   readonly: boolean = false;
 
+  @ViewChild('goBackDialog') goBackDialog!: TemplateRef<any>;
+  goBackDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('confirmDeleteDialog') confirmDeleteDialog!: TemplateRef<any>;
+  confirmDeleteDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('confirmSubmitDialog') confirmSubmitDialog!: TemplateRef<any>;
+  confirmSubmitDialogRef!: MatDialogRef<any>;
+
+  @ViewChild('successDialog') successDialog!: TemplateRef<any>;
+  successDialogRef!: MatDialogRef<any>;
+
+  attemptedAction: string = '';
+
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private evalService: EvaluationService) {
+              private evalService: EvaluationService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -43,9 +61,75 @@ export class EvaluationPageComponent implements OnInit {
     })
   }
 
+  cancelDialog() {
+    this.dialog.closeAll();
+  }
+
+  openGoBackDialog() {
+    this.goBackDialogRef = this.dialog.open(this.goBackDialog);
+  }
+
+  openDeleteConfirmationDialog() {
+    this.cancelDialog();
+    this.confirmDeleteDialogRef = this.dialog.open(this.confirmDeleteDialog);
+  }
+
+  openSubmitConfirmationDialog() {
+    this.cancelDialog();
+    this.confirmSubmitDialogRef = this.dialog.open(this.confirmSubmitDialog);
+  }
+
+  openSuccessDialog() {
+    this.cancelDialog();
+    this.successDialogRef = this.dialog.open(this.successDialog);
+  }
+
+  goBack() {
+    this.cancelDialog();
+    this.router.navigate(['/member', this.evaluation.member.memberId, 'stations'])
+  }
+
+  deleteEvaluation() {
+    if (!this.evaluation) {
+      return;
+    }
+    this.attemptedAction = 'deleted';
+
+    this.cancelDialog();
+
+    this.evalService.deleteEval(this.evalId).subscribe(success => {
+      if (success) {
+        this.openSuccessDialog();
+      } else {
+        this.openSnackBar("Error deleting evaluation", "Ok", 3000);
+      }
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error deleting evaluation", "Ok", 3000);
+    })
+  }
+
+  save() {
+    this.attemptedAction = 'saved';
+    this.cancelDialog();
+
+    this.evalService.saveEval(this.evaluation).subscribe(updatedEval => {
+      this.openSuccessDialog();
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error saving evaluation", "Ok", 3000);
+    })
+  }
+
   submit() {
+    this.attemptedAction = 'submitted';
+    this.cancelDialog();
+
     this.evalService.submitEval(this.evaluation).subscribe(updatedEval => {
-      this.router.navigate(['/member', this.evaluation.member.memberId, 'stations'])
+      this.openSuccessDialog();
+    }, error => {
+      console.log(error);
+      this.openSnackBar("Error submitting evaluation", "Ok", 3000);
     })
   }
 

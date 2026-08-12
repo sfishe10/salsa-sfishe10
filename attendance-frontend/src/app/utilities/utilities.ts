@@ -1,5 +1,6 @@
 import {Constants} from './constants';
 import {Section} from '../models/section';
+import {Term} from '../models/term';
 
 export class Utilities {
   public static getConflictColor(conflict: string): string {
@@ -68,6 +69,7 @@ export class Utilities {
       Constants.ROLE_OFFICER,
       Constants.ROLE_SECTION_LEADER,
       Constants.ROLE_ATTENDANCE_TAKER,
+      Constants.ROLE_LEADERSHIP,
       Constants.ROLE_MEMBER
     ]
     return roleOptions;
@@ -95,4 +97,29 @@ export class Utilities {
     return [Constants.STATION_OPTION_EVALUATE,
       Constants.STATION_OPTION_LEAD];
   }
+
+  // public static findCurrentOrClosestTerm(terms: Term[]) {
+  //   let closestDiff: number | null = null;
+  //   let closestTerm: Term | null = null;
+  //
+  //   let now = new Date();
+  //
+  //   let selectedTerm = null
+  //   terms.forEach(term => {
+  //     const start = new Date(term.startDate);
+  //     const end = new Date(term.endDate);
+  //
+  //     if (start <= now && end >= now) {
+  //       selectedTerm = term;
+  //     }
+  //     // Track the term with start date closest to now
+  //     const diff = Math.abs(start.getTime() - now.getTime());
+  //     if ((!closestDiff || diff < closestDiff)) {
+  //       closestDiff = diff;
+  //       closestTerm = term;
+  //     }
+  //   })
+  //   // If no current term matches, fallback to the closest start date
+  //   return selectedTerm ?? closestTerm;
+  // }
 }

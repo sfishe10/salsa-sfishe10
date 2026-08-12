@@ -4,7 +4,7 @@ import {Station} from '../models/station';
 import {FormsModule, NgForm} from '@angular/forms';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {StationPacket} from '../models/station-packet';
 import {ActivatedRoute, Router} from '@angular/router';
 import {StationService} from '../services/station.service';
@@ -12,8 +12,8 @@ import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTi
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import { Location } from '@angular/common';
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {MatDivider} from '@angular/material/divider';
+import {BaseComponent} from '../base-component';
 
 @Component({
   selector: 'app-station-packet-list-page',
@@ -22,7 +22,6 @@ import {MatDivider} from '@angular/material/divider';
     NgForOf,
     FormsModule,
     MatFormField,
-    MatIcon,
     MatInput,
     NgIf,
     MatButton,
@@ -33,13 +32,12 @@ import {MatDivider} from '@angular/material/divider';
     MatOption,
     MatSelect,
     TitleCasePipe,
-    MatDivider,
-    UpperCasePipe
+    MatIcon,
   ],
   templateUrl: './station-packet-list-page.component.html',
   styleUrl: './station-packet-list-page.component.css'
 })
-export class StationPacketListPageComponent implements OnInit{
+export class StationPacketListPageComponent extends BaseComponent implements OnInit{
 
   @ViewChild('addPacketDialog') addPacketDialog!: TemplateRef<any>;
   packetDialogRef!: MatDialogRef<any>;
@@ -57,14 +55,12 @@ export class StationPacketListPageComponent implements OnInit{
 
   showAddButton: boolean = false;
 
-  isMobile: boolean = false;
-
   constructor(private route: ActivatedRoute,
               private router: Router,
               private stationService: StationService,
               private dialog: MatDialog,
-              private location: Location,
-              private responsive: BreakpointObserver) {
+              private location: Location) {
+    super();
   }
 
   ngOnInit() {
@@ -82,10 +78,6 @@ export class StationPacketListPageComponent implements OnInit{
         this.showAddButton = true;
       }
     });
-
-    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
-      this.isMobile = result.matches;
-    })
   }
 
   addPacket() {

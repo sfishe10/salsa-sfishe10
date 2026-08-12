@@ -1,11 +1,11 @@
 <p *ngIf="membersLoaded && !sectionGroups.length">No members found.</p>
 
 <div *ngIf="membersLoaded && sectionGroups.length" class="container">
-  <div (click)="goBack()" class="button"
-       style="display: flex; flex-direction: row; align-items: center; gap: 0; width: max-content; margin-bottom: 10px;">
-    <mat-icon fontSet="material-symbols-outlined">arrow_left_alt</mat-icon>
-    <span style="font-size: 1rem; font-weight: bold; text-decoration: underline; margin-left: 5px;">Back to Stations</span>
-  </div>
+<!--  <div (click)="goBack()" class="button"-->
+<!--       style="display: flex; flex-direction: row; align-items: center; gap: 0; width: max-content; margin-bottom: 10px;">-->
+<!--    <mat-icon fontSet="material-symbols-outlined">arrow_left_alt</mat-icon>-->
+<!--    <span style="font-size: 1rem; font-weight: bold; text-decoration: underline; margin-left: 5px;">Back to Stations</span>-->
+<!--  </div>-->
   <div *ngFor="let group of sectionGroups" class="table-container">
     <table class="mat-elevation-z4" mat-table [dataSource]="group[1]">
       <ng-container matColumnDef="section">

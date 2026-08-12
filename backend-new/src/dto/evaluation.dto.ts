@@ -2,6 +2,7 @@ import {Expose, Type} from "class-transformer";
 import {MemberDto} from "./member.dto";
 import {StationDto} from "./station.dto";
 import {EvaluationItemDto} from "./evaluation-item.dto";
+import {UserDto} from "./user.dto";
 
 export class EvaluationDto {
     @Expose()
@@ -12,8 +13,8 @@ export class EvaluationDto {
     member!: MemberDto;
 
     @Expose()
-    @Type(() => MemberDto)
-    evaluator!: MemberDto
+    @Type(() => UserDto)
+    evaluator!: UserDto
 
     @Expose()
     @Type(() => StationDto)

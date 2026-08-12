@@ -30,4 +30,20 @@ export class MemberStationStatusDto {
 
     @Expose()
     evaluatorLast!: string | null;
+
+    // only needed for admin or section overview
+    @Expose()
+    memberId!: number;
+
+    @Expose()
+    memberFirst!: string;
+
+    @Expose()
+    memberLast!: string;
+
+    @Expose()
+    sectionId!: number;
+
+    @Expose()
+    sectionName!: string;
 }

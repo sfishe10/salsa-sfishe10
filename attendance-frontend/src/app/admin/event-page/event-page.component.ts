@@ -6,7 +6,6 @@ import {MatIcon} from '@angular/material/icon';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FormsModule, NgForm} from '@angular/forms';
 import {PepBand} from '../../models/pep-band';
-import {Utilities} from '../../utilities/utilities';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
@@ -14,21 +13,18 @@ import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {Constants} from '../../utilities/constants';
 import {SessionCacheService} from '../../services/session-cache.service';
-import {MatTableDataSource} from '@angular/material/table';
 import {AdminService} from '../../services/admin.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatButton} from '@angular/material/button';
 import {MatDialog, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {VolunteerRosterMemberCount} from '../../models/volunteer-roster-member-count';
 import {MatDivider} from '@angular/material/divider';
-import {MatCheckbox} from '@angular/material/checkbox';
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {MatCheckbox} from '@angular/material/checkbox'
 
 @Component({
   selector: 'app-event-page',
   standalone: true,
   imports: [
-    MatIcon,
     NgIf,
     FormsModule,
     MatDatepicker,
@@ -83,15 +79,12 @@ export class EventPageComponent implements OnInit {
   volunteerRosterMemberCounts: VolunteerRosterMemberCount[] = [];
   editing: boolean = false;
 
-  isMobile: boolean = false;
-
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private router: Router,
               public sessionCacheService: SessionCacheService,
               private adminService: AdminService,
-              private dialog: MatDialog,
-              private responsive: BreakpointObserver) {
+              private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -109,14 +102,6 @@ export class EventPageComponent implements OnInit {
       this.volunteerRosterMemberCounts = event.volunteerRosterMemberCounts;
       this.separateDateAndTimeInputs(new Date(event.date));
     })
-
-    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
-      this.isMobile = result.matches;
-    })
-  }
-
-  goBackToAdmin() {
-    this.router.navigate(['/admin'])
   }
 
   saveEvent(form: NgForm) {
@@ -171,7 +156,7 @@ export class EventPageComponent implements OnInit {
 
   goBack() {
     this.cancelDialog();
-    this.router.navigate(['/admin'])
+    this.router.navigate(['/admin/term'])
   }
 
   edit() {

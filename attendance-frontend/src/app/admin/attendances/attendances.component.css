@@ -1,3 +1,25 @@
-.back-button:hover {
-  cursor: pointer;
+.attendance-page {
+  height: 100%;
+  min-height: 0;
+}
+
+.term-select {
+  margin-bottom: 20px;
+}
+
+.attendance-tabs {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.tab-content {
+  min-height: 0;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+app-attendance-table {
+  flex: 1 1 auto;
 }

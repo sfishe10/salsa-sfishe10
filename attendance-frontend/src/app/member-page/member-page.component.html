@@ -1,7 +1,7 @@
 <div *ngIf="member && (sessionCacheService.isOfficer() || sessionCacheService.isAdmin() || sessionCacheService.isSectionLeader())">
   <form #memberForm="ngForm" (ngSubmit)="save(memberForm)">
 
-    <ng-container *ngIf="isMobile; else desktopView">
+    <ng-container *ngIf="this.isMobile(); else desktopView">
       <div class="mobile-top-row">
         <div [routerLink]="['/user', this.member?.user?.userId]" style="display: flex; flex-direction: column; align-items: start;" class="title-text">
           <span style="color: inherit; text-decoration: none;">

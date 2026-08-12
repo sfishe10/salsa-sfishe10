@@ -1,7 +1,7 @@
 import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {User} from '../../models/user';
-import {UserService} from '../../services/user.service';
+import {User} from '../models/user';
+import {UserService} from '../services/user.service';
 import {MatIcon} from '@angular/material/icon';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule, NgForm} from '@angular/forms';
@@ -10,11 +10,10 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
-import {Utilities} from '../../utilities/utilities';
+import {Utilities} from '../utilities/utilities';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
-import {SessionCacheService} from '../../services/session-cache.service';
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {SessionCacheService} from '../services/session-cache.service';
 import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 
 @Component({
@@ -61,15 +60,12 @@ export class UserPageComponent implements OnInit {
   canEdit: boolean = false;
   editing: boolean = false;
 
-  isMobile: boolean = false;
-
   constructor(private route: ActivatedRoute,
               private userService: UserService,
               private router: Router,
               private location: Location,
               public sessionCacheService: SessionCacheService,
-              private dialog: MatDialog,
-              private responsive: BreakpointObserver) {
+              private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -84,10 +80,6 @@ export class UserPageComponent implements OnInit {
     if (this.sessionCacheService.isAdmin() || this.sessionCacheService.isOfficer()) {
       this.canEdit = true;
     }
-
-    this.responsive.observe(Breakpoints.HandsetPortrait).subscribe(result => {
-      this.isMobile = result.matches;
-    })
   }
 
   edit() {

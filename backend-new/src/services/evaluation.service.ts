@@ -8,6 +8,8 @@ import {NewEvaluationDto} from "../dto/new-evaluation.dto";
 import {MemberStationStatusDto} from "../dto/member-station-status.dto";
 import {EvaluationDto} from "../dto/evaluation.dto";
 import {StationItem} from "../entities/station-item.entity";
+import {User} from "../entities/user.entity";
+import {getAllStationsProgress, getSectionStationsProgress} from "../controllers/evaluations/selector";
 
 export class EvaluationService {
     private evaluationRepository: EvaluationRepository;
@@ -31,6 +33,18 @@ export class EvaluationService {
         return statuses;
     }
 
+    public async getAllStationsProgress(termId: number): Promise<MemberStationStatusDto[]> {
+        const statuses: MemberStationStatusDto[] = await this.evaluationRepository.getStationsProgress(termId);
+
+        return statuses;
+    }
+
+    public async getSectionStationsProgress(termId: number, sectionId: number): Promise<MemberStationStatusDto[]> {
+        const statuses: MemberStationStatusDto[] = await this.evaluationRepository.getStationsProgress(termId, sectionId);
+
+        return statuses;
+    }
+
     public async startEvaluation(newEvalDto: NewEvaluationDto): Promise<Evaluation> {
         // first check if there's an unfinished evaluation (passed == null)
         const existingEval = await this.evaluationRepository.findByMemberAndStationId(newEvalDto.memberId, newEvalDto.stationId);
@@ -42,7 +56,7 @@ export class EvaluationService {
         let newEvaluation = new Evaluation();
 
         newEvaluation.member = {memberId: newEvalDto.memberId} as Member;
-        newEvaluation.evaluator = {memberId: newEvalDto.evaluatorId} as Member;
+        newEvaluation.evaluator = {userId: newEvalDto.evaluatorId} as User;
         newEvaluation.station = {stationId: newEvalDto.stationId} as Station;
         newEvaluation.passed = null;
 
@@ -83,12 +97,47 @@ export class EvaluationService {
         const evaluation = await this.evaluationRepository.findById(evalDto.evalId);
 
         // in case the person who finished the evaluation is different from the person who started it
-        evaluation.evaluator = {memberId: evalDto.evaluator.memberId} as Member;
+        evaluation.evaluator = {userId: evalDto.evaluator.userId} as User;
 
         evaluation.passed = numFailed <= evaluation.station.maxFailed;
 
         await this.evaluationRepository.save(evaluation);
 
         return evaluation;
+    }
+
+    public async saveEvaluation(evalDto: EvaluationDto): Promise<Evaluation> {
+        for (const item of evalDto.items) {
+            let updatedItem = new EvaluationItem();
+
+            updatedItem.evalId = evalDto.evalId;
+            updatedItem.itemId = item.stationItem.itemId;
+            updatedItem.status = item.status;
+
+            await this.evaluationRepository.saveItem(updatedItem);
+        }
+
+        const evaluation = await this.evaluationRepository.findById(evalDto.evalId);
+
+        // in case the person who saved the evaluation is different from the person who started it
+        evaluation.evaluator = {userId: evalDto.evaluator.userId} as User;
+
+        evaluation.passed = null;
+
+        await this.evaluationRepository.save(evaluation);
+
+        return evaluation;
+    }
+
+    public async deleteEvaluation(evalId: number): Promise<boolean> {
+        const evaluation = await this.evaluationRepository.findById(evalId);
+
+        for (const item of evaluation.items) {
+            await this.evaluationRepository.deleteItem(item.evalId, item.itemId);
+        }
+
+        const result = await this.evaluationRepository.deleteEval(evalId);
+
+        return !!result;
     }
 }

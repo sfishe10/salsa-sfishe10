@@ -1,0 +1,19 @@
+<div style="display: flex; flex-direction: column; height: 100%">
+  <mat-form-field subscriptSizing="dynamic" style="margin-bottom: 10px; align-self: flex-start">
+    <mat-label class="form-label">Select a term</mat-label>
+    <mat-select [(ngModel)]="selectedTerm" (selectionChange)="onTermChange($event.value)">
+      <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div style="color: dimgray; width: 100%; text-align: end; margin-bottom: 10px;">
+    <span>[# of attempts]</span>
+  </div>
+
+  <div style="flex: 1; width: 100%; min-height: 0;">
+    <app-stations-progress-table
+      *ngIf="selectedTerm"
+      [termId]="selectedTerm.termId"></app-stations-progress-table>
+  </div>
+
+</div>

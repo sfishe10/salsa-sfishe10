@@ -44,3 +44,38 @@ export const getMemberStationsStatus = async (req: any, res: any) => {
     }
 };
 
+export const getAllStationsProgress = async (req: any, res: any) => {
+    try {
+        const termId = req.params.id;
+
+        const statuses: MemberStationStatusDto[] = await evalService.getAllStationsProgress(termId);
+
+        res.send(statuses);
+    } catch (err) {
+        if (err instanceof NotFoundError) {
+            return res.status(404).send('Stations progress not found');
+        }
+
+        console.error(err);
+        res.status(500).send('Query failed');
+    }
+};
+
+export const getSectionStationsProgress = async (req: any, res: any) => {
+    try {
+        const termId = req.params.termId;
+        const sectionId = req.params.sectionId;
+
+        const statuses: MemberStationStatusDto[] = await evalService.getSectionStationsProgress(termId, sectionId);
+
+        res.send(statuses);
+    } catch (err) {
+        if (err instanceof NotFoundError) {
+            return res.status(404).send('Stations progress not found');
+        }
+
+        console.error(err);
+        res.status(500).send('Query failed');
+    }
+};
+

@@ -33,4 +33,30 @@ export const submit = async (req: any, res: any) => {
     }
 };
 
+export const save = async (req: any, res: any) => {
+    try {
+        const evalDto: EvaluationDto = plainToInstance(EvaluationDto, req.body);
+
+        const savedEval: Evaluation = await evalService.saveEvaluation(evalDto);
+
+        res.send(toEvaluationDto(savedEval));
+    } catch (err: any) {
+        console.error('A critical error occurred in evaluations.save():', err.message);
+        return res.status(500).send(err.message);
+    }
+};
+
+export const deleteEval = async (req: any, res: any) => {
+    try {
+        const evalId = req.params.id;
+
+        const result: boolean = await evalService.deleteEvaluation(evalId);
+
+        res.send(result);
+    } catch (err: any) {
+        console.error('A critical error occurred in evaluations.deleteEval():', err.message);
+        return res.status(500).send(err.message);
+    }
+};
+
 

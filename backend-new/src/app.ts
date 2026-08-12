@@ -28,6 +28,8 @@ import {MemberService} from "./services/member.service";
 import {User} from "./entities/user.entity";
 import {Member} from "./entities/member.entity";
 import {NotFoundError} from "./errors/not-found-error";
+import {Term} from "./entities/term.entity";
+import {TermService} from "./services/term.service";
 
 db.initialize()
     .then(() => {
@@ -139,6 +141,7 @@ app.use('/api/me', (req: Request, res: Response, next: NextFunction) => {
 
 const userService: UserService = new UserService();
 const memberService: MemberService = new MemberService();
+const termService: TermService = new TermService();
 app.get('/api/me', passport.authenticate('oauth-bearer', { session: false }), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const email =
@@ -158,9 +161,10 @@ app.get('/api/me', passport.authenticate('oauth-bearer', { session: false }), as
       throw new NotFoundError('User not found');
     }
 
-    const member: Member | null = await memberService.getMemberForCurrentTerm(email);
+    const term: Term = await termService.getCurrentOrClosestTerm();
+    const member: Member | null = await memberService.getMemberForTerm(term.termId, email);
 
-    const me = { user, member };
+    const me = { term, user, member };
 
     res.send(me);
 

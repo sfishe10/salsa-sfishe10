@@ -1,6 +1,6 @@
 <div *ngIf="station">
-
-  <div *ngIf="!isMobile" style="margin-bottom: 20px;">
+  <div *ngIf="!isMobile()" style="display: flex; align-items: center; margin-bottom: 20px; height: 2rem;">
+    <mat-icon class="button" fontSet="material-symbols-outlined" (click)="goBack()" style="margin-right: 10px;">arrow_back</mat-icon>
     <span style="font-size: 1.4rem;"><b>Station {{station.level + 1}}: </b>{{station?.title}}</span>&nbsp;
   </div>
 
@@ -18,7 +18,7 @@
     </button>
   </div>
 
-  <button type="button" (click)="goBack()" mat-flat-button style="background-color: lightgray; margin-top: 10px;">Back</button>
+  <button *ngIf="isMobile()" type="button" (click)="goBack()" mat-flat-button style="background-color: lightgray; margin-top: 10px;">Back</button>
 </div>
 
 <ng-template #addPacketDialog>

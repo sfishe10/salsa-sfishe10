@@ -1,12 +1,10 @@
-import { Routes } from '@angular/router';
-import {MsalRedirectComponent} from '@azure/msal-angular';
+import {Router, Routes} from '@angular/router';
 import {ProfileComponent} from './profile/profile.component';
 import {AttendanceFormComponent} from './attendance-form/attendance-form.component';
-import {AdminComponent} from './admin/admin.component';
 import {MemberPageComponent} from './member-page/member-page.component';
 import {EventPageComponent} from './admin/event-page/event-page.component';
 import {AttendancesComponent} from './admin/attendances/attendances.component';
-import {UserPageComponent} from './admin/user-page/user-page.component';
+import {UserPageComponent} from './user-page/user-page.component';
 import {EventListComponent} from './event-list/event-list.component';
 import {UnauthorizedComponent} from './unauthorized/unauthorized.component';
 import {AuthzGuard} from './authz.guard';
@@ -26,6 +24,10 @@ import {eventListTitleResolver} from './resolvers/event-list-title-resolver';
 import {stationsListTitleResolver} from './resolvers/stations-list-title-resolver';
 import {stationTitleResolver} from './resolvers/station-title-resolver';
 import {stationPacketTitleResolver} from './resolvers/station-packet-title-resolver';
+import {UsersPageComponent} from './admin/users-page/users-page.component';
+import {StationsPageComponent} from './admin/stations-page/stations-page.component';
+import {TermPageComponent} from './admin/term-page/term-page.component';
+import {StationsProgressPageComponent} from './admin/stations-progress-page/stations-progress-page.component';
 
 export const routes: Routes = [
   {
@@ -49,12 +51,6 @@ export const routes: Routes = [
         runGuardsAndResolvers: 'pathParamsOrQueryParamsChange'
       },
       {
-        path: 'stations',
-        component: StationsMenuPageComponent,
-        canActivate: [AuthzGuard],
-        title: 'Stations'
-      },
-      {
         path: 'stations/evaluate',
         component: MemberListPageComponent,
         canActivate: [AuthzGuard],
@@ -72,13 +68,31 @@ export const routes: Routes = [
         canActivate: [AuthzGuard]
       },
       {
-        path: 'admin',
-        component: AdminComponent,
+        path: 'admin/term',
+        component: TermPageComponent,
         canActivate: [AuthzGuard],
-        title: 'Admin'
+        title: 'View Term'
       },
       {
-        path: 'attendance/term/:id',
+        path: 'admin/users',
+        component: UsersPageComponent,
+        canActivate: [AuthzGuard],
+        title: 'Users'
+      },
+      {
+        path: 'admin/stations',
+        component: StationsPageComponent,
+        canActivate: [AuthzGuard],
+        title: 'Stations'
+      },
+      {
+        path: 'admin/stations-progress',
+        component: StationsProgressPageComponent,
+        canActivate: [AuthzGuard],
+        title: 'Stations Progress'
+      },
+      {
+        path: 'admin/attendance',
         component: AttendancesComponent,
         canActivate: [AuthzGuard]
       },

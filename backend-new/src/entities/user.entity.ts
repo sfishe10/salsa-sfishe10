@@ -1,5 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Member } from './member.entity';
+import {Expose} from "class-transformer";
+import {EventAttendance} from "./event-attendance.entity";
+import {Evaluation} from "./evaluation.entity";
 
 @Entity('User')
 export class User {
@@ -20,4 +23,7 @@ export class User {
 
     @OneToMany(() => Member, (member) => member.user)
     members!: Member[];
+
+    @OneToMany(() => Evaluation, (evaluation) => evaluation.evaluator)
+    evalsGiven!: Evaluation[];
 }
