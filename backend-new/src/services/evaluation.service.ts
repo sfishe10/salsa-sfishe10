@@ -58,6 +58,7 @@ export class EvaluationService {
         newEvaluation.member = {memberId: newEvalDto.memberId} as Member;
         newEvaluation.evaluator = {userId: newEvalDto.evaluatorId} as User;
         newEvaluation.station = {stationId: newEvalDto.stationId} as Station;
+        newEvaluation.evalTime = new Date();
         newEvaluation.passed = null;
 
         await this.evaluationRepository.save(newEvaluation);
