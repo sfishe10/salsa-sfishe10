@@ -16,6 +16,7 @@ import { Location } from '@angular/common';
 import {MatDivider} from '@angular/material/divider';
 import {Station} from '../models/station';
 import {BaseComponent} from '../base-component';
+import {QuillEditorComponent} from 'ngx-quill';
 
 @Component({
   selector: 'app-station-packet-page',
@@ -35,6 +36,7 @@ import {BaseComponent} from '../base-component';
     MatSelect,
     NgForOf,
     TitleCasePipe,
+    QuillEditorComponent,
   ],
   templateUrl: './station-packet-page.component.html',
   styleUrl: './station-packet-page.component.css'
@@ -84,7 +86,16 @@ export class StationPacketPageComponent extends BaseComponent implements OnInit 
       this.title = packet.title;
       this.content = packet.content;
       this.role = packet.role;
+
+      console.log(this.content);
     })
+  }
+
+  // needed in order to preserve spacing and newlines
+  get displayContent(): string {
+    return this.content
+      .replace(/&nbsp;/g, ' ')
+      .replace(/<p><\/p>/g, '<p><br></p>');
   }
 
   edit() {

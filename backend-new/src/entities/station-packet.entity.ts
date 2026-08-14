@@ -21,7 +21,7 @@ export class StationPacket {
     @Column({type: 'varchar', length: 20})
     info!: string;
 
-    @Column({type: 'varchar', length: 4000})
+    @Column({type: 'text'})
     content!: string;
 
     @Column({type: 'int'})

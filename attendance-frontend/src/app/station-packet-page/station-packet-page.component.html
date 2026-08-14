@@ -3,10 +3,8 @@
 <div *ngIf="packet && !sessionCacheService.isMember()">
   <form #packetForm="ngForm" (ngSubmit)="save(packetForm)">
     <ng-container *ngIf="isMobile(); else desktopView">
-      <div style="white-space: pre-wrap;">
-        <span *ngIf="content.trim().length">{{content}}</span>
-        <span *ngIf="!content.trim().length" style="color: gray">No content has been entered yet.</span>
-      </div>
+      <div *ngIf="displayContent.trim().length" [innerHTML]="displayContent" class="quill-content"></div>
+      <div *ngIf="!displayContent.trim().length" style="color: gray">No content has been entered yet.</div>
 
       <button type="button" (click)="goBack()" mat-flat-button style="background-color: lightgray; margin: 20px 0 20px 0;">Back</button>
     </ng-container>
@@ -64,17 +62,11 @@
       <p *ngIf="showRoleRequiredError" class="error-message">Please specify a role.</p>
 
       <div style="max-width: 100%; margin-top: 20px;">
-        <mat-form-field *ngIf="editing" subscriptSizing="dynamic" style="width: 80%">
-        <textarea [(ngModel)]="content"
-                  name="content"
-                  matInput
-                  style="min-height: 600px; resize: vertical;"
-                  (keydown.tab)="insertTab($event)"></textarea>
-        </mat-form-field>
+        <quill-editor *ngIf="editing" [(ngModel)]="content" name="content" format="html"></quill-editor>
 
-        <div *ngIf="!editing" style="white-space: pre-wrap; padding: 15px; width: 80%">
-          <span *ngIf="content.trim().length">{{content}}</span>
-          <span *ngIf="!content.trim().length" style="color: gray">No content has been entered yet.</span>
+        <div *ngIf="!editing" style="width: 80%">
+          <div *ngIf="displayContent.trim().length" [innerHTML]="displayContent" class="quill-content"></div>
+          <div *ngIf="!displayContent.trim().length" style="color: gray">No content has been entered yet.</div>
         </div>
       </div>
 
