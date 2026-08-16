@@ -15,3 +15,47 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 h1 {
   font-family: 'RedditSansCondensed';
 }
+
+
+/* formatting for ngx-quill */
+.quill-content ol {
+  list-style-type: decimal !important;
+}
+
+.quill-content ol ol {
+  list-style-type: lower-alpha !important;
+}
+
+.quill-content ol ol ol {
+  list-style-type: lower-roman !important;
+}
+
+.quill-content p {
+  margin: 0;
+  line-height: 1.42;
+}
+
+.quill-content .ql-indent-1 {
+  padding-left: 3em;
+}
+
+.quill-content .ql-indent-2 {
+  padding-left: 6em;
+}
+
+.quill-content .ql-indent-3 {
+  padding-left: 9em;
+}
+
+.quill-content .ql-indent-4 {
+  padding-left: 12em;
+}
+
+.quill-content .ql-indent-5 {
+  padding-left: 15em;
+}
+
+.quill-content ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}

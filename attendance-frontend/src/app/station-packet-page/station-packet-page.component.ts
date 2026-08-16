@@ -17,6 +17,7 @@ import {MatDivider} from '@angular/material/divider';
 import {Station} from '../models/station';
 import {BaseComponent} from '../base-component';
 import {QuillEditorComponent} from 'ngx-quill';
+import {normalizeQuillHtml} from '../utilities/ngx-quill-helper';
 
 @Component({
   selector: 'app-station-packet-page',
@@ -86,16 +87,15 @@ export class StationPacketPageComponent extends BaseComponent implements OnInit 
       this.title = packet.title;
       this.content = packet.content;
       this.role = packet.role;
-
-      console.log(this.content);
     })
   }
 
   // needed in order to preserve spacing and newlines
   get displayContent(): string {
-    return this.content
-      .replace(/&nbsp;/g, ' ')
-      .replace(/<p><\/p>/g, '<p><br></p>');
+    return this.content ?
+      this.content.replace(/&nbsp;/g, ' ')
+      .replace(/<p><\/p>/g, '<p><br></p>')
+      : '';
   }
 
   edit() {
@@ -129,12 +129,14 @@ export class StationPacketPageComponent extends BaseComponent implements OnInit 
 
     this.editingTitle = false;
 
+    const cleanedContent = normalizeQuillHtml(this.content);
+
     let packet = {
       packetId: this.packetId,
       station: {stationId: this.packet.station.stationId} as Station,
       title: this.title,
       role: this.role,
-      content: this.content
+      content: cleanedContent
     } as StationPacket
 
     this.stationService.updatePacket(packet).subscribe(updatedPacket => {
