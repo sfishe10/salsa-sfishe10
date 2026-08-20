@@ -176,12 +176,14 @@ export class AttendanceRepository {
                                 m.memberId = ea.memberId 
                                     AND e.type = 'Rehearsal' 
                                     AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
                                     AND ea.attendance NOT LIKE '%Absent%'
                                 THEN 1 END) AS numRehearsals,
                  COUNT(CASE WHEN
                                 m.memberId = ea.memberId 
                                     AND e.type = 'Whole Band Event'
                                     AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
                                     AND ea.attendance NOT LIKE '%Absent%'
                                 THEN 1 END) AS numWholeBandEvents,
                  COUNT(CASE WHEN
@@ -189,6 +191,7 @@ export class AttendanceRepository {
                                     AND e.type = 'Pep Event'
                                     AND b.bandId <> 'V'
                                     AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
                                     AND ea.attendance NOT LIKE '%Absent%' 
                                     AND ea.attendance NOT LIKE '%Sub%'
                                 THEN 1 END) AS numPepEvents,
@@ -196,6 +199,7 @@ export class AttendanceRepository {
                                 m.memberId = ea.memberId 
                                     AND b.bandId = 'V'
                                     AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
                                     AND ea.attendance NOT LIKE '%Absent%'
                                     AND ea.attendance NOT LIKE '%Sub%'
                                 THEN 1 END) AS numVolunteerEvents,
