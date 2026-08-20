@@ -5,7 +5,10 @@ export class MemberStatsDto {
     memberId!: number;
 
     @Expose()
-    termId!: number;
+    sectionId!: number;
+
+    @Expose()
+    sectionName!: string;
 
     @Expose()
     email!: string;
@@ -16,18 +19,38 @@ export class MemberStatsDto {
     @Expose()
     lastName!: string;
 
+    // Unexcused Misses
     @Expose()
-    numRehearsals!: number;
+    totalUnexcusedMisses!: number
 
     @Expose()
-    numWholeBandEvents!: number;
+    rehearsalsMissed!: number;
 
     @Expose()
-    numPepEvents!: number;
+    wholeBandEventsMissed!: number;
 
     @Expose()
-    numVolunteerEvents!: number;
+    pepEventsMissed!: number;
+
+    // Attended events
+    @Expose()
+    rehearsalsAttended!: number;
 
     @Expose()
-    numSubEvents!: number;
+    wholeBandEventsAttended!: number;
+
+    @Expose()
+    totalPepEventsAttended!: number;
+
+    @Expose()
+    assignedAbcEventsAttended!: number;
+
+    @Expose()
+    extraAbcEventsAttended!: number;
+
+    @Expose()
+    abcEventsSubbed!: number;
+
+    @Expose()
+    volunteerEventsAttended!: number;
 }

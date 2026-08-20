@@ -1,0 +1,114 @@
+.clickable-row {
+  cursor: pointer;
+  height: 2rem;
+}
+
+.clickable-row:hover {
+  background-color: #f5f5f5;
+}
+
+.clickable-row .mat-mdc-cell {
+  font-size: .8rem;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.header-row {
+  position: sticky;
+  top: 0;
+  z-index: 10; /* Should be higher than sticky columns */
+  box-shadow: 0px 2px 2px -1px rgba(0, 0, 0, 0.2);
+  height: 3rem;
+}
+
+.section-row {
+  height: 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Applied to any cell in a section row */
+.section-row-cell {
+  background-color: var(--primary-color);
+  color: white;
+  border: none !important;
+  overflow: visible;
+
+  position: sticky;
+  left: 0;
+  width: 1%;
+}
+
+.name-cell {
+  border-right: 1px solid lightgray;
+  position: sticky;
+  left: 0;
+  width: 1%;
+  z-index: 5;
+  background-color: white;
+}
+
+.member-row {
+  height: 1.5rem;
+}
+
+.hidden-column-header {
+  color: var(--accent-color);
+}
+
+.expandable-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: fit-content;
+}
+
+.expand-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.collapsed-col {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.collapsible-content {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+
+  transition:
+    max-width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 100ms ease;
+}
+
+.collapsible-content.expanded {
+  max-width: 120px;
+  opacity: 1;
+
+  transition:
+    max-width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 150ms ease 100ms;
+}
+
+.narrow-header-text {
+  display: inline-block;
+  width: fit-content;
+  min-width: 90px;
+  max-width: 120px;
+  white-space: normal;
+}
+
+.narrow-name-text {
+  width: min-content;
+}
+
+.wide-header-text {
+  white-space: nowrap;
+}

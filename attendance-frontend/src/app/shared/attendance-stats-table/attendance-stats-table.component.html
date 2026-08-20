@@ -1,0 +1,222 @@
+<div #tableScrollContainer *ngIf="dataSource && dataSource.length > 0" class="mat-elevation-z4" style="overflow-x: auto; max-height: 70vh;">
+  <table mat-table [dataSource]="dataSource" fixedLayout>
+
+    <!-- Name / Section Column -->
+    <ng-container matColumnDef="member">
+      <th mat-header-cell *matHeaderCellDef class="name-cell"></th>
+      <td mat-cell *matCellDef="let row; let i = index"
+          [ngClass]="isSectionRow(i, row) ? 'section-row-cell' : 'name-cell'">
+        <span *ngIf="isSectionRow(i, row)" class="wide-header-text">
+          {{row.sectionName}}
+        </span>
+        <span *ngIf="!isSectionRow(i, row)" [ngClass]="isMobile() ? 'narrow-name-text' : 'wide-header-text'">
+          {{row.data.firstName}} {{row.data.lastName}}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Total Unexcused Misses Column -->
+    <ng-container matColumnDef="totalUnexcusedMisses">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="expandable-col-header">
+          <div>
+            <span class="wide-header-text">Total Unexcused</span><br/>
+            <span class="wide-header-text" style="font-size: .7rem; color: dimgray;">(Absent/Late/Left Early)</span>
+          </div>
+          <button *ngIf="!unexcusedExpanded" (click)="toggleUnexcusedColumns()" mat-icon-button class="expand-arrow">
+            <mat-icon fontSet="material-symbols-outlined">chevron_right</mat-icon>
+          </button>
+          <button *ngIf="unexcusedExpanded" (click)="toggleUnexcusedColumns()" mat-icon-button class="expand-arrow">
+            <mat-icon fontSet="material-symbols-outlined">chevron_left</mat-icon>
+          </button>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index">
+        <span *ngIf="!isSectionRow(i, row)">
+          {{row.data.totalUnexcusedMisses}}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Rehearsals Unexcused Column -->
+    <ng-container matColumnDef="rehearsalsMissed">
+      <th mat-header-cell *matHeaderCellDef [class.collapsed-col]="!unexcusedExpanded">
+        <div class="collapsible-content hidden-column-header"
+          [class.expanded]="unexcusedExpanded">
+          <span class="narrow-header-text">Rehearsals Unexcused</span>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index" [class.collapsed-col]="!unexcusedExpanded">
+        <div class="collapsible-content"
+             [class.expanded]="unexcusedExpanded">
+          <span *ngIf="!isSectionRow(i, row)">
+            {{row.data.rehearsalsMissed}}
+          </span>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Whole Band Events Unexcused Column -->
+    <ng-container matColumnDef="wholeBandEventsMissed">
+      <th mat-header-cell *matHeaderCellDef [class.collapsed-col]="!unexcusedExpanded">
+        <div class="collapsible-content hidden-column-header"
+          [class.expanded]="unexcusedExpanded">
+          <span class="narrow-header-text">Whole Band Events Unexcused </span>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index" [class.collapsed-col]="!unexcusedExpanded">
+        <div class="collapsible-content"
+          [class.expanded]="unexcusedExpanded">
+          <span *ngIf="!isSectionRow(i, row)">
+          {{row.data.wholeBandEventsMissed}}
+        </span>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Pep Events Unexcused Column -->
+    <ng-container matColumnDef="pepEventsMissed">
+      <th mat-header-cell *matHeaderCellDef [class.collapsed-col]="!unexcusedExpanded">
+        <div class="collapsible-content hidden-column-header"
+          [class.expanded]="unexcusedExpanded">
+          <span class="narrow-header-text">Pep Events Unexcused </span>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index" [class.collapsed-col]="!unexcusedExpanded">
+        <div class="collapsible-content"
+             [class.expanded]="unexcusedExpanded">
+          <span *ngIf="!isSectionRow(i, row)">
+          {{row.data.pepEventsMissed}}
+        </span>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Whole Band Events Attended Column -->
+    <ng-container matColumnDef="wholeBandEventsAttended">
+      <th mat-header-cell *matHeaderCellDef>
+        <span [ngClass]="isMobile() ? 'narrow-header-text' : 'wide-header-text'">Whole Band Events Attended</span>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index">
+        <span *ngIf="!isSectionRow(i, row)">
+          {{row.data.wholeBandEventsAttended}}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Rehearsals Attended Column -->
+    <ng-container matColumnDef="rehearsalsAttended">
+      <th mat-header-cell *matHeaderCellDef>
+        <span [ngClass]="isMobile() ? 'narrow-header-text' : 'wide-header-text'">Rehearsals Attended</span></th>
+      <td mat-cell *matCellDef="let row; let i = index">
+        <span *ngIf="!isSectionRow(i, row)">
+          {{row.data.rehearsalsAttended}}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Total Pep Events Attended Column -->
+    <ng-container matColumnDef="totalPepEventsAttended">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="expandable-col-header">
+          <span [ngClass]="isMobile() ? 'narrow-header-text' : 'wide-header-text'">Total Pep Events Attended</span>
+          <button *ngIf="!pepEventsExpanded" (click)="togglePepEventColumns()" mat-icon-button class="expand-arrow">
+            <mat-icon fontSet="material-symbols-outlined">chevron_right</mat-icon>
+          </button>
+          <button *ngIf="pepEventsExpanded" (click)="togglePepEventColumns()" mat-icon-button class="expand-arrow">
+            <mat-icon fontSet="material-symbols-outlined">chevron_left</mat-icon>
+          </button>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index">
+        <span *ngIf="!isSectionRow(i, row)">
+          {{row.data.totalPepEventsAttended}}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Assigned ABC Events Attended Column -->
+    <ng-container matColumnDef="assignedAbcEventsAttended">
+      <th mat-header-cell *matHeaderCellDef [class.collapsed-col]="!pepEventsExpanded">
+        <div class="collapsible-content hidden-column-header"
+             [class.expanded]="pepEventsExpanded">
+          <span class="narrow-header-text">Assigned ABC Events Attended </span>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index"
+          [class.collapsed-col]="!pepEventsExpanded">
+        <div class="collapsible-content"
+             [class.expanded]="pepEventsExpanded">
+          <span *ngIf="!isSectionRow(i, row)">
+            {{row.data.assignedAbcEventsAttended}}
+          </span>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Extra ABC Events Attended Column -->
+    <ng-container matColumnDef="extraAbcEventsAttended">
+      <th mat-header-cell *matHeaderCellDef [class.collapsed-col]="!pepEventsExpanded">
+        <div class="collapsible-content hidden-column-header"
+             [class.expanded]="pepEventsExpanded">
+          <span class="narrow-header-text">Extra ABC Events Attended </span>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index"
+          [class.collapsed-col]="!pepEventsExpanded">
+        <div class="collapsible-content"
+             [class.expanded]="pepEventsExpanded">
+          <span *ngIf="!isSectionRow(i, row)">
+            {{row.data.extraAbcEventsAttended}}
+          </span>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- ABC Events Subbed Column -->
+    <ng-container matColumnDef="abcEventsSubbed">
+      <th mat-header-cell *matHeaderCellDef [class.collapsed-col]="!pepEventsExpanded">
+        <div class="collapsible-content hidden-column-header"
+             [class.expanded]="pepEventsExpanded">
+          <span class="narrow-header-text">ABC Events Subbed</span>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index"
+          [class.collapsed-col]="!pepEventsExpanded">
+        <div class="collapsible-content"
+             [class.expanded]="pepEventsExpanded">
+          <span *ngIf="!isSectionRow(i, row)">
+            {{row.data.abcEventsSubbed}}
+          </span>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Volunteer Events Attended Column -->
+    <ng-container matColumnDef="volunteerEventsAttended">
+      <th mat-header-cell *matHeaderCellDef [class.collapsed-col]="!pepEventsExpanded">
+        <div class="collapsible-content hidden-column-header"
+             [class.expanded]="pepEventsExpanded">
+          <span class="narrow-header-text">Volunteer Events Attended</span>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index"
+          [class.collapsed-col]="!pepEventsExpanded">
+        <div class="collapsible-content"
+             [class.expanded]="pepEventsExpanded">
+          <span *ngIf="!isSectionRow(i, row)">
+            {{row.data.volunteerEventsAttended}}
+          </span>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row class="header-row" *matHeaderRowDef="displayedColumns"></tr>
+
+    <!-- Section Row -->
+    <tr mat-row class="section-row" *matRowDef="let row; columns: displayedColumns; when: isSectionRow"></tr>
+
+    <!-- Member Row -->
+    <tr (click)="onRowClicked(row.data.memberId)" class="clickable-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

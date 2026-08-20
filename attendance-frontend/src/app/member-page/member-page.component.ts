@@ -5,7 +5,7 @@ import {MemberService} from '../services/member.service';
 import {MatIcon} from '@angular/material/icon';
 import {FormsModule, NgForm} from '@angular/forms';
 import {NgForOf, NgIf} from '@angular/common';
-import {MemberAttendanceTableComponent} from '../shared/member-attendance-table/member-attendance-table.component';
+import {MemberAttendanceTableComponent} from './member-attendance-table/member-attendance-table.component';
 import {MatButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
@@ -153,8 +153,8 @@ export class MemberPageComponent extends BaseComponent implements OnInit {
     this.cancelDialog();
     if (this.returnToPage == 'section') {
       this.router.navigate(['/section', this.member?.section?.sectionId]);
-    } else if (this.returnToPage == 'admin') {
-      this.router.navigate(['/admin/term']);
+    } else if (this.returnToPage == 'attendance') {
+      this.router.navigate(['/admin/attendance']);
     }
   }
 

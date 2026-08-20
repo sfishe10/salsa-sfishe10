@@ -5,7 +5,14 @@
       <mat-option *ngFor="let option of terms" [value]="option">{{option.termName}}</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-tab-group *ngIf="selectedTerm" class="attendance-tabs">
+  <mat-tab-group *ngIf="selectedTerm" class="attendance-tabs" [preserveContent]="true">
+    <mat-tab label="Stats">
+      <div class="tab-content">
+        <app-attendance-stats-table
+          [termId]="selectedTerm.termId"
+          (rowClicked)="navigateToMember($event)"></app-attendance-stats-table>
+      </div>
+    </mat-tab>
     <mat-tab label="Rehearsals">
       <div class="tab-content">
         <app-attendance-table [termId]="selectedTerm.termId" [eventType]="EVENT_TYPE_REHEARSAL"></app-attendance-table>

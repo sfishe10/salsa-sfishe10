@@ -23,8 +23,9 @@ export class AttendanceService {
     return this.http.put<EventAttendance>(url, attendance);
   }
 
-  public getMemberStatsBySectionId(sectionId: number): Observable<MemberStats[]> {
-    const url = this.baseUrl + `/attendance/section/${sectionId}/stats`;
+  public getMemberStats(termId: number, sectionId?: number): Observable<MemberStats[]> {
+    const sectionClause = sectionId ? `section/${sectionId}/` : '';
+    const url = this.baseUrl + `/attendance/term/${termId}/${sectionClause}stats`;
     return this.http.get<MemberStats[]>(url);
   }
 }

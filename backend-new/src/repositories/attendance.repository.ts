@@ -164,59 +164,116 @@ export class AttendanceRepository {
     }
 
 
-    public async getMemberStatsBySectionId(sectionId: number): Promise<MemberStatsDto> {
+    public async getMemberStats(termId: number, sectionId?: number): Promise<MemberStatsDto> {
+        const params = [termId];
+
+        let sectionClause = '';
+        if (sectionId) {
+            sectionClause = `AND m.sectionId = ?`
+            params.push(sectionId);
+        }
+
         const sql = `
             SELECT
                  m.memberId,
-                 m.termId,
                  m.email,
                  u.firstName,
                  u.lastName,
+                 s.sectionId,
+                 s.name AS sectionName,
                  COUNT(CASE WHEN
-                                m.memberId = ea.memberId 
-                                    AND e.type = 'Rehearsal' 
+                                m.memberId = ea.memberId
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
+                                    AND ea.attendance LIKE '%Unexcused%'
+                                THEN 1 END) AS totalUnexcusedMisses,
+                 COUNT(CASE WHEN
+                                m.memberId = ea.memberId
+                                    AND e.type = 'Rehearsal'
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
+                                    AND ea.attendance LIKE '%Unexcused%'
+                                THEN 1 END) AS rehearsalsMissed,
+                 COUNT(CASE WHEN
+                                m.memberId = ea.memberId
+                                    AND e.type = 'Whole Band Event'
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
+                                    AND ea.attendance LIKE '%Unexcused%'
+                                THEN 1 END) AS wholeBandEventsMissed,
+                 COUNT(CASE WHEN
+                                m.memberId = ea.memberId
+                                    AND e.type = 'Pep Event'
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
+                                    AND ea.attendance LIKE '%Unexcused%'
+                                THEN 1 END) AS pepEventsMissed,
+                 COUNT(CASE WHEN
+                                m.memberId = ea.memberId
+                                    AND e.type = 'Rehearsal'
                                     AND ea.attendance IS NOT NULL
                                     AND ea.attendance <> ''
                                     AND ea.attendance NOT LIKE '%Absent%'
-                                THEN 1 END) AS numRehearsals,
+                                THEN 1 END) AS rehearsalsAttended,
                  COUNT(CASE WHEN
                                 m.memberId = ea.memberId 
                                     AND e.type = 'Whole Band Event'
                                     AND ea.attendance IS NOT NULL
                                     AND ea.attendance <> ''
                                     AND ea.attendance NOT LIKE '%Absent%'
-                                THEN 1 END) AS numWholeBandEvents,
+                                THEN 1 END) AS wholeBandEventsAttended,
+                 COUNT(CASE WHEN
+                                (m.memberId = ea.memberId OR (ea.subId IS NOT NULL AND m.memberId = ea.subId))
+                                    AND e.type = 'Pep Event'
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
+                                    AND ea.attendance NOT LIKE '%Absent%'
+                                THEN 1 END) AS totalPepEventsAttended,
                  COUNT(CASE WHEN
                                 m.memberId = ea.memberId 
                                     AND e.type = 'Pep Event'
                                     AND b.bandId <> 'V'
                                     AND ea.attendance IS NOT NULL
                                     AND ea.attendance <> ''
-                                    AND ea.attendance NOT LIKE '%Absent%' 
-                                    AND ea.attendance NOT LIKE '%Sub%'
-                                THEN 1 END) AS numPepEvents,
-                 COUNT(CASE WHEN
-                                m.memberId = ea.memberId 
-                                    AND b.bandId = 'V'
-                                    AND ea.attendance IS NOT NULL
-                                    AND ea.attendance <> ''
+                                    AND ea.required = 1
                                     AND ea.attendance NOT LIKE '%Absent%'
                                     AND ea.attendance NOT LIKE '%Sub%'
-                                THEN 1 END) AS numVolunteerEvents,
-                 COUNT(CASE WHEN ea.subId = m.memberId THEN 1 END) AS numSubEvents
+                                THEN 1 END) AS assignedAbcEventsAttended,
+                 COUNT(CASE WHEN
+                                e.type = 'Pep Event'               
+                                    AND b.bandId <> 'V'
+                                    AND ea.attendance IS NOT NULL
+                                    AND ea.attendance <> ''
+                                    AND ea.required = 0
+                                    AND ((m.memberId = ea.memberId
+                                            AND ea.attendance NOT LIKE '%Absent%'
+                                            AND ea.attendance NOT LIKE '%Sub%')
+                                        OR (ea.subId IS NOT NULL AND m.memberId = ea.subId))
+                                THEN 1 END) AS extraAbcEventsAttended,
+                 COUNT(CASE WHEN ea.subId = m.memberId THEN 1 END) AS abcEventsSubbed,
+                 COUNT(CASE WHEN
+                                b.bandId = 'V'
+                                   AND ea.attendance IS NOT NULL
+                                   AND ea.attendance <> ''
+                                   AND ((m.memberId = ea.memberId
+                                             AND ea.attendance NOT LIKE '%Absent%'
+                                             AND ea.attendance NOT LIKE '%Sub%')
+                                        OR (ea.subId IS NOT NULL AND m.memberId = ea.subId)) 
+                                   THEN 1 END) AS volunteerEventsAttended
              FROM Member m
                       LEFT JOIN User u ON m.email = u.email
+                      LEFT JOIN Section s on m.sectionId = s.sectionId
                       LEFT JOIN EventAttendance ea ON (m.memberId = ea.memberId OR m.memberId = ea.subId)
                       LEFT JOIN MBEvent e ON ea.eventId = e.eventId
                       LEFT JOIN PepBand b ON e.pepBandId = b.bandId
                       LEFT JOIN Term t ON m.termId = t.termId
-             WHERE t.startDate <= NOW() AND t.endDate >= NOW()
-               AND m.sectionId = ?
+             WHERE t.termId = ?
+               ${sectionClause}
              GROUP BY m.memberId
-             ORDER BY u.lastName
+             ORDER BY s.sectionId, u.lastName
              `;
 
-        const results = await db.query(sql, [sectionId]);
+        const results = await db.query(sql, params);
 
         const stats = plainToInstance(MemberStatsDto, results, {
             excludeExtraneousValues: true,
