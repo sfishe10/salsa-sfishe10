@@ -82,9 +82,28 @@ export const getByTermIdAndSectionAndPepBand = async (req: any, res: any) => {
 
 export const getMemberStatsBySectionId = async (req: any, res: any) => {
   try {
-    const sectionId = req.params.id;
+    const termId = req.params.termId;
+    const sectionId = req.params.sectionId;
 
-    const stats: MemberStatsDto = await attendanceService.getMemberStatsBySectionId(sectionId);
+    const stats: MemberStatsDto = await attendanceService.getMemberStats(termId, sectionId);
+
+    if (!stats) {
+      return res.status(404).send('Stats not found');
+    }
+
+    res.send(stats);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Query failed');
+  }
+};
+
+export const getMemberStats = async (req: any, res: any) => {
+  try {
+    const termId = req.params.termId;
+
+    const stats: MemberStatsDto = await attendanceService.getMemberStats(termId);
 
     if (!stats) {
       return res.status(404).send('Stats not found');

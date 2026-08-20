@@ -1,10 +1,9 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SessionCacheService} from '../services/session-cache.service';
 import {Constants} from '../utilities/constants';
 import {Section} from '../models/section';
-import {MemberStats} from '../models/member-stats';
 import {AttendanceService} from '../services/attendance.service';
 import {
   MatCell,
@@ -25,8 +24,8 @@ import {MatSelect} from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
 import {PepBand} from '../models/pep-band';
 import {PepBandService} from '../services/pep-band.service';
-import {MatDivider} from '@angular/material/divider';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
+import {AttendanceStatsTableComponent} from '../shared/attendance-stats-table/attendance-stats-table.component';
 
 @Component({
   selector: 'app-section-page',
@@ -54,7 +53,8 @@ import {MatTab, MatTabGroup} from '@angular/material/tabs';
     NgForOf,
     FormsModule,
     MatTabGroup,
-    MatTab
+    MatTab,
+    AttendanceStatsTableComponent
   ],
   templateUrl: './section-page.component.html',
   styleUrl: './section-page.component.css'
@@ -75,12 +75,11 @@ export class SectionPageComponent implements OnInit {
 
   memberColumns: string[] = ['email', 'name'];
 
-  memberStats: MemberStats[] = [];
-  statsColumns: string[] = ['member', 'numRehearsals', 'numWholeBandEvents', 'numPepEvents', 'numVolunteerEvents', 'numSubEvents'];
-
   allowSectionSelection: boolean = false;
 
   @ViewChildren(AttendanceTableComponent) attendanceTables!: QueryList<AttendanceTableComponent>;
+
+  @ViewChild(AttendanceStatsTableComponent) statsTable!: AttendanceStatsTableComponent;
 
   constructor (private router: Router,
                private route: ActivatedRoute,
@@ -102,10 +101,6 @@ export class SectionPageComponent implements OnInit {
 
     this.selectedSection = this.sectionOptions
       .find((s: Section) => s.sectionId == this.sectionId) ?? null;
-
-    this.attendanceService.getMemberStatsBySectionId(this.sectionId).subscribe(memberStats => {
-      this.memberStats = memberStats;
-    })
 
     this.pepBandService.getAllWithSectionMembers(this.sectionId, this.term.termId).subscribe(pepBands => {
       this.pepBands = pepBands.filter(band => band.bandId != Constants.PEP_BAND_ID_VOLUNTEER);
@@ -129,17 +124,14 @@ export class SectionPageComponent implements OnInit {
       table.onSectionChange(section.sectionId);
     })
 
+    this.statsTable.onSectionChange(section.sectionId);
+
     this.selectedSection = this.sectionOptions
       .find((s: Section) => s.sectionId == section.sectionId) ?? null;
 
     this.pepBandService.getAllWithSectionMembers(this.sectionId, this.term.termId).subscribe(pepBands => {
       this.pepBands = pepBands.filter(band => band.bandId != Constants.PEP_BAND_ID_VOLUNTEER);
     })
-
-    this.attendanceService.getMemberStatsBySectionId(section.sectionId).subscribe(memberStats => {
-      this.memberStats = memberStats;
-    })
-
   }
 
   protected readonly EVENT_TYPE_REHEARSAL = Constants.EVENT_TYPE_REHEARSAL;

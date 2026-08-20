@@ -79,9 +79,10 @@ export class AttendanceService {
         return attendances;
     }
 
-    public async getMemberStatsBySectionId(sectionId: number): Promise<MemberStatsDto> {
+    public async getMemberStats(termId: number, sectionId?: number): Promise<MemberStatsDto> {
+        console.log(`getting member stats for term ${termId}`)
         const stats: MemberStatsDto =
-            await this.attendanceRepository.getMemberStatsBySectionId(sectionId);
+            await this.attendanceRepository.getMemberStats(termId, sectionId);
 
         return stats;
     }

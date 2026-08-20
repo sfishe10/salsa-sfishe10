@@ -16,7 +16,8 @@ router.delete('/:id', attendance.admin.deleteAttendance);
  */
 router.get('/:id', attendance.selector.getById);
 // router.get('/member/:id', attendance.selector.getByMemberId);
-router.get('/section/:id/stats', attendance.selector.getMemberStatsBySectionId);
+router.get('/term/:termId/section/:sectionId/stats', attendance.selector.getMemberStatsBySectionId);
+router.get('/term/:termId/stats', attendance.selector.getMemberStats);
 router.get('/event/:eventId/section/:sectionId', attendance.selector.getBySectionAndEventId);
 router.get(
     '/term/:termId/section/:sectionId/eventType/:eventType',

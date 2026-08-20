@@ -20,6 +20,6 @@
   flex-direction: column;
 }
 
-app-attendance-table {
+app-attendance-table, app-attendance-stats-table {
   flex: 1 1 auto;
 }

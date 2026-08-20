@@ -1,12 +1,22 @@
 export interface MemberStats {
   memberId: number;
-  termId: number;
+  sectionId: number;
+  sectionName: string;
   email: string;
   firstName: string;
   lastName: string;
-  numRehearsals: number;
-  numWholeBandEvents: number;
-  numPepEvents: number;
-  numVolunteerEvents: number;
-  numSubEvents: number;
+
+  totalUnexcusedMisses: number;
+  rehearsalsMissed: number;
+  wholeBandEventsMissed: number;
+  pepEventsMissed: number;
+
+  wholeBandEventsAttended: number;
+  rehearsalsAttended: number;
+
+  totalPepEventsAttended: number;
+  assignedAbcEventsAttended: number;
+  extraAbcEventsAttended: number;
+  abcEventsSubbed: number;
+  volunteerEventsAttended: number;
 }
