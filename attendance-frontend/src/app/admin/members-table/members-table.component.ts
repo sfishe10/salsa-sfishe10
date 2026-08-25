@@ -272,7 +272,12 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
 
   updateMemberFilter() {
     this.memberDataSource = new MatTableDataSource(
-      this.members.filter(member => member.user.email.toLowerCase().includes(this.filterText.toLowerCase()))
+      this.members.filter(member => {
+        const searchText = this.filterText.toLowerCase()
+        const fullName = `${member.user.firstName.toLowerCase()} ${member.user.lastName.toLowerCase()}`
+        return member.user.email.toLowerCase().includes(searchText)
+          || fullName.includes(searchText)
+      })
     );
     this.memberDataSource.paginator = this.memberPaginator;
   }
