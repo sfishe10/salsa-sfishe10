@@ -88,6 +88,8 @@ export const uploadRehearsalConflictsCsv = async (req: any, res: any)  => {
 
     await memberService.parseRehearsalConflictsCsv(req.file, termId, ignoreInvalidEmails);
 
+    res.status(200).send(true);
+
   } catch (err: any) {
     if (err instanceof InvalidEmailsError) {
       return res.status(422).send(err.invalidEmails);

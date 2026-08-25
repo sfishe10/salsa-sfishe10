@@ -20,4 +20,20 @@ export class Constants {
   static readonly ROLE_ATTENDANCE_TAKER = 'Attendance Taker';
   static readonly ROLE_MEMBER = 'Member';
 
+  /**
+   * CSV parsing column names
+   *
+   * NOTE: before uploading CSV files, check to make sure these values match the column names (converted to lowercase)!
+   */
+
+
+  static readonly REHEARSAL_CONFLICT_EMAIL_COL = 'email1';
+  static readonly REHEARSAL_CONFLICT_TUESDAY_COL = 'tuesday rehearsal';
+  static readonly REHEARSAL_CONFLICT_THURSDAY_COL = 'thursday rehearsal';
+
+  static readonly SUPP_FORM_SECTION_COL = 'section';
+  static readonly SUPP_FORM_FNAME_COL = 'first name';
+  static readonly SUPP_FORM_LNAME_COL = 'last name';
+  static readonly SUPP_FORM_CP_EMAIL_COL = 'cp email';
+  static readonly SUPP_FORM_PREF_EMAIL_COL = 'preferred email address';
 }
