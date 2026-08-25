@@ -37,6 +37,12 @@
       <td mat-cell *matCellDef="let member"> {{member.section?.name}} </td>
     </ng-container>
 
+    <!-- Rehearsal Conflict Column -->
+    <ng-container matColumnDef="rehearsalConflict">
+      <th mat-header-cell *matHeaderCellDef> Rehearsal Conflict </th>
+      <td mat-cell *matCellDef="let member"> {{member.rehearsalConflict ?? 'None'}} </td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="memberColumns"></tr>
     <tr (click)="navigateToMember(row.memberId)" class="clickable-row" mat-row *matRowDef="let row; columns: memberColumns;"></tr>
   </table>

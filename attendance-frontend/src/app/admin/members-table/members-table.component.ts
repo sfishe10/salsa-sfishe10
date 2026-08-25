@@ -85,7 +85,7 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   pepBandOptions: PepBand[] = [];
 
   members: Member[] = [];
-  memberColumns: string[] = ['email', 'name', 'pepBand', 'section'];
+  memberColumns: string[] = ['email', 'name', 'section', 'pepBand', 'rehearsalConflict'];
   memberDataSource: MatTableDataSource<Member> = new MatTableDataSource<Member>(this.members);
 
   memberEmail: string = "";
