@@ -165,7 +165,7 @@ export class MemberService {
         );
 
         const invalidSections: Set<string> = new Set(rows
-            .map(row => row['section']?.trim().toLowerCase())
+            .map(row => row[Constants.SUPP_FORM_SECTION_COL]?.trim().toLowerCase())
             .filter((s): s is string => !!s)
             .filter(sectionName => !(sectionMap.has(sectionName))));
 
@@ -179,13 +179,13 @@ export class MemberService {
         const members: Member[] = [];
 
         for (const row of rows) {
-            const lastName = row['last name']?.trim() ?? '';
-            const firstName = row['first name']?.trim() ?? '';
+            const lastName = row[Constants.SUPP_FORM_LNAME_COL]?.trim() ?? '';
+            const firstName = row[Constants.SUPP_FORM_FNAME_COL]?.trim() ?? '';
             // for extended ed students without a CP email, use their preferred email for now -
             // they will not be needing to log in, so it won't cause problems
-            const email = row['cp email']!.trim() !== '' ? row['cp email']!.trim() : row['preferred email address']!.trim();
+            const email = row[Constants.SUPP_FORM_CP_EMAIL_COL]!.trim() !== '' ? row[Constants.SUPP_FORM_CP_EMAIL_COL]!.trim() : row[Constants.SUPP_FORM_PREF_EMAIL_COL]!.trim();
 
-            const sectionName = row['section']!.trim().toLowerCase() ?? '';
+            const sectionName = row[Constants.SUPP_FORM_SECTION_COL]!.trim().toLowerCase() ?? '';
             // ! = non-null assertion, since we already checked for invalid section names
             const section: Section = sectionMap.get(sectionName)!;
 
@@ -229,9 +229,15 @@ export class MemberService {
 
         if (!ignoreInvalidEmails) {
             // make sure each of the emails belongs to a current member - if not, send back the ones that don't
-            const invalidEmails: string[] = rows
-                .map(row => row.Email2?.trim().toLowerCase() ?? '')
-                .filter(async email => !(await this.isEmailInUseForTerm(email, termId)));
+            const emails = rows
+                .map(row => row[Constants.REHEARSAL_CONFLICT_EMAIL_COL]?.trim().toLowerCase() ?? '');
+
+            const validity = await Promise.all(
+                emails.map(email => this.isEmailInUseForTerm(email, termId))
+            );
+
+            const invalidEmails = emails.filter((_, index) => !validity[index]);
+
             if (invalidEmails.length) {
                 // return any invalid emails to the frontend
                 throw new InvalidEmailsError(invalidEmails);
@@ -239,12 +245,11 @@ export class MemberService {
         }
 
         for (const row of rows) {
-            // TODO: extract these column names out as constants
-            const email = row.Email2?.trim().toLowerCase() ?? '';
-            const tuesdayArriveLate = row['Tuesday Rehearsal']?.toLowerCase().includes('arriving late');
-            const tuesdayLeaveEarly = row['Tuesday Rehearsal']?.toLowerCase().includes('leaving early');
-            const thursdayArriveLate = row['Thursday Rehearsal']?.toLowerCase().includes('arriving late');
-            const thursdayLeaveEarly = row['Thursday Rehearsal']?.toLowerCase().includes('leaving early');
+            const email = row[Constants.REHEARSAL_CONFLICT_EMAIL_COL]?.trim().toLowerCase() ?? '';
+            const tuesdayArriveLate = row[Constants.REHEARSAL_CONFLICT_TUESDAY_COL]?.toLowerCase().includes('arriving late');
+            const tuesdayLeaveEarly = row[Constants.REHEARSAL_CONFLICT_TUESDAY_COL]?.toLowerCase().includes('leaving early');
+            const thursdayArriveLate = row[Constants.REHEARSAL_CONFLICT_THURSDAY_COL]?.toLowerCase().includes('arriving late');
+            const thursdayLeaveEarly = row[Constants.REHEARSAL_CONFLICT_THURSDAY_COL]?.toLowerCase().includes('leaving early');
 
             if (tuesdayArriveLate || tuesdayLeaveEarly || thursdayLeaveEarly || thursdayArriveLate) {
                 let rehearsalConflict: string;
@@ -272,6 +277,7 @@ export class MemberService {
     }
 
     public async isEmailInUseForTerm(email: string, termId: number) {
-        return (await this.memberRepository.findByTermIdAndEmail(termId, email)).length;
+        const members = await this.memberRepository.findByTermIdAndEmail(termId, email);
+        return members.length > 0;
     }
 }

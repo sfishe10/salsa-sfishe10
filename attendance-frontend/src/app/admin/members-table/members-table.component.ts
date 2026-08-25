@@ -85,7 +85,7 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
   pepBandOptions: PepBand[] = [];
 
   members: Member[] = [];
-  memberColumns: string[] = ['email', 'name', 'pepBand', 'section'];
+  memberColumns: string[] = ['email', 'name', 'section', 'pepBand', 'rehearsalConflict'];
   memberDataSource: MatTableDataSource<Member> = new MatTableDataSource<Member>(this.members);
 
   memberEmail: string = "";
@@ -237,12 +237,11 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
           this.emailsMissingMembers = [];
           this.onTermChange(termId);
           this.onCancelDialog();
-          this.openSnackBar('Rehearsal Conflicts Updated', 'OK', 3000);
+          this.openSnackBar('Rehearsal conflicts updated', 'OK', 3000);
         },
         error: (err: any) => {
           if (err.status === 422) {
             this.emailsMissingMembers = [];
-            console.log(err.error);
             err.error.forEach((email: string) => {
               this.emailsMissingMembers.push(email);
             })
@@ -273,7 +272,12 @@ export class MembersTableComponent implements OnInit, AfterViewInit {
 
   updateMemberFilter() {
     this.memberDataSource = new MatTableDataSource(
-      this.members.filter(member => member.user.email.toLowerCase().includes(this.filterText.toLowerCase()))
+      this.members.filter(member => {
+        const searchText = this.filterText.toLowerCase()
+        const fullName = `${member.user.firstName.toLowerCase()} ${member.user.lastName.toLowerCase()}`
+        return member.user.email.toLowerCase().includes(searchText)
+          || fullName.includes(searchText)
+      })
     );
     this.memberDataSource.paginator = this.memberPaginator;
   }
