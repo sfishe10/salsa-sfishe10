@@ -222,12 +222,16 @@ export class AttendanceRepository {
                                     AND ea.attendance <> ''
                                     AND ea.attendance NOT LIKE '%Absent%'
                                 THEN 1 END) AS wholeBandEventsAttended,
-                 COUNT(CASE WHEN
-                                (m.memberId = ea.memberId OR (ea.subId IS NOT NULL AND m.memberId = ea.subId))
-                                    AND e.type = 'Pep Event'
-                                    AND ea.attendance IS NOT NULL
-                                    AND ea.attendance <> ''
-                                    AND ea.attendance NOT LIKE '%Absent%'
+                 COUNT(CASE WHEN 
+                                e.type = 'Pep Event'
+                                     AND ea.attendance IS NOT NULL
+                                     AND ea.attendance <> ''
+                                     AND ea.attendance NOT LIKE '%Absent%'
+                                     AND (
+                                          (ea.attendance <> 'Sub' AND ea.memberId = m.memberId)
+                                              OR
+                                          (ea.attendance = 'Sub' AND ea.subId = m.memberId)
+                                          )
                                 THEN 1 END) AS totalPepEventsAttended,
                  COUNT(CASE WHEN
                                 m.memberId = ea.memberId 
